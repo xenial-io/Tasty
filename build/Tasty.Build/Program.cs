@@ -11,13 +11,12 @@ namespace Tasty.Build
     {
         static async Task Main(string[] args)
         {
-            //XenialVersionInfo version = null;
+            XenialVersionInfo version = null;
 
             Target("version", () =>
             {
-                throw new Exception(Environment.GetEnvironmentVariable("OS"));
-                //version = new XenialVersionInfo();
-                //version.PrintVersion();
+                version = new XenialVersionInfo();
+                version.PrintVersion();
             });
 
             static string logOptions(string target)

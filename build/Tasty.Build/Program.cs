@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 using static SimpleExec.Command;
 using static Bullseye.Targets;
@@ -26,16 +28,25 @@ namespace Tasty.Build
                 () => RunAsync("dotnet", $"restore {logOptions("restore")}")
             );
 
-            Target("build", DependsOn("restore"), 
+            Target("build", DependsOn("restore"),
                 () => RunAsync("dotnet", $"build --no-restore {logOptions("build")}")
             );
 
-            Target("test", DependsOn("build"), () =>
+            Target("test", DependsOn("build"), async () =>
             {
+                var tfms = RuntimeInformation
+                            .IsOSPlatform(OSPlatform.Windows)
+                            ? new[] { "net462", "netcoreapp3.1" }
+                            : new[] { "netcoreapp3.1" };
 
+                var tests = tfms
+                    .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Tasty.Tests/Xenial.Tasty.Tests.csproj --framework {tfm}"))
+                    .ToArray();
+
+                await Task.WhenAll(tests);
             });
 
-            Target("pack", DependsOn("test"), 
+            Target("pack", DependsOn("test"),
                 () => RunAsync("dotnet", $"pack src/Xenial.Tasty/Xenial.Tasty.csproj --no-restore --no-build {logOptions("pack")}")
             );
 

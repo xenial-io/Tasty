@@ -4,7 +4,7 @@
   "description": "Tasty - Delicious dotnet testing",
   "main": "index.js",
   "scripts": {
-    "commit": "git-cz"
+    "c": "git-cz"
   },
   "repository": {
     "type": "git",
@@ -40,8 +40,7 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   }
 }

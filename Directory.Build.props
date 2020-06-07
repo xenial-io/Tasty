@@ -1,0 +1,36 @@
+<Project>
+	<PropertyGroup>
+		<Product>Xenial.Tasty</Product>
+		<XenialPackageVersion>0.0.1-*</XenialPackageVersion>
+		<XenialVersion>0.0.1-*</XenialVersion>
+
+		<Copyright>Copyright © Xenial, Manuel Grundner $([System.DateTime]::Today.ToString('yyyy'))</Copyright>
+		<Authors>Xenial, Manuel Grundner</Authors>
+    <FullFrameworkVersion>net462</FullFrameworkVersion>
+    <NetStandardVersion>netstandard2.0</NetStandardVersion>
+    <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
+		<TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<IncludeSource>True</IncludeSource>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageIcon>icon-64x64.png</PackageIcon>
+		<PackageIconUrl>https://blog.delegate.at/img/favicon.ico</PackageIconUrl>
+    <Publish>false</Publish>
+    <IsPackTarget>false</IsPackTarget>
+    <NoWarn>$(NoWarn);NU5105</NoWarn>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectCapability Include="DynamicDependentFile" />
+    <ProjectCapability Include="DynamicFileNesting" />
+  </ItemGroup>
+
+</Project>

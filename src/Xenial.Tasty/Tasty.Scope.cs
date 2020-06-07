@@ -266,10 +266,12 @@ namespace Xenial.Delicious.Scopes
         static extern IntPtr GetConsoleWindow();
 
         private bool ClearConsole =>
-            GetConsoleWindow() != IntPtr.Zero
-            || Environment.GetEnvironmentVariable("CI") == null
-            || Environment.GetEnvironmentVariable("TF_BUILD") == null
-            || !System.Diagnostics.Debugger.IsAttached;
+            RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
+                ? GetConsoleWindow() != IntPtr.Zero
+                : true
+            && Environment.GetEnvironmentVariable("CI") == null
+            && Environment.GetEnvironmentVariable("TF_BUILD") == null
+            && !System.Diagnostics.Debugger.IsAttached;
 
         public async Task<int> Run(string[] args)
         {

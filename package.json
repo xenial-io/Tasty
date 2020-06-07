@@ -1,0 +1,29 @@
+{
+  "name": "tasty",
+  "version": "0.0.1",
+  "description": "Tasty - Delicious dotnet testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xenial-io/Tasty.git"
+  },
+  "keywords": [
+    "dotnet",
+    "test",
+    "testing",
+    "tasty",
+    "delicious",
+    "coverage",
+    "snapshot",
+    "approval"
+  ],
+  "author": "Xenial, Manuel Grundner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xenial-io/Tasty/issues"
+  },
+  "homepage": "https://github.com/xenial-io/Tasty#readme"
+}

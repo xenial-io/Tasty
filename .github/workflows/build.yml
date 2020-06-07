@@ -26,4 +26,4 @@ jobs:
     - name: Build
       run: dotnet run --project build/Tasty.Build/Tasty.Build.csproj
       env:
-        OS: runner.os
+        OS: ${{ runner.os }}

@@ -37,8 +37,9 @@
     <ProjectCapability Include="DynamicFileNesting" />
   </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
-		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+	<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+	<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+  </ItemGroup>
 
 </Project>

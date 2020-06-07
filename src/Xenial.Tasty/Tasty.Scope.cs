@@ -266,7 +266,7 @@ namespace Xenial.Delicious.Scopes
         static extern IntPtr GetConsoleWindow();
 
         private bool ClearConsole =>
-            RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
+            System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows) 
                 ? GetConsoleWindow() != IntPtr.Zero
                 : true
             && Environment.GetEnvironmentVariable("CI") == null

@@ -19,7 +19,9 @@ namespace Tasty.Build.Helpers
             }
             GitVersion ReadGitVersion()
             {
-                if (Environment.GetEnvironmentVariable("TF_BUILD") != null)
+                if (
+                    Environment.GetEnvironmentVariable("TF_BUILD") != null
+                    || Environment.GetEnvironmentVariable("CI") != null)
                 {
                     var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                     var cacheFileName = Path.Combine(directory, "gitversion.cache.json");

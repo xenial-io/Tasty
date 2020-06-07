@@ -40,7 +40,7 @@ namespace Tasty.Build
                             : new[] { "netcoreapp3.1" };
 
                 var tests = tfms
-                    .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Tasty.Tests/Xenial.Tasty.Tests.csproj --framework {tfm}"))
+                    .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Tasty.Tests/Xenial.Tasty.Tests.csproj --no-build --no-restore --framework {tfm}"))
                     .ToArray();
 
                 await Task.WhenAll(tests);

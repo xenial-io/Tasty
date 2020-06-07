@@ -24,6 +24,10 @@
     <NoWarn>$(NoWarn);NU5105</NoWarn>
 	</PropertyGroup>
 
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <TargetFrameworks>$(NetStandardVersion)</TargetFrameworks>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>

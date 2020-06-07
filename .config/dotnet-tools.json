@@ -13,6 +13,24 @@
       "commands": [
         "dotnet-gitversion"
       ]
+    },
+    "dotnet-format": {
+      "version": "4.0.130203",
+      "commands": [
+        "dotnet-format"
+      ]
+    },
+    "dotnet-rimraf": {
+      "version": "1.2.4",
+      "commands": [
+        "rimraf"
+      ]
+    },
+    "dotnet-toast": {
+      "version": "1.0.0",
+      "commands": [
+        "toast"
+      ]
     }
   }
 }

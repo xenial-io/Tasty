@@ -1,0 +1,24 @@
+mode: ContinuousDeployment
+tag-prefix: '[vV]'
+branches:
+  master:
+    regex: ^master
+    mode: ContinuousDeployment
+    tag: ''
+    increment: Minor
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: true
+    is-release-branch: true
+  topic:
+    regex: ^topic?[/-]
+    mode: ContinuousDeployment
+    tag: useBranchName
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    tracks-release-branches: true
+    is-release-branch: false
+    source-branches: ['master']
+ignore:
+  sha: []

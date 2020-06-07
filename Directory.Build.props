@@ -16,7 +16,7 @@
 		<IncludeSource>True</IncludeSource>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageIcon>icon-64x64.png</PackageIcon>
 		<PackageIconUrl>https://blog.delegate.at/img/favicon.ico</PackageIconUrl>
     <Publish>false</Publish>

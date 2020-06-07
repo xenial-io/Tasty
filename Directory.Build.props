@@ -1,28 +1,29 @@
 <Project>
-	<PropertyGroup>
-		<Product>Xenial.Tasty</Product>
-		<XenialPackageVersion>0.0.1-*</XenialPackageVersion>
-		<XenialVersion>0.0.1-*</XenialVersion>
+  
+  <PropertyGroup>
+    <Product>Xenial.Tasty</Product>
+    <XenialPackageVersion>0.0.1-*</XenialPackageVersion>
+    <XenialVersion>0.0.1-*</XenialVersion>
     <LangVersion>preview</LangVersion>
-		<Copyright>Copyright © Xenial, Manuel Grundner $([System.DateTime]::Today.ToString('yyyy'))</Copyright>
-		<Authors>Xenial, Manuel Grundner</Authors>
+    <Copyright>Copyright © Xenial, Manuel Grundner $([System.DateTime]::Today.ToString('yyyy'))</Copyright>
+    <Authors>Xenial, Manuel Grundner</Authors>
     <FullFrameworkVersion>net462</FullFrameworkVersion>
     <NetStandardVersion>netstandard2.0</NetStandardVersion>
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
-		<TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<IncludeSource>True</IncludeSource>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageIcon>icon-64x64.png</PackageIcon>
-		<PackageIconUrl>https://blog.delegate.at/img/favicon.ico</PackageIconUrl>
+    <PackageIconUrl>https://blog.delegate.at/img/favicon.ico</PackageIconUrl>
     <Publish>false</Publish>
     <IsPackTarget>false</IsPackTarget>
     <NoWarn>$(NoWarn);NU5105</NoWarn>
-	</PropertyGroup>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
     <TargetFrameworks>$(NetStandardVersion)</TargetFrameworks>
@@ -38,8 +39,11 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
-	<PackageReference Include="System.ValueTuple" Version="4.5.0" />
-	<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
+  
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <DefineConstants>$(DefineConstants);NET4</DefineConstants>
+  </PropertyGroup>
 
 </Project>

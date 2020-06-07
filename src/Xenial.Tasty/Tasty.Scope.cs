@@ -266,10 +266,13 @@ namespace Xenial.Delicious.Scopes
         static extern IntPtr GetConsoleWindow();
 
         private bool ClearConsole =>
+#if !NET4
             System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows) 
                 ? GetConsoleWindow() != IntPtr.Zero
                 : true
-            && Environment.GetEnvironmentVariable("CI") == null
+            &&
+#endif
+            Environment.GetEnvironmentVariable("CI") == null
             && Environment.GetEnvironmentVariable("TF_BUILD") == null
             && !System.Diagnostics.Debugger.IsAttached;
 

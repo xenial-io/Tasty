@@ -3,7 +3,7 @@
 		<Product>Xenial.Tasty</Product>
 		<XenialPackageVersion>0.0.1-*</XenialPackageVersion>
 		<XenialVersion>0.0.1-*</XenialVersion>
-
+    <LangVersion>preview</LangVersion>
 		<Copyright>Copyright © Xenial, Manuel Grundner $([System.DateTime]::Today.ToString('yyyy'))</Copyright>
 		<Authors>Xenial, Manuel Grundner</Authors>
     <FullFrameworkVersion>net462</FullFrameworkVersion>
@@ -32,5 +32,9 @@
     <ProjectCapability Include="DynamicDependentFile" />
     <ProjectCapability Include="DynamicFileNesting" />
   </ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+	</ItemGroup>
 
 </Project>

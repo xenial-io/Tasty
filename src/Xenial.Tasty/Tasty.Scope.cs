@@ -261,9 +261,18 @@ namespace Xenial.Delicious.Scopes
             }
         }
 
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+
+        private bool ClearConsole =>
+            GetConsoleWindow() != IntPtr.Zero
+            || Environment.GetEnvironmentVariable("CI") == null
+            || Environment.GetEnvironmentVariable("TF_BUILD") == null
+            || !System.Diagnostics.Debugger.IsAttached;
+
         public async Task<int> Run(string[] args)
         {
-            if (ClearBeforeRun && !System.Diagnostics.Debugger.IsAttached)
+            if (ClearBeforeRun && ClearConsole)
             {
                 Console.Clear();
             }

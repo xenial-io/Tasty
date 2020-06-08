@@ -19,7 +19,10 @@ namespace Xenial.Delicious.Visitors
                     yield return testGroup;
                     foreach (var childExecutable in testGroup.Executors)
                     {
-                        yield return childExecutable;
+                        foreach (var childNode in IterateNode(childExecutable))
+                        {
+                            yield return childNode;
+                        }
                     }
 
                 }
@@ -85,7 +88,7 @@ namespace Xenial.Delicious.Visitors
     {
         internal static void MarkTestsAsForced(TastyScope scope)
         {
-            var nodes = scope.Iterate();
+            var nodes = scope.Iterate().ToList();
             var nodesWithForce = nodes
                 .OfType<IForceAble>()
                 .Where(node => node.IsForced != null)

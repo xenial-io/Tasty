@@ -44,10 +44,7 @@ namespace Xenial.Delicious.Scopes
             AddToGroup(group);
             return group;
         }
-        public TestGroup FDescribe(string name, Action action)
-            => Describe(name, action)
-                .Forced(() => true);
-                
+
         public TestGroup Describe(string name, Func<Task> action)
         {
             var group = new TestGroup
@@ -62,6 +59,14 @@ namespace Xenial.Delicious.Scopes
             AddToGroup(group);
             return group;
         }
+
+        public TestGroup FDescribe(string name, Action action)
+            => Describe(name, action)
+                .Forced(() => true);
+
+        public TestGroup FDescribe(string name, Func<Task> action)
+           => Describe(name, action)
+               .Forced(() => true);
 
         void AddToGroup(TestGroup group)
         {
@@ -167,6 +172,26 @@ namespace Xenial.Delicious.Scopes
         public TestCase FIt(string name, Action action)
             => It(name, action)
                 .Forced(() => true);
+
+        public TestCase FIt(string name, Func<Task> action)
+            => It(name, action)
+                .Forced(() => true);
+
+        public TestCase FIt(string name, Func<bool> action)
+           => It(name, action)
+               .Forced(() => true);
+
+        public TestCase FIt(string name, Func<Task<bool>> action)
+            => It(name, action)
+                .Forced(() => true);
+
+        public TestCase FIt(string name, Func<Task<(bool result, string message)>> action)
+            => It(name, action)
+                .Forced(() => true);
+
+        public TestCase FIt(string name, Func<(bool result, string message)> action)
+           => It(name, action)
+               .Forced(() => true);
 
         void AddToGroup(TestCase test)
         {

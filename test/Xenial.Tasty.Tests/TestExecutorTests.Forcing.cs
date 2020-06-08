@@ -30,22 +30,23 @@ namespace Xenial.Delicious.Tests
                     return (scope, action);
                 }
 
-                // It("should only run forced test case", async () =>
-                // {
-                //     var (scope, action) = CreateScope<Action>();
-                //     var test1 = scope.It(TestName, action);
-                //     var test2 = scope.FIt($"{TestName}#2", action);
-                //     var test3 = scope.It($"{TestName}#3", action);
+                It("should only run forced test case", async () =>
+                {
+                    const string testName = "A testcase";
+                    var (scope, action) = CreateScope<Action>();
+                    var test1 = scope.It(testName, action);
+                    var test2 = scope.FIt($"{testName}#2", action);
+                    var test3 = scope.It($"{testName}#3", action);
 
-                //     await scope.Run();
+                    await scope.Run();
 
-                //     A.CallTo(action).MustHaveHappenedOnceExactly();
-                //     scope.ShouldSatisfyAllConditions(
-                //         () => test1.TestOutcome.ShouldBe(TestOutcome.NotRun),
-                //         () => test2.TestOutcome.ShouldBe(TestOutcome.Success),
-                //         () => test3.TestOutcome.ShouldBe(TestOutcome.NotRun)
-                //     );
-                // });
+                    A.CallTo(action).MustHaveHappenedOnceExactly();
+                    scope.ShouldSatisfyAllConditions(
+                        () => test1.TestOutcome.ShouldBe(TestOutcome.NotRun),
+                        () => test2.TestOutcome.ShouldBe(TestOutcome.Success),
+                        () => test3.TestOutcome.ShouldBe(TestOutcome.NotRun)
+                    );
+                });
 
                 It("should run all tests in a forced describe", async () =>
                 {
@@ -68,6 +69,33 @@ namespace Xenial.Delicious.Tests
                     scope.ShouldSatisfyAllConditions(
                         () => A.CallTo(nestedActionThatShouldRun).MustHaveHappened(3, Times.Exactly),
                         () => A.CallTo(nestedActionThatShouldNotRun).MustNotHaveHappened()
+                    );
+                });
+
+                It("should run only 1 forced test in a deep tree", async () =>
+                {
+                    var (scope, action) = CreateScope<Action>();
+                    var actionThatShouldRun = A.Fake<Action>();
+                    var actionThatShouldNotRun = A.Fake<Action>();
+
+                    var describe = scope.Describe("Root Describe", () => { });
+
+                    var nestedGroup1 = describe.Describe("Child Describe #1", () => { });
+                    nestedGroup1.It("Should NotRun #1", actionThatShouldNotRun);
+                    nestedGroup1.It("Should NotRun #2", actionThatShouldNotRun);
+                    nestedGroup1.It("Should NotRun #3", actionThatShouldNotRun);
+                    nestedGroup1.FIt("Should Run", actionThatShouldRun);
+
+                    var nestedGroup2 = describe.Describe("Child Describe #2", () => { });
+                    nestedGroup2.It("Should NotRun #1", actionThatShouldNotRun);
+                    nestedGroup2.It("Should NotRun #2", actionThatShouldNotRun);
+                    nestedGroup2.It("Should NotRun #3", actionThatShouldNotRun);
+
+                    await scope.Run();
+
+                    scope.ShouldSatisfyAllConditions(
+                        () => A.CallTo(actionThatShouldRun).MustHaveHappenedOnceExactly(),
+                        () => A.CallTo(actionThatShouldNotRun).MustNotHaveHappened()
                     );
                 });
             });

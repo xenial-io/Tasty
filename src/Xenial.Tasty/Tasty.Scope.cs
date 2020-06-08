@@ -271,10 +271,11 @@ namespace Xenial.Delicious.Scopes
                 ? GetConsoleWindow() != IntPtr.Zero
                 : true
             &&
+#else
+            GetConsoleWindow() != IntPtr.Zero
+            &&
 #endif
-            Environment.GetEnvironmentVariable("CI") == null
-            && Environment.GetEnvironmentVariable("TF_BUILD") == null
-            && !System.Diagnostics.Debugger.IsAttached;
+            !System.Diagnostics.Debugger.IsAttached;
 
         public async Task<int> Run(string[] args)
         {

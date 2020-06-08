@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +21,21 @@ namespace Xenial.Delicious.Reporters
 
         public static void Register()
         {
-            Xenial.Tasty.RegisterReporter(Report);
-            Xenial.Tasty.RegisterReporter(ReportSummary);
+            Tasty.RegisterReporter(Report);
+            Tasty.RegisterReporter(ReportSummary);
         }
+
+        static Lazy<int> SeparatorSize = new Lazy<int>(() =>
+        {
+            const int fallBackSize = 100;
+            try
+            {
+                return Console.BufferWidth;
+            }
+            catch (IOException) { /* Handle is invalid */ }
+            return fallBackSize;
+        });
+
 
         public static Task ReportSummary(IEnumerable<TestCase> tests)
         {
@@ -42,7 +55,7 @@ namespace Xenial.Delicious.Reporters
             var totalTimeString = totalTime.AsDuration();
 
             Console.WriteLine();
-            Console.WriteLine(new string('=', Console.BufferWidth));
+            Console.WriteLine(new string('=', SeparatorSize.Value));
 
             Write(Scheme.DefaultColor, $"Summary: ");
             Write(failedTests > 0 ? Scheme.ErrorColor : Scheme.DefaultColor, $"F{failedTests}".PadLeft(totalTimeString.Length));
@@ -80,7 +93,7 @@ namespace Xenial.Delicious.Reporters
                         , outcome.ToString().PadLeft(totalTimeString.Length));
 
             Console.WriteLine();
-            Console.WriteLine(new string('=', Console.BufferWidth));
+            Console.WriteLine(new string('=', SeparatorSize.Value));
             Console.WriteLine();
 
             return Task.CompletedTask;

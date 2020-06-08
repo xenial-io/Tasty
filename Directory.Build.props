@@ -41,9 +41,5 @@
   <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
-  
-  <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
-    <DefineConstants>$(DefineConstants);NET4</DefineConstants>
-  </PropertyGroup>
 
 </Project>

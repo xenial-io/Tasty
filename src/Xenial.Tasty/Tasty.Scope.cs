@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Execution;
+using System.IO;
 
 namespace Xenial.Delicious.Scopes
 {
@@ -262,26 +263,15 @@ namespace Xenial.Delicious.Scopes
             }
         }
 
-        [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
-
-        private bool ClearConsole =>
-#if !NET4
-            System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows) 
-                ? GetConsoleWindow() != IntPtr.Zero
-                : true
-            &&
-#else
-            GetConsoleWindow() != IntPtr.Zero
-            &&
-#endif
-            !System.Diagnostics.Debugger.IsAttached;
-
         public async Task<int> Run(string[] args)
         {
-            if (ClearBeforeRun && ClearConsole)
+            if (ClearBeforeRun)
             {
-                Console.Clear();
+                try
+                {
+                    Console.Clear();
+                }
+                catch (IOException) { /* Handle is invalid */}
             }
 
             await new TestExecutor(this).Execute();

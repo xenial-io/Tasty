@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
 
 namespace Xenial
@@ -118,7 +119,7 @@ namespace Xenial
             return test;
         }
 
-        public static TestCase It(this TestGroup group, string name, Func<Task<bool>> action)
+        public static TestCase It(this TestGroup group, string name, Executable action)
         {
             var test = new TestCase
             {

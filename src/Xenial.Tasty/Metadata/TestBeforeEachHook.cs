@@ -9,7 +9,7 @@ namespace Xenial.Delicious.Metadata
 {
     public class TestHook : IExecutable
     {
-        public Func<Task<bool>> Executor { get; internal set; }
+        public Executable Executor { get; internal set; }
         public TestGroup Group { get; internal set; }
     }
 

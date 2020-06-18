@@ -5,6 +5,9 @@ namespace Xenial.Delicious.Execution
 {
     internal interface IExecutable
     {
-        Func<Task<bool>> Executor { get; }
+        Executable Executor { get; }
     }
+
+    
+    public delegate Task<bool> Executable();
 }

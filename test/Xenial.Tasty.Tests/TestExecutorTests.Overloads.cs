@@ -72,7 +72,7 @@ namespace Xenial.Delicious.Tests
                     A.CallTo(action).MustHaveHappenedOnceExactly();
                 });
 
-                It("It should allow Func<Task<(bool success, string message)>>", async () =>
+                FIt("It should allow Func<Task<(bool success, string message)>>", async () =>
                 {
                     var (scope, action) = CreateScope<Func<Task<(bool success, string message)>>>();
                     scope.It(TestName, action);

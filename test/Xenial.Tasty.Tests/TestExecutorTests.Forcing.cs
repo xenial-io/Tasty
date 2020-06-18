@@ -75,7 +75,8 @@ namespace Xenial.Delicious.Tests
                 It("should run only 1 forced test in a deep tree", async () =>
                 {
                     var (scope, action) = CreateScope<Action>();
-                    var actionThatShouldRun = A.Fake<Action>();
+                    var actionThatShouldRun1 = A.Fake<Action>();
+                    var actionThatShouldRun2 = A.Fake<Action>();
                     var actionThatShouldNotRun = A.Fake<Action>();
 
                     var describe = scope.Describe("Root Describe", () => { });
@@ -84,17 +85,24 @@ namespace Xenial.Delicious.Tests
                     nestedGroup1.It("Should NotRun #1", actionThatShouldNotRun);
                     nestedGroup1.It("Should NotRun #2", actionThatShouldNotRun);
                     nestedGroup1.It("Should NotRun #3", actionThatShouldNotRun);
-                    nestedGroup1.FIt("Should Run", actionThatShouldRun);
+                    nestedGroup1.FIt("Should Run", actionThatShouldRun1);
 
                     var nestedGroup2 = describe.Describe("Child Describe #2", () => { });
                     nestedGroup2.It("Should NotRun #1", actionThatShouldNotRun);
                     nestedGroup2.It("Should NotRun #2", actionThatShouldNotRun);
                     nestedGroup2.It("Should NotRun #3", actionThatShouldNotRun);
 
+                    TestGroup deepNestedGroup = null;
+                    deepNestedGroup = nestedGroup2.Describe("Deep Describe #1", () =>
+                    {
+                        deepNestedGroup.FIt("Deep nested describe", actionThatShouldRun2);
+                    });
+
                     await scope.Run();
 
                     scope.ShouldSatisfyAllConditions(
-                        () => A.CallTo(actionThatShouldRun).MustHaveHappenedOnceExactly(),
+                        () => A.CallTo(actionThatShouldRun1).MustHaveHappenedOnceExactly(),
+                        () => A.CallTo(actionThatShouldRun2).MustHaveHappenedOnceExactly(),
                         () => A.CallTo(actionThatShouldNotRun).MustNotHaveHappened()
                     );
                 });

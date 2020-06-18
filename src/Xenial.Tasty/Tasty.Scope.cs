@@ -158,7 +158,7 @@ namespace Xenial.Delicious.Scopes
             return test;
         }
 
-        public TestCase It(string name, Func<Task<bool>> action)
+        public TestCase It(string name, Executable action)
         {
             var test = new TestCase
             {

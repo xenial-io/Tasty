@@ -12,7 +12,7 @@ namespace Xenial.Delicious.Metadata
     {
         public string Name { get; internal set; }
         internal List<IExecutable> Executors { get; } = new List<IExecutable>();
-        public Func<Task<bool>> Executor { get; internal set; }
+        public Executable Executor { get; internal set; }
         public TestOutcome TestOutcome { get; internal set; }
         public TestGroup ParentGroup { get; internal set; }
         public TimeSpan Duration { get; internal set; }

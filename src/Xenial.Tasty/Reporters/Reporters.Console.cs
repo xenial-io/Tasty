@@ -19,11 +19,9 @@ namespace Xenial.Delicious.Reporters
         static ConsoleReporter()
             => Console.OutputEncoding = Encoding.UTF8;
 
-        public static void Register()
-        {
-            Tasty.RegisterReporter(Report);
-            Tasty.RegisterReporter(ReportSummary);
-        }
+        public static void Register() 
+            => Tasty.RegisterReporter(Report)
+                    .RegisterReporter(ReportSummary);
 
         static Lazy<int> SeparatorSize = new Lazy<int>(() =>
         {

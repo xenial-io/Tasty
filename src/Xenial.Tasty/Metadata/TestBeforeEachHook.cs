@@ -9,11 +9,25 @@ namespace Xenial.Delicious.Metadata
 {
     public class TestHook : IExecutable
     {
-        public Executable Executor { get; internal set; }
-        public TestGroup Group { get; internal set; }
+        public TestHook(Executable executor, TestGroup? group)
+        {
+            Executor = executor ?? throw new ArgumentNullException(nameof(executor));
+            Group = group;
+        }
+
+        public Executable Executor { get; }
+        public TestGroup? Group { get; internal set; }
     }
 
-    public class TestBeforeEachHook : TestHook { }
+    public class TestBeforeEachHook : TestHook
+    {
+        public TestBeforeEachHook(Executable executor, TestGroup? group)
+            : base(executor, group) { }
+    }
 
-    public class TestAfterEachHook : TestHook { }
+    public class TestAfterEachHook : TestHook
+    {
+        public TestAfterEachHook(Executable executor, TestGroup? group)
+            : base(executor, group) { }
+    }
 }

@@ -18,10 +18,10 @@ namespace Xenial
 
         private static readonly TastyScope DefaultScope;
 
-        public static void RegisterReporter(AsyncTestReporter reporter)
+        public static TastyScope RegisterReporter(AsyncTestReporter reporter)
             => DefaultScope.RegisterReporter(reporter);
 
-        public static void RegisterReporter(AsyncTestSummaryReporter summaryReporter)
+        public static TastyScope RegisterReporter(AsyncTestSummaryReporter summaryReporter)
             => DefaultScope.RegisterReporter(summaryReporter);
 
         public static Task Report(TestCase test)

@@ -19,13 +19,19 @@ namespace Xenial.Delicious.Scopes
         internal readonly List<IExecutable> RootExecutors = new List<IExecutable>();
         internal readonly List<IExecutable> RootBeforeEachHooks = new List<IExecutable>();
         internal readonly List<IExecutable> RootAfterEachHooks = new List<IExecutable>();
-        internal TestGroup CurrentGroup { get; set; }
+        internal TestGroup? CurrentGroup { get; set; }
 
-        public void RegisterReporter(AsyncTestReporter reporter)
-            => Reporters.Add(reporter);
+        public TastyScope RegisterReporter(AsyncTestReporter reporter)
+        {
+            Reporters.Add(reporter);
+            return this;
+        }
 
-        public void RegisterReporter(AsyncTestSummaryReporter summaryReporter)
-            => SummaryReporters.Add(summaryReporter);
+        public TastyScope RegisterReporter(AsyncTestSummaryReporter summaryReporter)
+        {
+            SummaryReporters.Add(summaryReporter);
+            return this;
+        }
 
         public Task Report(TestCase test)
             => Task.WhenAll(Reporters.Select(async reporter => await reporter(test)).ToArray());
@@ -218,27 +224,23 @@ namespace Xenial.Delicious.Scopes
 
         public void BeforeEach(Func<Task> action)
         {
-            var hook = new TestBeforeEachHook
+            var hook = new TestBeforeEachHook(async () =>
             {
-                Executor = async () =>
-                {
-                    await action();
-                    return true;
-                }
-            };
+                await action();
+                return true;
+            }, null);
+
             AddToGroup(hook);
         }
 
         public void AfterEach(Func<Task> action)
         {
-            var hook = new TestAfterEachHook
+            var hook = new TestAfterEachHook(async () =>
             {
-                Executor = async () =>
-                {
-                    await action();
-                    return true;
-                }
-            };
+                await action();
+                return true;
+            }, null);
+
             AddToGroup(hook);
         }
 

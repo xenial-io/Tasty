@@ -23,6 +23,7 @@
     <Publish>false</Publish>
     <IsPackTarget>false</IsPackTarget>
     <NoWarn>$(NoWarn);NU5105</NoWarn>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">

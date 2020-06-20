@@ -17,7 +17,8 @@ namespace Xenial.Delicious.Utils
         /// <returns>A casted object to the type of T</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerStepThrough]
-        public static T As<T>(this object obj)
+        public static T? As<T>(this object obj)
+            where T : class
             => obj is T item ? item : default;
 
         /// <summary>

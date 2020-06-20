@@ -101,7 +101,7 @@ namespace Xenial.Delicious.Visitors
                 {
                     if (forcedNode is IExecutable executableForcedNode)
                     {
-                        var outcome = forcedNode.IsForced();
+                        var outcome = forcedNode.IsForced?.Invoke();
                         foreach (var forcedChildNode in executableForcedNode.Children().OfType<IForceAble>())
                         {
                             if (forcedChildNode is IExecutable executable)
@@ -110,21 +110,33 @@ namespace Xenial.Delicious.Visitors
                                 {
                                     if (parent is TestCase parentTest)
                                     {
-                                        parentTest.IsForced = () => outcome;
+                                        if (outcome.HasValue)
+                                        {
+                                            parentTest.IsForced = () => outcome.Value;
+                                        }
                                     }
                                     else if (parent is TestGroup parentGroup)
                                     {
-                                        parentGroup.IsForced = () => outcome;
+                                        if (outcome.HasValue)
+                                        {
+                                            parentGroup.IsForced = () => outcome.Value;
+                                        }
                                     }
                                 }
                             }
                             if (forcedChildNode is TestCase test)
                             {
-                                test.IsForced = () => outcome;
+                                if (outcome.HasValue)
+                                {
+                                    test.IsForced = () => outcome.Value;
+                                }
                             }
                             else if (forcedChildNode is TestGroup group)
                             {
-                                group.IsForced = () => outcome;
+                                if (outcome.HasValue)
+                                {
+                                    group.IsForced = () => outcome.Value;
+                                }
                             }
                         }
                     }

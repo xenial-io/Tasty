@@ -14,11 +14,11 @@ namespace Xenial.Delicious.Utils
             where T : Exception
             => new TryAction<T>(action, @try);
 
-        internal static TryFinallyAction<T> Try<T>(Action action, Action<T> @try = null, Action @finally = null)
+        internal static TryFinallyAction<T> Try<T>(Action action, Action<T>? @try = null, Action? @finally = null)
             where T : Exception
             => new TryFinallyAction<T>(action, @try, @finally);
 
-        internal static TryFinallyAction Try(Action action, Action @try = null, Action @finally = null)
+        internal static TryFinallyAction Try(Action action, Action? @try = null, Action? @finally = null)
             => new TryFinallyAction(action, @try, @finally);
     }
 
@@ -42,7 +42,7 @@ namespace Xenial.Delicious.Utils
 
     internal struct TryAction
     {
-        internal TryAction(Action action, Action @catch = null)
+        internal TryAction(Action action, Action? @catch = null)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Xenial.Delicious.Utils
 
     internal struct TryAction<T> where T : Exception
     {
-        internal TryAction(Action action, Action<T> @catch = null)
+        internal TryAction(Action action, Action<T>? @catch = null)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Xenial.Delicious.Utils
         /// <param name="action">The action.</param>
         /// <param name="catch">The catch.</param>
         /// <param name="finally">The finally.</param>
-        internal TryFinallyAction(Action action, Action<T> @catch = null, Action @finally = null)
+        internal TryFinallyAction(Action action, Action<T>? @catch = null, Action? @finally = null)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace Xenial.Delicious.Utils
         /// <param name="action">The action.</param>
         /// <param name="catch">The catch.</param>
         /// <param name="finally">The finally.</param>
-        internal TryFinallyAction(Action action, Action @catch = null, Action @finally = null)
+        internal TryFinallyAction(Action action, Action? @catch = null, Action? @finally = null)
         {
             try
             {

@@ -92,10 +92,10 @@ namespace Xenial.Delicious.Tests
                     nestedGroup2.It("Should NotRun #2", actionThatShouldNotRun);
                     nestedGroup2.It("Should NotRun #3", actionThatShouldNotRun);
 
-                    TestGroup deepNestedGroup = null;
+                    TestGroup? deepNestedGroup = null;
                     deepNestedGroup = nestedGroup2.Describe("Deep Describe #1", () =>
                     {
-                        deepNestedGroup.FIt("Deep nested describe", actionThatShouldRun2);
+                        deepNestedGroup?.FIt("Deep nested describe", actionThatShouldRun2);
                     });
 
                     await scope.Run();

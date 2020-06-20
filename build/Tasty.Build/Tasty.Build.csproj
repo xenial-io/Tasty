@@ -7,6 +7,7 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
     <PublishTrimmed>true</PublishTrimmed>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

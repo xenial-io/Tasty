@@ -24,7 +24,6 @@ namespace Xenial.Delicious.Visitors
                             yield return childNode;
                         }
                     }
-
                 }
                 else if (executable is TestCase testCase)
                 {

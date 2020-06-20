@@ -2,92 +2,15 @@
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
-
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Visitors;
 using System.Collections;
 using System.Collections.Generic;
+using Xenial.Delicious.Execution.Middleware;
 
 namespace Xenial.Delicious.Execution
 {
-    public delegate System.Threading.Tasks.Task TestDelegate(TestContext context);
-
-    public class TestContext
-    {
-        public TestContext(TestCase currentCase, TastyScope currentScope)
-        {
-            CurrentCase = currentCase ?? throw new ArgumentNullException(nameof(currentCase));
-            CurrentScope = currentScope ?? throw new ArgumentNullException(nameof(currentScope));
-        }
-
-        public TestCase CurrentCase { get; }
-        public TastyScope CurrentScope { get; }
-    }
-
-    public static class StopWatchMiddleware
-    {
-        public static TestExecutor UseStopwatch(this TestExecutor executor)
-            => executor.Use(async (conext, next) =>
-            {
-                var sw = Stopwatch.StartNew();
-                try
-                {
-                    await next();
-                }
-                finally
-                {
-                    sw.Stop();
-
-                    conext.CurrentCase.Duration = sw.Elapsed;
-                }
-            });
-    }
-
-    public static class ExecuteTestMiddleware
-    {
-        public static TestExecutor UseTestExecutor(this TestExecutor executor)
-            => executor.Use(async (context, next) =>
-            {
-                try
-                {
-                    var result = await context.CurrentCase.Executor.Invoke();
-                    context.CurrentCase.TestOutcome = result ? TestOutcome.Success : TestOutcome.Failed;
-                }
-                catch (Exception exception)
-                {
-                    context.CurrentCase.Exception = exception;
-                    context.CurrentCase.TestOutcome = TestOutcome.Failed;
-                }
-                await next();
-            });
-    }
-
-    public static class ReportTestMiddleware
-    {
-        public static TestExecutor UseTestReporters(this TestExecutor executor)
-            => executor.Use(async (context, next) =>
-            {
-                await context.CurrentScope.Report(context.CurrentCase);
-                await next();
-            });
-    }
-
-    public static class TestExecutorExtentions
-    {
-        public static TestExecutor Use(this TestExecutor app, Func<TestContext, Func<Task>, Task> middleware)
-        {
-            return app.Use(next =>
-            {
-                return context =>
-                {
-                    Func<Task> simpleNext = () => next(context);
-                    return middleware(context, simpleNext);
-                };
-            });
-        }
-    }
-
     public class TestExecutor
     {
         private List<Func<TestDelegate, TestDelegate>> Middlewares = new List<Func<TestDelegate, TestDelegate>>();

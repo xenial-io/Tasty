@@ -8,8 +8,14 @@ namespace Xenial.Delicious.Execution.Middleware
         public static TestExecutor UseTestReporters(this TestExecutor executor)
             => executor.Use(async (context, next) =>
             {
-                await context.CurrentScope.Report(context.CurrentCase);
-                await next();
+                try
+                {
+                    await next();
+                }
+                finally
+                {
+                    await context.CurrentScope.Report(context.CurrentCase);
+                }
             });
     }
 }

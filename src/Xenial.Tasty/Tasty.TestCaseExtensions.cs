@@ -185,19 +185,6 @@ namespace Xenial
             return test;
         }
 
-        public static TestCase Inconclusive(this TestCase test)
-        {
-            test.IsInconclusive = () => true;
-            return test;
-        }
-
-        public static TestCase Inconclusive(this TestCase test, string reason)
-        {
-            test.IsInconclusive = () => true;
-            test.InconclusiveReason = reason;
-            return test;
-        }
-
         public static TestCase Forced(this TestCase test, Func<bool> predicate)
         {
             test.IsForced = predicate;

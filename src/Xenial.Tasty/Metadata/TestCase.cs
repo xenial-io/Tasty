@@ -16,9 +16,7 @@ namespace Xenial.Delicious.Metadata
         public TestOutcome TestOutcome { get; internal set; } = TestOutcome.NotRun;
         public Exception? Exception { get; internal set; }
         public Func<bool?> IsIgnored { get; internal set; } = () => false;
-        public Func<bool?> IsInconclusive { get; internal set; } = () => false;
         public string IgnoredReason { get; internal set; } = string.Empty;
-        public string InconclusiveReason { get; internal set; } = string.Empty;
         public TimeSpan Duration { get; internal set; }
         public string AdditionalMessage { get; internal set; } = string.Empty;
         public Func<bool>? IsForced { get; internal set; }

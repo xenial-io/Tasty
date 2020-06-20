@@ -125,10 +125,6 @@ namespace Xenial.Delicious.Reporters
         private static Task NotRun(TestCase test)
         {
             WriteLine(Scheme.NotifyColor, $"{Scheme.NotRunIcon} {Duration(test)} {GetTestName(test)}");
-            if (!string.IsNullOrEmpty(test.InconclusiveReason))
-            {
-                WriteLine(Scheme.NotifyColor, $"\t{test.InconclusiveReason}");
-            }
             return Task.CompletedTask;
         }
 

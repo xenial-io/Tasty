@@ -26,6 +26,7 @@ namespace Xenial.Delicious.Execution
         {
             Scope = scope;
             this.UseStopwatch()
+                .UseForcedTestExecutor()
                 .UseTestExecutor()
                 .UseTestReporters();
         }
@@ -82,47 +83,39 @@ namespace Xenial.Delicious.Execution
 
             try
             {
-                var inconclusive = testCase.IsInconclusive != null ? testCase.IsInconclusive() : false;
-                if (inconclusive.HasValue && inconclusive.Value)
+                var ignored = testCase.IsIgnored != null ? testCase.IsIgnored() : false;
+                if (ignored.HasValue && ignored.Value)
                 {
-                    testCase.TestOutcome = TestOutcome.NotRun;
+                    testCase.TestOutcome = TestOutcome.Ignored;
                 }
                 else
                 {
-                    var ignored = testCase.IsIgnored != null ? testCase.IsIgnored() : false;
-                    if (ignored.HasValue && ignored.Value)
+                    foreach (var hook in testCase.Group?.BeforeEachHooks ?? Scope.RootBeforeEachHooks)
                     {
-                        testCase.TestOutcome = TestOutcome.Ignored;
+                        var hookResult = await hook.Executor.Invoke();
+                        if (!hookResult)
+                        {
+                            return;
+                        }
                     }
-                    else
+
+                    try
                     {
-                        foreach (var hook in testCase.Group?.BeforeEachHooks ?? Scope.RootBeforeEachHooks)
-                        {
-                            var hookResult = await hook.Executor.Invoke();
-                            if (!hookResult)
-                            {
-                                return;
-                            }
-                        }
+                        var result = await testCase.Executor.Invoke();
+                        testCase.TestOutcome = result ? TestOutcome.Success : TestOutcome.Failed;
+                    }
+                    catch (Exception exception)
+                    {
+                        testCase.Exception = exception;
+                        testCase.TestOutcome = TestOutcome.Failed;
+                    }
 
-                        try
+                    foreach (var hook in testCase.Group?.AfterEachHooks ?? Scope.RootAfterEachHooks)
+                    {
+                        var hookResult = await hook.Executor.Invoke();
+                        if (!hookResult)
                         {
-                            var result = await testCase.Executor.Invoke();
-                            testCase.TestOutcome = result ? TestOutcome.Success : TestOutcome.Failed;
-                        }
-                        catch (Exception exception)
-                        {
-                            testCase.Exception = exception;
-                            testCase.TestOutcome = TestOutcome.Failed;
-                        }
-
-                        foreach (var hook in testCase.Group?.AfterEachHooks ?? Scope.RootAfterEachHooks)
-                        {
-                            var hookResult = await hook.Executor.Invoke();
-                            if (!hookResult)
-                            {
-                                return;
-                            }
+                            return;
                         }
                     }
                 }

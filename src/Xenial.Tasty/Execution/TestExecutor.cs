@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
+
+using Xenial.Delicious.Execution.Middleware;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Visitors;
-using System.Collections;
-using System.Collections.Generic;
-using Xenial.Delicious.Execution.Middleware;
 
 namespace Xenial.Delicious.Execution
 {
@@ -83,7 +83,7 @@ namespace Xenial.Delicious.Execution
             var context = new TestContext(testCase, Scope, testCase.Group);
             await app(context);
         }
-    
+
         internal TestDelegate Build()
         {
             TestDelegate app = context =>
@@ -91,7 +91,7 @@ namespace Xenial.Delicious.Execution
                 return Task.CompletedTask;
             };
 
-            foreach(var middleware in Middlewares.Reverse())
+            foreach (var middleware in Middlewares.Reverse())
             {
                 app = middleware(app);
             }

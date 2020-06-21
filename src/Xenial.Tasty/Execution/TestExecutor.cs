@@ -13,7 +13,7 @@ namespace Xenial.Delicious.Execution
 {
     public class TestExecutor
     {
-        private List<Func<TestDelegate, TestDelegate>> Middlewares = new List<Func<TestDelegate, TestDelegate>>();
+        private IList<Func<TestDelegate, TestDelegate>> Middlewares = new List<Func<TestDelegate, TestDelegate>>();
         public TestExecutor Use(Func<TestDelegate, TestDelegate> middleware)
         {
             Middlewares.Add(middleware);
@@ -25,10 +25,15 @@ namespace Xenial.Delicious.Execution
         public TestExecutor(TastyScope scope)
         {
             Scope = scope;
-            this.UseStopwatch()
+            this
+                .UseTestReporters()
+                .UseStopwatch()
                 .UseForcedTestExecutor()
+                .UseIgnoreTestExecutor()
+                .UseBeforeEachTest()
                 .UseTestExecutor()
-                .UseTestReporters();
+                .UseAfterEachTest()
+                ;
         }
 
         public async Task Execute()
@@ -74,61 +79,24 @@ namespace Xenial.Delicious.Execution
 
         internal async Task Execute(Func<bool>? execute, TestCase testCase)
         {
-            if (execute != null && !execute())
+            var app = Build();
+            var context = new TestContext(testCase, Scope, testCase.Group);
+            await app(context);
+        }
+    
+        internal TestDelegate Build()
+        {
+            TestDelegate app = context =>
             {
-                return;
+                return Task.CompletedTask;
+            };
+
+            foreach(var middleware in Middlewares.Reverse())
+            {
+                app = middleware(app);
             }
 
-            var sw = Stopwatch.StartNew();
-
-            try
-            {
-                var ignored = testCase.IsIgnored != null ? testCase.IsIgnored() : false;
-                if (ignored.HasValue && ignored.Value)
-                {
-                    testCase.TestOutcome = TestOutcome.Ignored;
-                }
-                else
-                {
-                    foreach (var hook in testCase.Group?.BeforeEachHooks ?? Scope.RootBeforeEachHooks)
-                    {
-                        var hookResult = await hook.Executor.Invoke();
-                        if (!hookResult)
-                        {
-                            return;
-                        }
-                    }
-
-                    try
-                    {
-                        var result = await testCase.Executor.Invoke();
-                        testCase.TestOutcome = result ? TestOutcome.Success : TestOutcome.Failed;
-                    }
-                    catch (Exception exception)
-                    {
-                        testCase.Exception = exception;
-                        testCase.TestOutcome = TestOutcome.Failed;
-                    }
-
-                    foreach (var hook in testCase.Group?.AfterEachHooks ?? Scope.RootAfterEachHooks)
-                    {
-                        var hookResult = await hook.Executor.Invoke();
-                        if (!hookResult)
-                        {
-                            return;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                testCase.Exception = ex;
-                testCase.TestOutcome = TestOutcome.Failed;
-            }
-            sw.Stop();
-            testCase.Duration = sw.Elapsed;
-
-            await Scope.Report(testCase);
+            return app;
         }
     }
 }

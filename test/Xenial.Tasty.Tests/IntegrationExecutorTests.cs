@@ -7,6 +7,7 @@ using static Xenial.Tasty;
 using static SimpleExec.Command;
 using static Shouldly.Should;
 using static System.IO.Path;
+using SimpleExec;
 
 namespace Xenial.Delicious.Tests
 {
@@ -31,12 +32,21 @@ namespace Xenial.Delicious.Tests
                   .GetCustomAttributes<System.Reflection.AssemblyMetadataAttribute>()
                   .First(m => m.Key == "MSBuildThisFileDirectory").Value;
 
-                It($"Should run ForcedTests in {configuration}/{targetFramework}", () =>
-                {
-                    var workingDirectory = Combine(testDirectory!, "Xenial.Tasty.ForcedTests");
 
-                    NotThrow(async () => await ReadAsync("dotnet", $"run --no-build --no-restore --framework {targetFramework} -c {configuration}", workingDirectory, noEcho: true));
-                });
+                var integrationTests = new[]
+                {
+                    "Xenial.Tasty.ForcedTests"
+                };
+
+                foreach (var integrationTest in integrationTests)
+                {
+                    It($"should run {integrationTest} with {targetFramework}/{configuration}", () =>
+                    {
+                        var workingDirectory = Combine(testDirectory!, integrationTest);
+
+                        NotThrow(async () => await ReadAsync("dotnet", $"run --no-build --no-restore --framework {targetFramework} -c {configuration}", workingDirectory, noEcho: true));
+                    });
+                }
             });
         }
     }

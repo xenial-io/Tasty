@@ -9,7 +9,7 @@ namespace Xenial.Delicious.Execution.Middleware
     public static class StopWatchMiddleware
     {
         public static TestExecutor UseStopwatch(this TestExecutor executor)
-            => executor.Use(async (conext, next) =>
+            => executor.Use(async (context, next) =>
             {
                 var sw = Stopwatch.StartNew();
                 try
@@ -20,7 +20,7 @@ namespace Xenial.Delicious.Execution.Middleware
                 {
                     sw.Stop();
 
-                    conext.CurrentCase.Duration = sw.Elapsed;
+                    context.CurrentCase.Duration = sw.Elapsed;
                 }
             });
     }

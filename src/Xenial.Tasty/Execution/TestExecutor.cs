@@ -14,17 +14,12 @@ namespace Xenial.Delicious.Execution
     public class TestExecutor
     {
         private IList<Func<TestDelegate, TestDelegate>> Middlewares = new List<Func<TestDelegate, TestDelegate>>();
-        public TestExecutor Use(Func<TestDelegate, TestDelegate> middleware)
-        {
-            Middlewares.Add(middleware);
-            return this;
-        }
-
-        TastyScope Scope { get; }
-
+        internal TastyScope Scope { get; }
+        
         public TestExecutor(TastyScope scope)
         {
-            Scope = scope;
+            Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+
             this
                 .UseTestReporters()
                 .UseStopwatch()
@@ -34,6 +29,12 @@ namespace Xenial.Delicious.Execution
                 .UseTestExecutor()
                 .UseAfterEachTest()
                 ;
+        }
+
+        public TestExecutor Use(Func<TestDelegate, TestDelegate> middleware)
+        {
+            Middlewares.Add(middleware);
+            return this;
         }
 
         public async Task Execute()

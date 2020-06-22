@@ -11,7 +11,10 @@ namespace Xenial.Delicious.Execution.Middleware
                 }
                 finally
                 {
-                    foreach (var hook in context.CurrentCase.Group?.AfterEachHooks ?? context.CurrentScope.RootAfterEachHooks)
+                    foreach (var hook in
+                        context.CurrentCase.Group?.AfterEachHooks
+                        ?? context.CurrentScope.RootAfterEachHooks
+                        )
                     {
                         var hookResult = await hook.Executor.Invoke();
                         if (!hookResult)

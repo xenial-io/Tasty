@@ -5,19 +5,26 @@ using Xenial.Delicious.Metadata;
 
 namespace Xenial.Delicious.Execution.Middleware
 {
-    public static class ForceTestMiddleware
+    public static class IgnoreTestMiddleware
     {
-        public static TestExecutor UseForcedTestExecutor(this TestExecutor executor)
+        public static TestExecutor UseIgnoreTestExecutor(this TestExecutor executor)
             => executor.Use(async (context, next) =>
             {
                 try
                 {
-                    if (context.CurrentCase.IsForced != null)
+                    if (context.CurrentCase.IsIgnored != null)
                     {
-                        var result = context.CurrentCase.IsForced();
-                        if (result)
+                        var result = context.CurrentCase.IsIgnored();
+                        if (result.HasValue)
                         {
-                            await next();
+                            if (result.Value)
+                            {
+                                context.CurrentCase.TestOutcome = TestOutcome.Ignored;
+                            }
+                            else
+                            {
+                                await next();
+                            }
                         }
                     }
                     else

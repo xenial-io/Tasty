@@ -13,7 +13,9 @@ namespace Xenial.Delicious.Execution.Middleware
                 try
                 {
                     var result = await context.CurrentCase.Executor.Invoke();
-                    context.CurrentCase.TestOutcome = result ? TestOutcome.Success : TestOutcome.Failed;
+                    context.CurrentCase.TestOutcome = result
+                        ? TestOutcome.Success
+                        : TestOutcome.Failed;
                 }
                 catch (Exception exception)
                 {

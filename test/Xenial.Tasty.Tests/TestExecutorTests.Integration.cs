@@ -32,6 +32,7 @@ namespace Xenial.Delicious.Tests
                   .GetCustomAttributes<System.Reflection.AssemblyMetadataAttribute>()
                   .First(m => m.Key == "MSBuildThisFileDirectory").Value;
 
+                var isWatchMode = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_WATCH"));
 
                 var integrationTests = new[]
                 {
@@ -44,7 +45,11 @@ namespace Xenial.Delicious.Tests
                     {
                         var workingDirectory = Combine(testDirectory!, integrationTest);
 
-                        NotThrow(async () => await ReadAsync("dotnet", $"run --no-build --no-restore --framework {targetFramework} -c {configuration}", workingDirectory, noEcho: true));
+                        var args = !isWatchMode
+                            ? "--no-build --no-restore"
+                            : string.Empty;
+
+                        NotThrow(async () => await ReadAsync("dotnet", $"run {args} --framework {targetFramework} -c {configuration}", workingDirectory, noEcho: true));
                     });
                 }
             });

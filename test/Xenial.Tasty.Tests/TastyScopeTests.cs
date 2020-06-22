@@ -59,6 +59,23 @@ namespace Xenial.Delicious.Tests
                         () => groupA.Executors.First().As<TestGroup>()!.Name.ShouldBe("Child")
                     );
                 });
+
+                foreach (var exitCode in new[] { 0, 1 })
+                {
+                    It($"{nameof(Run)} should exit with zero-code {exitCode}", async () =>
+                    {
+                        var (scope, group) = CreateScope();
+
+                        group.It("TestCase", () =>
+                        {
+                            var foo = exitCode == 0;
+                            return foo;
+                        });
+
+                        var result = await scope.Run();
+                        result.ShouldBe(exitCode);
+                    });
+                }
             });
         }
     }

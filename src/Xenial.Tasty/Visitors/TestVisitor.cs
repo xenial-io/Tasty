@@ -10,6 +10,23 @@ namespace Xenial.Delicious.Visitors
 {
     internal static class TestIterator
     {
+        internal static IEnumerable<IExecutable> Descendants(this TestGroup root)
+        {
+            var nodes = new Stack<IExecutable>(new[] { root });
+            while (nodes.Any())
+            {
+                IExecutable node = nodes.Pop();
+                yield return node;
+                if (node is TestGroup group)
+                {
+                    foreach (var n in group.Executors)
+                    {
+                        nodes.Push(n);
+                    }
+                }
+            }
+        }
+
         static internal IEnumerable<IExecutable> Iterate(this TastyScope scope)
         {
             static IEnumerable<IExecutable> IterateNode(IExecutable executable)

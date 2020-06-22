@@ -9,6 +9,9 @@ using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Execution;
 using System.IO;
 
+using static Xenial.Delicious.Visitors.TestIterator;
+using Xenial.Delicious.Visitors;
+
 namespace Xenial.Delicious.Scopes
 {
     public class TastyScope : TestGroup
@@ -326,6 +329,17 @@ namespace Xenial.Delicious.Scopes
 
                     await r.Invoke(testCases);
                 }).ToArray());
+
+            var cases = this.Descendants().ToList();
+
+            var failedCase = cases
+                .OfType<TestCase>()
+                .FirstOrDefault(m => m.TestOutcome == TestOutcome.Failed);
+
+            if (failedCase != null)
+            {
+                return 1;
+            }
 
             return 0;
         }

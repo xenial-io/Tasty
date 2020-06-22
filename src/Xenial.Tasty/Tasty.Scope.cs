@@ -11,14 +11,12 @@ using System.IO;
 
 namespace Xenial.Delicious.Scopes
 {
-    public class TastyScope
+    public class TastyScope : TestGroup
     {
         public bool ClearBeforeRun { get; set; } = true;
         private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
         private readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
-        internal readonly List<IExecutable> RootExecutors = new List<IExecutable>();
-        internal readonly List<IExecutable> RootBeforeEachHooks = new List<IExecutable>();
-        internal readonly List<IExecutable> RootAfterEachHooks = new List<IExecutable>();
+
         internal TestGroup? CurrentGroup { get; set; }
 
         public TastyScope RegisterReporter(AsyncTestReporter reporter)
@@ -78,7 +76,7 @@ namespace Xenial.Delicious.Scopes
         {
             if (CurrentGroup == null)
             {
-                RootExecutors.Add(group);
+                Executors.Add(group);
             }
             else
             {
@@ -203,7 +201,7 @@ namespace Xenial.Delicious.Scopes
         {
             if (CurrentGroup == null)
             {
-                var groups = RootExecutors.OfType<TestGroup>().ToList();
+                var groups = Executors.OfType<TestGroup>().ToList();
                 if (groups.Count > 0)
                 {
                     var group = groups.First();
@@ -212,7 +210,7 @@ namespace Xenial.Delicious.Scopes
                 }
                 else
                 {
-                    RootExecutors.Add(test);
+                    Executors.Add(test);
                 }
             }
             else
@@ -248,7 +246,7 @@ namespace Xenial.Delicious.Scopes
         {
             if (CurrentGroup == null)
             {
-                var groups = RootExecutors.OfType<TestGroup>().ToList();
+                var groups = Executors.OfType<TestGroup>().ToList();
                 if (groups.Count > 0)
                 {
                     var group = groups.First();
@@ -257,7 +255,7 @@ namespace Xenial.Delicious.Scopes
                 }
                 else
                 {
-                    RootBeforeEachHooks.Add(hook);
+                    BeforeEachHooks.Add(hook);
                 }
             }
             else
@@ -271,7 +269,7 @@ namespace Xenial.Delicious.Scopes
         {
             if (CurrentGroup == null)
             {
-                var groups = RootExecutors.OfType<TestGroup>().ToList();
+                var groups = Executors.OfType<TestGroup>().ToList();
                 if (groups.Count > 0)
                 {
                     var group = groups.First();
@@ -280,7 +278,7 @@ namespace Xenial.Delicious.Scopes
                 }
                 else
                 {
-                    RootAfterEachHooks.Add(hook);
+                    AfterEachHooks.Add(hook);
                 }
             }
             else
@@ -322,7 +320,7 @@ namespace Xenial.Delicious.Scopes
             await Task.WhenAll(SummaryReporters
                 .Select(async r =>
                 {
-                    var testCases = RootExecutors.OfType<TestGroup>()
+                    var testCases = Executors.OfType<TestGroup>()
                                         .SelectMany(g => Cases(g))
                                         .ToList();
 

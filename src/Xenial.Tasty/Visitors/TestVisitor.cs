@@ -35,7 +35,7 @@ namespace Xenial.Delicious.Visitors
                 }
             }
 
-            foreach (var executable in scope.RootExecutors)
+            foreach (var executable in scope.Executors)
             {
                 foreach (var node in IterateNode(executable))
                 {

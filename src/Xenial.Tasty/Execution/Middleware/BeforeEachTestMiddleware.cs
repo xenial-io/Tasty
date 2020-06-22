@@ -9,7 +9,7 @@ namespace Xenial.Delicious.Execution.Middleware
             {
                 foreach (var hook in
                     context.CurrentCase.Group?.BeforeEachHooks
-                    ?? context.CurrentScope.RootBeforeEachHooks
+                    ?? context.CurrentScope.BeforeEachHooks
                     )
                 {
                     var hookResult = await hook.Executor.Invoke();

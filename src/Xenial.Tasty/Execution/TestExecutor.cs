@@ -75,7 +75,7 @@ namespace Xenial.Delicious.Execution
 
             ForceTestVisitor.MarkTestsAsForced(Scope);
 
-            await ExecuteTests(Scope.RootExecutors.ToArray());
+            await ExecuteTests(Scope.Executors.ToArray());
         }
 
         internal async Task Execute(Func<bool>? execute, TestCase testCase)

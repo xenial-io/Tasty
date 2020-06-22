@@ -3,9 +3,10 @@
   <PropertyGroup>
     <RootNamespace>Xenial.Delicious.Tests</RootNamespace>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
-  </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SimpleExec" Version="6.2.0" />
+    <PackageReference Update="FakeItEasy" Version="6.1.0" />
+  </ItemGroup>
+  
 </Project>

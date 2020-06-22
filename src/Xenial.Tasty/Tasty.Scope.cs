@@ -327,7 +327,7 @@ namespace Xenial.Delicious.Scopes
                     await r.Invoke(testCases);
                 }).ToArray());
 
-            return 0;
+            return 1;
         }
 
         public Task<int> Run() => Run(Array.Empty<string>());

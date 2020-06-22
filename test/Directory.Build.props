@@ -17,5 +17,30 @@
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="FakeItEasy" Version="5.4.0" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
+  </ItemGroup>
 
+  <Target Name="AddGitMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(TargetFramework)' != ''" >
+        <_Parameter1>TargetFramework</_Parameter1>
+        <_Parameter2>$(TargetFramework)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(Configuration)' != ''" >
+        <_Parameter1>Configuration</_Parameter1>
+        <_Parameter2>$(Configuration)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(MSBuildThisFileDirectory)' != ''" >
+        <_Parameter1>MSBuildThisFileDirectory</_Parameter1>
+        <_Parameter2>$(MSBuildThisFileDirectory)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+  
 </Project>

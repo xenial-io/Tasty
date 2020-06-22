@@ -4,8 +4,6 @@ using System.Linq;
 
 using static Xenial.Tasty;
 using static System.Console;
-using System.Runtime.CompilerServices;
-
 
 namespace Xenial.Delicious.Tests
 {
@@ -24,6 +22,7 @@ namespace Xenial.Delicious.Tests
                 TestExecutorTests.DefaultRuntimeCases();
                 TestExecutorTests.OverloadRuntimeCases();
                 TestExecutorTests.ForcingTestCases();
+                TestExecutorTests.IntegrationTests();
                 // const string asyncTestName = "Should allow async await";
                 // It(asyncTestName, async () =>
                 // {

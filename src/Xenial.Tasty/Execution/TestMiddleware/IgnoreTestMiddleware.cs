@@ -3,7 +3,7 @@ using System.Linq;
 
 using Xenial.Delicious.Metadata;
 
-namespace Xenial.Delicious.Execution.Middleware
+namespace Xenial.Delicious.Execution.TestMiddleware
 {
     public static class IgnoreTestMiddleware
     {

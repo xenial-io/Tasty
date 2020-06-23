@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Xenial.Delicious.Execution.Middleware
+namespace Xenial.Delicious.Execution.TestMiddleware
 {
     public static class ReportTestMiddleware
     {

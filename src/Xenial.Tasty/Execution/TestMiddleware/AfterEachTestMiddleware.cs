@@ -1,4 +1,4 @@
-namespace Xenial.Delicious.Execution.Middleware
+namespace Xenial.Delicious.Execution.TestMiddleware
 {
     public static class AfterEachTestMiddleware
     {

@@ -6,9 +6,9 @@ using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Execution
 {
-    public class TestContext
+    public class TestExecutionContext
     {
-        public TestContext(TestCase currentCase, TastyScope currentScope, TestGroup? currentGroup)
+        public TestExecutionContext(TestCase currentCase, TastyScope currentScope, TestGroup? currentGroup)
         {
             CurrentCase = currentCase ?? throw new ArgumentNullException(nameof(currentCase));
             CurrentScope = currentScope ?? throw new ArgumentNullException(nameof(currentScope));
@@ -18,5 +18,17 @@ namespace Xenial.Delicious.Execution
         public TestCase CurrentCase { get; }
         public TastyScope CurrentScope { get; }
         public TestGroup? CurrentGroup { get; }
+    }
+
+    public class TestGroupContext
+    {
+        public TestGroupContext(TestGroup currentGroup, TastyScope currentScope)
+        {
+            CurrentGroup = currentGroup ?? throw new ArgumentNullException(nameof(currentGroup));
+            CurrentScope = currentScope ?? throw new ArgumentNullException(nameof(currentScope));
+        }
+
+        public TestGroup CurrentGroup { get; }
+        public TastyScope CurrentScope { get; }
     }
 }

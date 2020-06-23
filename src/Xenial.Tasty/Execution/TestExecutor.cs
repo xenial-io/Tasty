@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Xenial.Delicious.Execution.Middleware;
+using Xenial.Delicious.Execution.TestMiddleware;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Visitors;
@@ -13,7 +13,8 @@ namespace Xenial.Delicious.Execution
 {
     public class TestExecutor
     {
-        private IList<Func<TestDelegate, TestDelegate>> Middlewares = new List<Func<TestDelegate, TestDelegate>>();
+        private IList<Func<TestDelegate, TestDelegate>> TestMiddlewares = new List<Func<TestDelegate, TestDelegate>>();
+        private IList<Func<TestGroupDelegate, TestGroupDelegate>> TestGroupMiddlewares = new List<Func<TestGroupDelegate, TestGroupDelegate>>();
         internal TastyScope Scope { get; }
         
         public TestExecutor(TastyScope scope)
@@ -22,7 +23,7 @@ namespace Xenial.Delicious.Execution
 
             this
                 .UseTestReporters()
-                .UseStopwatch()
+                .UseTestStopwatch()
                 .UseForcedTestExecutor()
                 .UseIgnoreTestExecutor()
                 .UseBeforeEachTest()
@@ -33,7 +34,13 @@ namespace Xenial.Delicious.Execution
 
         public TestExecutor Use(Func<TestDelegate, TestDelegate> middleware)
         {
-            Middlewares.Add(middleware);
+            TestMiddlewares.Add(middleware);
+            return this;
+        }
+
+        public TestExecutor Use(Func<TestGroupDelegate, TestGroupDelegate> middleware)
+        {
+            TestGroupMiddlewares.Add(middleware);
             return this;
         }
 
@@ -81,7 +88,7 @@ namespace Xenial.Delicious.Execution
         internal async Task Execute(TestCase testCase)
         {
             var app = Build();
-            var context = new TestContext(testCase, Scope, testCase.Group);
+            var context = new TestExecutionContext(testCase, Scope, testCase.Group);
             await app(context);
         }
 
@@ -92,7 +99,7 @@ namespace Xenial.Delicious.Execution
                 return Task.CompletedTask;
             };
 
-            foreach (var middleware in Middlewares.Reverse())
+            foreach (var middleware in TestMiddlewares.Reverse())
             {
                 app = middleware(app);
             }

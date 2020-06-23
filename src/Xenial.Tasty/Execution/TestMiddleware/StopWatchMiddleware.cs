@@ -2,13 +2,11 @@
 using System.Diagnostics;
 using System.Linq;
 
-using Xenial.Delicious.Execution;
-
-namespace Xenial.Delicious.Execution.Middleware
+namespace Xenial.Delicious.Execution.TestMiddleware
 {
     public static class StopWatchMiddleware
     {
-        public static TestExecutor UseStopwatch(this TestExecutor executor)
+        public static TestExecutor UseTestStopwatch(this TestExecutor executor)
             => executor.Use(async (context, next) =>
             {
                 var sw = Stopwatch.StartNew();

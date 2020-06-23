@@ -6,7 +6,7 @@ namespace Xenial.Delicious.Execution
 {
     public static class TestExecutorExtentions
     {
-        public static TestExecutor Use(this TestExecutor app, Func<TestContext, Func<Task>, Task> middleware)
+        public static TestExecutor Use(this TestExecutor app, Func<TestExecutionContext, Func<Task>, Task> middleware)
         {
             return app.Use(next =>
             {

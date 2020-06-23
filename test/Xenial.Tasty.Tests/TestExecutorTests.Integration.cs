@@ -8,6 +8,7 @@ using static SimpleExec.Command;
 using static Shouldly.Should;
 using static System.IO.Path;
 using SimpleExec;
+using System.IO;
 
 namespace Xenial.Delicious.Tests
 {
@@ -37,16 +38,14 @@ namespace Xenial.Delicious.Tests
             var (configuration, targetFramework, testDirectory, isWatchMode) =
                 GetAssemblyAttributes();
 
-            var integrationTests = new[]
-            {
-                "Xenial.Tasty.ForcedTests"
-            };
+            var testsDirectory = Combine(testDirectory, "integration");
+            var integrationTests = Directory.EnumerateDirectories(testsDirectory);
 
             foreach (var integrationTest in integrationTests)
             {
                 It($"should run {integrationTest} with {targetFramework}/{configuration}", () =>
                 {
-                    var workingDirectory = Combine(testDirectory, integrationTest);
+                    var workingDirectory = Combine(testsDirectory, integrationTest);
 
                     //We don't mind restore, cause adding dependencies 
                     //in watch mode isn't happening that often and

@@ -18,10 +18,6 @@
     <PackageReference Include="FakeItEasy" Version="6.1.0" />
   </ItemGroup>
   
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
-  </ItemGroup>
-
   <Target Name="AddGitMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
     <ItemGroup>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(TargetFramework)' != ''" >

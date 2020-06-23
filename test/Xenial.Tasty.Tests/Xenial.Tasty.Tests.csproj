@@ -8,4 +8,8 @@
     <PackageReference Include="SimpleExec" Version="6.2.0" />
   </ItemGroup>
   
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
+  </ItemGroup>
+  
 </Project>

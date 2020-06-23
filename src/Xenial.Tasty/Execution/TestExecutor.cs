@@ -55,7 +55,7 @@ namespace Xenial.Delicious.Execution
                             {
                                 if (action is TestCase testCase)
                                 {
-                                    await Execute(testCase.IsForced, testCase);
+                                    await Execute(testCase);
                                 }
                                 if (action is TestGroup testGroup)
                                 {
@@ -68,7 +68,7 @@ namespace Xenial.Delicious.Execution
                     }
                     if (executable is TestCase test)
                     {
-                        await Execute(test.IsForced, test);
+                        await Execute(test);
                     }
                 }
             }
@@ -78,7 +78,7 @@ namespace Xenial.Delicious.Execution
             await ExecuteTests(Scope.Executors.ToArray());
         }
 
-        internal async Task Execute(Func<bool>? execute, TestCase testCase)
+        internal async Task Execute(TestCase testCase)
         {
             var app = Build();
             var context = new TestContext(testCase, Scope, testCase.Group);

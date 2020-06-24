@@ -17,5 +17,17 @@ namespace Xenial.Delicious.Execution
                 };
             });
         }
+
+        public static TestExecutor UseGroup(this TestExecutor app, Func<TestGroupContext, Func<Task>, Task> middleware)
+        {
+            return app.Use(next =>
+            {
+                return context =>
+                {
+                    Func<Task> simpleNext = () => next(context);
+                    return middleware(context, simpleNext);
+                };
+            });
+        }
     }
 }

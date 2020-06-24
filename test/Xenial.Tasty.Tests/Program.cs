@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Linq;
-
-using static Xenial.Tasty;
+using System.Threading.Tasks;
 using static System.Console;
+using static Xenial.Tasty;
 
 namespace Xenial.Delicious.Tests
 {

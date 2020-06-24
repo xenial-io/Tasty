@@ -1,23 +1,22 @@
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-
-using static Xenial.Tasty;
-using static SimpleExec.Command;
-using static Shouldly.Should;
-using static System.IO.Path;
 using SimpleExec;
-using System.IO;
+using static System.IO.Path;
+using static Shouldly.Should;
+using static SimpleExec.Command;
+using static Xenial.Tasty;
 
 namespace Xenial.Delicious.Tests
 {
     public static partial class TestExecutorTests
     {
         static (
-            string configuration, 
-            string targetFramework, 
-            string testDirectory, 
+            string configuration,
+            string targetFramework,
+            string testDirectory,
             bool isWatchMode
         ) GetAssemblyAttributes()
         {

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Execution.TestGroupMiddleware;
 using Xenial.Delicious.Execution.TestMiddleware;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
@@ -16,10 +17,14 @@ namespace Xenial.Delicious.Execution
         private IList<Func<TestDelegate, TestDelegate>> TestMiddlewares = new List<Func<TestDelegate, TestDelegate>>();
         private IList<Func<TestGroupDelegate, TestGroupDelegate>> TestGroupMiddlewares = new List<Func<TestGroupDelegate, TestGroupDelegate>>();
         internal TastyScope Scope { get; }
-        
+
         public TestExecutor(TastyScope scope)
         {
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+
+            this
+                .UseTestGroupStopwatch()
+                ;
 
             this
                 .UseTestReporters()
@@ -82,7 +87,7 @@ namespace Xenial.Delicious.Execution
 
             ForceTestVisitor.MarkTestsAsForced(Scope);
 
-            await ExecuteTests(Scope.Executors.ToArray());
+            await ExecuteTests(new[] { Scope });
         }
 
         internal async Task Execute(TestCase testCase)

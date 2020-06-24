@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Visitors
 {

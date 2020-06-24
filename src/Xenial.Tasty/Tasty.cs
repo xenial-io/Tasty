@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-
-using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial

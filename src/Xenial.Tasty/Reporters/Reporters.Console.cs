@@ -19,7 +19,7 @@ namespace Xenial.Delicious.Reporters
         static ConsoleReporter()
             => Console.OutputEncoding = Encoding.UTF8;
 
-        public static void Register() 
+        public static void Register()
             => Tasty.RegisterReporter(Report)
                     .RegisterReporter(ReportSummary);
 
@@ -186,5 +186,4 @@ namespace Xenial.Delicious.Reporters
         private static void ResetColor()
             => Console.ResetColor();
     }
-
 }

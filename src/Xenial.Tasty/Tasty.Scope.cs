@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-
+using System.Threading.Tasks;
+using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Reporters;
-using Xenial.Delicious.Execution;
-using System.IO;
-
-using static Xenial.Delicious.Visitors.TestIterator;
 using Xenial.Delicious.Visitors;
+using static Xenial.Delicious.Visitors.TestIterator;
 
 namespace Xenial.Delicious.Scopes
 {
@@ -20,7 +18,13 @@ namespace Xenial.Delicious.Scopes
         private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
         private readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
 
-        internal TestGroup? CurrentGroup { get; set; }
+        internal TestGroup CurrentGroup { get; set; }
+
+        public TastyScope()
+        {
+            Executor = () => Task.FromResult(true);
+            CurrentGroup = this;
+        }
 
         public TastyScope RegisterReporter(AsyncTestReporter reporter)
         {
@@ -77,15 +81,8 @@ namespace Xenial.Delicious.Scopes
 
         void AddToGroup(TestGroup group)
         {
-            if (CurrentGroup == null)
-            {
-                Executors.Add(group);
-            }
-            else
-            {
-                group.ParentGroup = CurrentGroup;
-                CurrentGroup.Executors.Add(group);
-            }
+            group.ParentGroup = CurrentGroup;
+            CurrentGroup.Executors.Add(group);
         }
 
         public TestCase It(string name, Action action)
@@ -202,25 +199,8 @@ namespace Xenial.Delicious.Scopes
 
         void AddToGroup(TestCase test)
         {
-            if (CurrentGroup == null)
-            {
-                var groups = Executors.OfType<TestGroup>().ToList();
-                if (groups.Count > 0)
-                {
-                    var group = groups.First();
-                    test.Group = group;
-                    group.Executors.Add(test);
-                }
-                else
-                {
-                    Executors.Add(test);
-                }
-            }
-            else
-            {
-                test.Group = CurrentGroup;
-                CurrentGroup.Executors.Add(test);
-            }
+            test.Group = CurrentGroup;
+            CurrentGroup.Executors.Add(test);
         }
 
         public void BeforeEach(Func<Task> action)

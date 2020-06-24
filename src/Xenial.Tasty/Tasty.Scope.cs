@@ -284,32 +284,6 @@ namespace Xenial.Delicious.Scopes
 
             await new TestExecutor(this).Execute();
 
-            static IEnumerable<TestCase> Cases(TestGroup group)
-            {
-                foreach (var @case in group.Executors)
-                {
-                    if (@case is TestGroup nestedGroup)
-                    {
-                        foreach (var item in Cases(nestedGroup))
-                            yield return item;
-                    }
-                    if (@case is TestCase test)
-                    {
-                        yield return test;
-                    }
-                }
-            }
-
-            await Task.WhenAll(SummaryReporters
-                .Select(async r =>
-                {
-                    var testCases = Executors.OfType<TestGroup>()
-                                        .SelectMany(g => Cases(g))
-                                        .ToList();
-
-                    await r.Invoke(testCases);
-                }).ToArray());
-
             var cases = this.Descendants().ToList();
 
             var failedCase = cases

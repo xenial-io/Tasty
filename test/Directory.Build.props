@@ -18,7 +18,7 @@
     <PackageReference Include="FakeItEasy" Version="6.1.0" />
   </ItemGroup>
   
-  <Target Name="AddGitMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
+  <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">
     <ItemGroup>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(TargetFramework)' != ''" >
         <_Parameter1>TargetFramework</_Parameter1>

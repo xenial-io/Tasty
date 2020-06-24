@@ -11,10 +11,14 @@ namespace Xenial.Delicious.Execution.TestGroupMiddleware
                 try
                 {
                     var result = await context.CurrentGroup.Executor();
+
+                    context.CurrentGroup.TestOutcome = result 
+                        ? Metadata.TestOutcome.Success
+                        : Metadata.TestOutcome.Failed;
+
                     if (result)
                     {
                         await next();
-                        context.CurrentGroup.TestOutcome = Metadata.TestOutcome.Success;
                     }
                 }
                 catch (Exception ex)

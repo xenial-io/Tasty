@@ -48,7 +48,7 @@ namespace Xenial.Delicious.Tests
                         var groupB = scope.Describe("Child", () => { });
                         groupB.ParentGroup.ShouldSatisfyAllConditions(
                             () => groupB.ParentGroup.ShouldNotBeNull(),
-                            () => groupB.ParentGroup?.Name.ShouldBe("Parent"),
+                            () => groupB.ParentGroup!.Name.ShouldBe("Parent"),
                             () => groupB.Name.ShouldBe("Child")
                         );
                     });

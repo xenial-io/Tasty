@@ -20,10 +20,8 @@ namespace Xenial.Delicious.Reporters
             => Console.OutputEncoding = Encoding.UTF8;
 
         public static void Register()
-        {
-            Tasty.RegisterReporter(Report);
-            Tasty.RegisterReporter(ReportSummary);
-        }
+            => Tasty.RegisterReporter(Report)
+                    .RegisterReporter(ReportSummary);
 
         static Lazy<int> SeparatorSize = new Lazy<int>(() =>
         {
@@ -127,10 +125,6 @@ namespace Xenial.Delicious.Reporters
         private static Task NotRun(TestCase test)
         {
             WriteLine(Scheme.NotifyColor, $"{Scheme.NotRunIcon} {Duration(test)} {GetTestName(test)}");
-            if (!string.IsNullOrEmpty(test.InconclusiveReason))
-            {
-                WriteLine(Scheme.NotifyColor, $"\t{test.InconclusiveReason}");
-            }
             return Task.CompletedTask;
         }
 
@@ -192,5 +186,4 @@ namespace Xenial.Delicious.Reporters
         private static void ResetColor()
             => Console.ResetColor();
     }
-
 }

@@ -1,8 +1,11 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Execution.TestGroupMiddleware;
+using Xenial.Delicious.Execution.TestMiddleware;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Visitors;
@@ -11,118 +14,140 @@ namespace Xenial.Delicious.Execution
 {
     public class TestExecutor
     {
-        TastyScope Scope { get; }
+        private IList<Func<TestDelegate, TestDelegate>> TestMiddlewares = new List<Func<TestDelegate, TestDelegate>>();
+        private IList<Func<TestGroupDelegate, TestGroupDelegate>> TestGroupMiddlewares = new List<Func<TestGroupDelegate, TestGroupDelegate>>();
+        internal TastyScope Scope { get; }
 
         public TestExecutor(TastyScope scope)
-            => Scope = scope;
+        {
+            Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+
+            this
+                .UseTestGroupReporters()
+                .UseTestGroupStopwatch()
+                .UseTestGroupScope()
+                .UseTestGroupExecutor()
+                .UseTestGroupCollector()
+                .UseTestGroupForceVisitor()
+                .UseTestCaseCollector()
+                ;
+
+            this
+                .UseTestReporters()
+                .UseTestStopwatch()
+                .UseForcedTestExecutor()
+                .UseIgnoreTestExecutor()
+                .UseBeforeEachTest()
+                .UseTestExecutor()
+                .UseAfterEachTest()
+                ;
+        }
+
+        public TestExecutor Use(Func<TestDelegate, TestDelegate> middleware)
+        {
+            TestMiddlewares.Add(middleware);
+            return this;
+        }
+
+        public TestExecutor Use(Func<TestGroupDelegate, TestGroupDelegate> middleware)
+        {
+            TestGroupMiddlewares.Add(middleware);
+            return this;
+        }
 
         public async Task Execute()
         {
-            async Task ExecuteTests(IExecutable[] executableItems)
+            var groupQueue = new Queue<TestGroup>(Scope.Descendants().OfType<TestGroup>());
+            var testQueue = new Queue<TestCase>();
+
+            while (groupQueue.Count > 0)
             {
-                for (var i = 0; i < executableItems.Length; i++)
-                {
-                    var executable = executableItems[i];
-                    if (executable is TestGroup group)
-                    {
-                        Scope.CurrentGroup = group;
-                        var sw = Stopwatch.StartNew();
-                        var groupResult = await executable.Executor.Invoke();
-                        if (groupResult)
-                        {
-                            foreach (var action in group.Executors)
-                            {
-                                if (action is TestCase testCase)
-                                {
-                                    await Execute(testCase.IsForced, testCase);
-                                }
-                                if (action is TestGroup testGroup)
-                                {
-                                    await ExecuteTests(new[] { testGroup });
-                                }
-                            }
-                        }
-                        sw.Stop();
-                        group.Duration = sw.Elapsed;
-                    }
-                    if (executable is TestCase test)
-                    {
-                        await Execute(test.IsForced, test);
-                    }
-                }
+                var currentGroup = groupQueue.Dequeue();
+                await Execute(groupQueue, testQueue, currentGroup);
             }
 
-            ForceTestVisitor.MarkTestsAsForced(Scope);
+            testQueue = VisitForcedTestCases(testQueue);
 
-            await ExecuteTests(Scope.RootExecutors.ToArray());
+            while (testQueue.Count > 0)
+            {
+                var currentTest = testQueue.Dequeue();
+                await Execute(currentTest);
+            }
         }
 
-        internal async Task Execute(Func<bool> execute, TestCase testCase)
+        private static Queue<TestCase> VisitForcedTestCases(Queue<TestCase> testQueue)
         {
-            if (execute != null && !execute())
+            if (testQueue.Count(t => t.IsForced != null) > 0)
             {
-                return;
-            }
-
-            var sw = Stopwatch.StartNew();
-
-            try
-            {
-                var inconclusive = testCase.IsInconclusive != null ? testCase.IsInconclusive() : false;
-                if (inconclusive.HasValue && inconclusive.Value)
+                var forcedTestQueue = new Queue<TestCase>();
+                while (testQueue.Count > 0)
                 {
-                    testCase.TestOutcome = TestOutcome.NotRun;
-                }
-                else
-                {
-                    var ignored = testCase.IsIgnored != null ? testCase.IsIgnored() : false;
-                    if (ignored.HasValue && ignored.Value)
+                    var currentTest = testQueue.Dequeue();
+                    if (currentTest.IsForced != null)
                     {
-                        testCase.TestOutcome = TestOutcome.Ignored;
-                    }
-                    else
-                    {
-                        foreach (var hook in testCase.Group?.BeforeEachHooks ?? Scope.RootBeforeEachHooks)
-                        {
-                            var hookResult = await hook.Executor.Invoke();
-                            if (!hookResult)
-                            {
-                                return;
-                            }
-                        }
-
                         try
                         {
-                            var result = await testCase.Executor.Invoke();
-                            testCase.TestOutcome = result ? TestOutcome.Success : TestOutcome.Failed;
-                        }
-                        catch (Exception exception)
-                        {
-                            testCase.Exception = exception;
-                            testCase.TestOutcome = TestOutcome.Failed;
-                        }
-
-
-                        foreach (var hook in testCase.Group?.AfterEachHooks ?? Scope.RootAfterEachHooks)
-                        {
-                            var hookResult = await hook.Executor.Invoke();
-                            if (!hookResult)
+                            var result = currentTest.IsForced();
+                            if (result)
                             {
-                                return;
+                                forcedTestQueue.Enqueue(currentTest);
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            currentTest.Exception = ex;
+                            currentTest.TestOutcome = TestOutcome.Failed;
                         }
                     }
                 }
+                return forcedTestQueue;
             }
-            catch (Exception ex)
-            {
-                testCase.Exception = ex;
-                testCase.TestOutcome = TestOutcome.Failed;
-            }
-            sw.Stop();
-            testCase.Duration = sw.Elapsed;
 
-            await Scope.Report(testCase);
+            return testQueue;
+        }
+
+        internal async Task Execute(Queue<TestGroup> groupQueue, Queue<TestCase> testQueue, TestGroup testGroup)
+        {
+            var app = BuildTestGroupMiddleware();
+            var context = new TestGroupContext(testGroup, Scope, groupQueue, testQueue);
+            await app(context);
+        }
+
+        internal async Task Execute(TestCase testCase)
+        {
+            var app = BuildTestMiddleware();
+            var context = new TestExecutionContext(testCase, Scope, testCase.Group);
+            await app(context);
+        }
+
+        internal TestDelegate BuildTestMiddleware()
+        {
+            TestDelegate app = context =>
+            {
+                return Task.CompletedTask;
+            };
+
+            foreach (var middleware in TestMiddlewares.Reverse())
+            {
+                app = middleware(app);
+            }
+
+            return app;
+        }
+
+        internal TestGroupDelegate BuildTestGroupMiddleware()
+        {
+            TestGroupDelegate app = context =>
+            {
+                return Task.CompletedTask;
+            };
+
+            foreach (var middleware in TestGroupMiddlewares.Reverse())
+            {
+                app = middleware(app);
+            }
+
+            return app;
         }
     }
 }

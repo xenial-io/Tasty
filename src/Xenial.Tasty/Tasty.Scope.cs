@@ -1,31 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-
+using System.Threading.Tasks;
+using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Reporters;
-using Xenial.Delicious.Execution;
-using System.IO;
+using Xenial.Delicious.Visitors;
+using static Xenial.Delicious.Visitors.TestIterator;
 
 namespace Xenial.Delicious.Scopes
 {
-    public class TastyScope
+    public class TastyScope : TestGroup
     {
         public bool ClearBeforeRun { get; set; } = true;
         private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
         private readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
-        internal readonly List<IExecutable> RootExecutors = new List<IExecutable>();
-        internal readonly List<IExecutable> RootBeforeEachHooks = new List<IExecutable>();
-        internal readonly List<IExecutable> RootAfterEachHooks = new List<IExecutable>();
+
         internal TestGroup CurrentGroup { get; set; }
 
-        public void RegisterReporter(AsyncTestReporter reporter)
-            => Reporters.Add(reporter);
+        public TastyScope()
+        {
+            Executor = () => Task.FromResult(true);
+            CurrentGroup = this;
+        }
 
-        public void RegisterReporter(AsyncTestSummaryReporter summaryReporter)
-            => SummaryReporters.Add(summaryReporter);
+        public TastyScope RegisterReporter(AsyncTestReporter reporter)
+        {
+            Reporters.Add(reporter);
+            return this;
+        }
+
+        public TastyScope RegisterReporter(AsyncTestSummaryReporter summaryReporter)
+        {
+            SummaryReporters.Add(summaryReporter);
+            return this;
+        }
 
         public Task Report(TestCase test)
             => Task.WhenAll(Reporters.Select(async reporter => await reporter(test)).ToArray());
@@ -44,10 +55,7 @@ namespace Xenial.Delicious.Scopes
             AddToGroup(group);
             return group;
         }
-        public TestGroup FDescribe(string name, Action action)
-            => Describe(name, action)
-                .Forced(() => true);
-                
+
         public TestGroup Describe(string name, Func<Task> action)
         {
             var group = new TestGroup
@@ -63,17 +71,18 @@ namespace Xenial.Delicious.Scopes
             return group;
         }
 
+        public TestGroup FDescribe(string name, Action action)
+            => Describe(name, action)
+                .Forced(() => true);
+
+        public TestGroup FDescribe(string name, Func<Task> action)
+           => Describe(name, action)
+               .Forced(() => true);
+
         void AddToGroup(TestGroup group)
         {
-            if (CurrentGroup == null)
-            {
-                RootExecutors.Add(group);
-            }
-            else
-            {
-                group.ParentGroup = CurrentGroup;
-                CurrentGroup.Executors.Add(group);
-            }
+            group.ParentGroup = CurrentGroup;
+            CurrentGroup.Executors.Add(group);
         }
 
         public TestCase It(string name, Action action)
@@ -153,7 +162,7 @@ namespace Xenial.Delicious.Scopes
             return test;
         }
 
-        public TestCase It(string name, Func<Task<bool>> action)
+        public TestCase It(string name, Executable action)
         {
             var test = new TestCase
             {
@@ -168,52 +177,51 @@ namespace Xenial.Delicious.Scopes
             => It(name, action)
                 .Forced(() => true);
 
+        public TestCase FIt(string name, Func<Task> action)
+            => It(name, action)
+                .Forced(() => true);
+
+        public TestCase FIt(string name, Func<bool> action)
+           => It(name, action)
+               .Forced(() => true);
+
+        public TestCase FIt(string name, Func<Task<bool>> action)
+            => It(name, action)
+                .Forced(() => true);
+
+        public TestCase FIt(string name, Func<Task<(bool result, string message)>> action)
+            => It(name, action)
+                .Forced(() => true);
+
+        public TestCase FIt(string name, Func<(bool result, string message)> action)
+           => It(name, action)
+               .Forced(() => true);
+
         void AddToGroup(TestCase test)
         {
-            if (CurrentGroup == null)
-            {
-                var groups = RootExecutors.OfType<TestGroup>().ToList();
-                if (groups.Count > 0)
-                {
-                    var group = groups.First();
-                    test.Group = group;
-                    group.Executors.Add(test);
-                }
-                else
-                {
-                    RootExecutors.Add(test);
-                }
-            }
-            else
-            {
-                test.Group = CurrentGroup;
-                CurrentGroup.Executors.Add(test);
-            }
+            test.Group = CurrentGroup;
+            CurrentGroup.Executors.Add(test);
         }
 
         public void BeforeEach(Func<Task> action)
         {
-            var hook = new TestBeforeEachHook
+            var hook = new TestBeforeEachHook(async () =>
             {
-                Executor = async () =>
-                {
-                    await action();
-                    return true;
-                }
-            };
+                await action();
+                return true;
+            }, null);
+
             AddToGroup(hook);
         }
 
         public void AfterEach(Func<Task> action)
         {
-            var hook = new TestAfterEachHook
+            var hook = new TestAfterEachHook(async () =>
             {
-                Executor = async () =>
-                {
-                    await action();
-                    return true;
-                }
-            };
+                await action();
+                return true;
+            }, null);
+
             AddToGroup(hook);
         }
 
@@ -221,7 +229,7 @@ namespace Xenial.Delicious.Scopes
         {
             if (CurrentGroup == null)
             {
-                var groups = RootExecutors.OfType<TestGroup>().ToList();
+                var groups = Executors.OfType<TestGroup>().ToList();
                 if (groups.Count > 0)
                 {
                     var group = groups.First();
@@ -230,7 +238,7 @@ namespace Xenial.Delicious.Scopes
                 }
                 else
                 {
-                    RootBeforeEachHooks.Add(hook);
+                    BeforeEachHooks.Add(hook);
                 }
             }
             else
@@ -244,7 +252,7 @@ namespace Xenial.Delicious.Scopes
         {
             if (CurrentGroup == null)
             {
-                var groups = RootExecutors.OfType<TestGroup>().ToList();
+                var groups = Executors.OfType<TestGroup>().ToList();
                 if (groups.Count > 0)
                 {
                     var group = groups.First();
@@ -253,7 +261,7 @@ namespace Xenial.Delicious.Scopes
                 }
                 else
                 {
-                    RootAfterEachHooks.Add(hook);
+                    AfterEachHooks.Add(hook);
                 }
             }
             else
@@ -276,31 +284,21 @@ namespace Xenial.Delicious.Scopes
 
             await new TestExecutor(this).Execute();
 
-            static IEnumerable<TestCase> Cases(TestGroup group)
-            {
-                foreach (var @case in group.Executors)
-                {
-                    if (@case is TestGroup nestedGroup)
-                    {
-                        foreach (var item in Cases(nestedGroup))
-                            yield return item;
-                    }
-                    if (@case is TestCase test)
-                    {
-                        yield return test;
-                    }
-                }
-            }
+            var cases = this.Descendants().OfType<TestCase>().ToList();
 
             await Task.WhenAll(SummaryReporters
                 .Select(async r =>
                 {
-                    var testCases = RootExecutors.OfType<TestGroup>()
-                                        .SelectMany(g => Cases(g))
-                                        .ToList();
-
-                    await r.Invoke(testCases);
+                    await r.Invoke(cases);
                 }).ToArray());
+
+            var failedCase = cases
+                .FirstOrDefault(m => m.TestOutcome == TestOutcome.Failed);
+
+            if (failedCase != null)
+            {
+                return 1;
+            }
 
             return 0;
         }

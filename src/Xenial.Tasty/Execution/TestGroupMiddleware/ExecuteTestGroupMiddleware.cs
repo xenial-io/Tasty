@@ -12,7 +12,7 @@ namespace Xenial.Delicious.Execution.TestGroupMiddleware
                 {
                     var result = await context.CurrentGroup.Executor();
 
-                    context.CurrentGroup.TestOutcome = result 
+                    context.CurrentGroup.TestOutcome = result
                         ? Metadata.TestOutcome.Success
                         : Metadata.TestOutcome.Failed;
 

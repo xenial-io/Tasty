@@ -285,7 +285,7 @@ namespace Xenial.Delicious.Scopes
             await new TestExecutor(this).Execute();
 
             var cases = this.Descendants().OfType<TestCase>().ToList();
-                
+
             await Task.WhenAll(SummaryReporters
                 .Select(async r =>
                 {

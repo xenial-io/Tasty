@@ -11,16 +11,16 @@ namespace Xenial.Delicious.Visitors
     {
         internal static IEnumerable<IExecutable> Descendants(this TestGroup root)
         {
-            var nodes = new Stack<IExecutable>(new[] { root });
+            var nodes = new Queue<IExecutable>(new[] { root });
             while (nodes.Any())
             {
-                IExecutable node = nodes.Pop();
+                IExecutable node = nodes.Dequeue();
                 yield return node;
                 if (node is TestGroup group)
                 {
                     foreach (var n in group.Executors)
                     {
-                        nodes.Push(n);
+                        nodes.Enqueue(n);
                     }
                 }
             }

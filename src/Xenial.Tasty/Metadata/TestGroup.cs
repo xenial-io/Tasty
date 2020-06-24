@@ -19,5 +19,6 @@ namespace Xenial.Delicious.Metadata
         internal List<IExecutable> BeforeEachHooks { get; } = new List<IExecutable>();
         internal List<IExecutable> AfterEachHooks { get; } = new List<IExecutable>();
         public Func<bool>? IsForced { get; internal set; }
+        public Exception? Exception { get; internal set; }
     }
 }

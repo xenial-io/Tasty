@@ -23,7 +23,12 @@ namespace Xenial.Delicious.Execution
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
 
             this
+                .UseTestGroupReporters()
                 .UseTestGroupStopwatch()
+                .UseTestGroupScope()
+                .UseTestGroupExecutor()
+                .UseTestGroupCollector()
+                .UseTestCaseCollector()
                 ;
 
             this
@@ -51,53 +56,37 @@ namespace Xenial.Delicious.Execution
 
         public async Task Execute()
         {
-            async Task ExecuteTests(IExecutable[] executableItems)
+            var groupQueue = new Queue<TestGroup>(Scope.Descendants().OfType<TestGroup>());
+            var testQueue = new Queue<TestCase>();
+
+            while (groupQueue.Count > 0)
             {
-                for (var i = 0; i < executableItems.Length; i++)
-                {
-                    var executable = executableItems[i];
-                    if (executable is TestGroup group)
-                    {
-                        Scope.CurrentGroup = group;
-                        var sw = Stopwatch.StartNew();
-                        var groupResult = await executable.Executor.Invoke();
-                        if (groupResult)
-                        {
-                            foreach (var action in group.Executors)
-                            {
-                                if (action is TestCase testCase)
-                                {
-                                    await Execute(testCase);
-                                }
-                                if (action is TestGroup testGroup)
-                                {
-                                    await ExecuteTests(new[] { testGroup });
-                                }
-                            }
-                        }
-                        sw.Stop();
-                        group.Duration = sw.Elapsed;
-                    }
-                    if (executable is TestCase test)
-                    {
-                        await Execute(test);
-                    }
-                }
+                var currentGroup = groupQueue.Dequeue();
+                await Execute(groupQueue, testQueue, currentGroup);
             }
 
-            ForceTestVisitor.MarkTestsAsForced(Scope);
+            while (testQueue.Count > 0)
+            {
+                var currentTest = testQueue.Dequeue();
+                await Execute(currentTest);
+            }
+        }
 
-            await ExecuteTests(new[] { Scope });
+        internal async Task Execute(Queue<TestGroup> groupQueue, Queue<TestCase> testQueue, TestGroup testGroup)
+        {
+            var app = BuildTestGroupMiddleware();
+            var context = new TestGroupContext(testGroup, Scope, groupQueue, testQueue);
+            await app(context);
         }
 
         internal async Task Execute(TestCase testCase)
         {
-            var app = Build();
+            var app = BuildTestMiddleware();
             var context = new TestExecutionContext(testCase, Scope, testCase.Group);
             await app(context);
         }
 
-        internal TestDelegate Build()
+        internal TestDelegate BuildTestMiddleware()
         {
             TestDelegate app = context =>
             {
@@ -105,6 +94,21 @@ namespace Xenial.Delicious.Execution
             };
 
             foreach (var middleware in TestMiddlewares.Reverse())
+            {
+                app = middleware(app);
+            }
+
+            return app;
+        }
+
+        internal TestGroupDelegate BuildTestGroupMiddleware()
+        {
+            TestGroupDelegate app = context =>
+            {
+                return Task.CompletedTask;
+            };
+
+            foreach (var middleware in TestGroupMiddlewares.Reverse())
             {
                 app = middleware(app);
             }

@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using static Xenial.Tasty;
+using static Xenial.Delicious.Tests.TastyScopeTests;
+using static Xenial.Delicious.Tests.TestExecutorTests;
 
 namespace Xenial.Delicious.Tests
 {
@@ -12,11 +14,11 @@ namespace Xenial.Delicious.Tests
         {
             Describe(nameof(Tasty), () =>
             {
-                TastyScopeTests.DependencyTree();
-                TestExecutorTests.DefaultRuntimeCases();
-                TestExecutorTests.OverloadRuntimeCases();
-                TestExecutorTests.ForcingTestCases();
-                TestExecutorTests.IntegrationTests();
+                DependencyTree();
+                DefaultRuntimeCases();
+                OverloadRuntimeCases();
+                ForcingTestCases();
+                IntegrationTests();
             });
 
             return await Run(args);

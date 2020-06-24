@@ -284,10 +284,15 @@ namespace Xenial.Delicious.Scopes
 
             await new TestExecutor(this).Execute();
 
-            var cases = this.Descendants().ToList();
+            var cases = this.Descendants().OfType<TestCase>().ToList();
+                
+            await Task.WhenAll(SummaryReporters
+                .Select(async r =>
+                {
+                    await r.Invoke(cases);
+                }).ToArray());
 
             var failedCase = cases
-                .OfType<TestCase>()
                 .FirstOrDefault(m => m.TestOutcome == TestOutcome.Failed);
 
             if (failedCase != null)

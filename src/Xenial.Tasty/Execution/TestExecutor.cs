@@ -28,6 +28,7 @@ namespace Xenial.Delicious.Execution
                 .UseTestGroupScope()
                 .UseTestGroupExecutor()
                 .UseTestGroupCollector()
+                .UseTestGroupForceVisitor()
                 .UseTestCaseCollector()
                 ;
 
@@ -65,11 +66,44 @@ namespace Xenial.Delicious.Execution
                 await Execute(groupQueue, testQueue, currentGroup);
             }
 
+            testQueue = VisitForcedTestCases(testQueue);
+
             while (testQueue.Count > 0)
             {
                 var currentTest = testQueue.Dequeue();
                 await Execute(currentTest);
             }
+        }
+
+        private static Queue<TestCase> VisitForcedTestCases(Queue<TestCase> testQueue)
+        {
+            if (testQueue.Count(t => t.IsForced != null) > 0)
+            {
+                var forcedTestQueue = new Queue<TestCase>();
+                while (testQueue.Count > 0)
+                {
+                    var currentTest = testQueue.Dequeue();
+                    if (currentTest.IsForced != null)
+                    {
+                        try
+                        {
+                            var result = currentTest.IsForced();
+                            if (result)
+                            {
+                                forcedTestQueue.Enqueue(currentTest);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            currentTest.Exception = ex;
+                            currentTest.TestOutcome = TestOutcome.Failed;
+                        }
+                    }
+                }
+                return forcedTestQueue;
+            }
+
+            return testQueue;
         }
 
         internal async Task Execute(Queue<TestGroup> groupQueue, Queue<TestCase> testQueue, TestGroup testGroup)

@@ -19,6 +19,6 @@ namespace Xenial.Delicious.Metadata
         public string IgnoredReason { get; internal set; } = string.Empty;
         public TimeSpan Duration { get; internal set; }
         public string AdditionalMessage { get; internal set; } = string.Empty;
-        public Func<bool>? IsForced { get; internal set; }
+        public Func<bool>? IsForced { get; set; }
     }
 }

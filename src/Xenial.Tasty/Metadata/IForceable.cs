@@ -2,8 +2,8 @@ using System;
 
 namespace Xenial.Delicious.Metadata
 {
-    public interface IForceAble
+    internal interface IForceAble
     {
-        Func<bool>? IsForced { get; }
+        Func<bool>? IsForced { get; set; }
     }
 }

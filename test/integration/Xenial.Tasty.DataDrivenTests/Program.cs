@@ -27,7 +27,7 @@ namespace Xenial.Delicious.DataDrivenTests
                 using (var reader = File.OpenText("data.txt"))
                 {
                     var fileText = await reader.ReadToEndAsync();
-                    var cases = fileText.Split(Environment.NewLine);
+                    var cases = fileText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
                     foreach (var @case in cases)
                     {

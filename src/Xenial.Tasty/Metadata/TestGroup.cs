@@ -20,5 +20,10 @@ namespace Xenial.Delicious.Metadata
         internal List<IExecutable> AfterEachHooks { get; } = new List<IExecutable>();
         public Func<bool>? IsForced { get; set; }
         public Exception? Exception { get; internal set; }
+
+        public string FullName =>
+            ParentGroup == null
+            ? Name
+            : $"{ParentGroup.FullName} {Name}";
     }
 }

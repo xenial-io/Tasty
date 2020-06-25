@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Xenial.Delicious.CalculatorTests</RootNamespace>
+  </PropertyGroup>
+
+</Project>

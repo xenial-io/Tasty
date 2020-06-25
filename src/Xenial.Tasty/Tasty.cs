@@ -77,6 +77,9 @@ namespace Xenial
         public static void BeforeEach(Func<Task> action)
             => DefaultScope.BeforeEach(action);
 
+        public static void AfterEach(Func<Task> action)
+            => DefaultScope.AfterEach(action);
+
         public static Task<int> Run(string[] args)
             => DefaultScope.Run(args);
 

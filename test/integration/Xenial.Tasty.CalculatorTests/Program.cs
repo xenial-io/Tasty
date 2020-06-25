@@ -1,7 +1,6 @@
 ﻿using System;
-
-using static Xenial.Tasty;
 using Shouldly;
+using static Xenial.Tasty;
 
 namespace Xenial.Delicious.CalculatorTests
 {

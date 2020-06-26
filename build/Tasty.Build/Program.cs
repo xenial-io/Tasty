@@ -24,7 +24,15 @@ namespace Tasty.Build
             static string logOptions(string target)
                 => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/tasty.{target}.binlog";
 
-            Target("restore", DependsOn("version"),
+            Target("lint",
+                () => RunAsync("dotnet", $"format --check --verbosity detailed")
+            );
+
+            Target("format",
+               () => RunAsync("dotnet", $"format")
+            );
+
+            Target("restore", DependsOn("version", "lint"),
                 () => RunAsync("dotnet", $"restore {logOptions("restore")}")
             );
 

@@ -25,7 +25,7 @@ namespace Xenial.Delicious.LifecycleTests
 
             internal void Sub(int a, int b)
             {
-                var r =  a - b;
+                var r = a - b;
                 Sum += r;
                 Print();
             }
@@ -33,7 +33,7 @@ namespace Xenial.Delicious.LifecycleTests
             private void Print()
                 => Printer(Sum);
 
-            internal void Reset() 
+            internal void Reset()
                 => Sum = 0;
         }
 
@@ -44,7 +44,7 @@ namespace Xenial.Delicious.LifecycleTests
                 Describe("with expected side effects", () =>
                 {
                     Calculator? calc = null;
-                    Action<int>?  printer = null;
+                    Action<int>? printer = null;
 
                     BeforeEach(() =>
                     {

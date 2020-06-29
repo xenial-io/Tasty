@@ -108,9 +108,7 @@ namespace Xenial.Delicious.Reporters
             };
 
         static string GetTestName(TestCase test)
-            => test.Group == null
-                ? $"{test.Name}"
-                : $"{test.Group.Name} {test.Name}";
+            => test.FullName;
 
         private static Task Success(TestCase test)
         {

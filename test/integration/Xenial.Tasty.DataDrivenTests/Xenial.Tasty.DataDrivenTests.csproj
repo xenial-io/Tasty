@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Xenial.Delicious.DataDrivenTests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

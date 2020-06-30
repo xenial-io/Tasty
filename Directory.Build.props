@@ -2,8 +2,8 @@
   
   <PropertyGroup>
     <Product>Xenial.Tasty</Product>
-    <XenialPackageVersion>0.0.1-*</XenialPackageVersion>
-    <XenialVersion>0.0.1-*</XenialVersion>
+    <XenialPackageVersion>0.0.2-*</XenialPackageVersion>
+    <XenialVersion>0.0.2-*</XenialVersion>
     <LangVersion>preview</LangVersion>
     <Copyright>Copyright © Xenial, Manuel Grundner $([System.DateTime]::Today.ToString('yyyy'))</Copyright>
     <Authors>Xenial, Manuel Grundner</Authors>

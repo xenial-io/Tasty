@@ -20,5 +20,10 @@ namespace Xenial.Delicious.Metadata
         public TimeSpan Duration { get; internal set; }
         public string AdditionalMessage { get; internal set; } = string.Empty;
         public Func<bool>? IsForced { get; set; }
+
+        public string FullName =>
+            Group == null
+            ? Name
+            : $"{Group.FullName} {Name}";
     }
 }

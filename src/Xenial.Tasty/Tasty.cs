@@ -233,6 +233,13 @@ namespace Xenial
             => DefaultScope.BeforeEach(action);
 
         /// <summary>
+        /// Add a callback that runs after each <see cref="TestCase"/> and each <see cref="TestGroup"/> in this scope
+        /// </summary>
+        /// <param name="action">The action.</param>
+        public static void AfterEach(Func<Task> action)
+            => DefaultScope.AfterEach(action);
+
+        /// <summary>
         /// Runs the tests in the global scope.
         /// Returns an non zero exit code if all tests succeed
         /// </summary>

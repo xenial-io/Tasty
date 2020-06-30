@@ -6,10 +6,11 @@ using static SimpleExec.Command;
 using static Bullseye.Targets;
 using System.Threading.Tasks;
 using Tasty.Build.Helpers;
+using System.Xml.Linq;
 
 namespace Tasty.Build
 {
-    class Program
+    static partial class Program
     {
         static async Task Main(string[] args)
         {
@@ -24,7 +25,15 @@ namespace Tasty.Build
             static string logOptions(string target)
                 => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/tasty.{target}.binlog";
 
-            Target("restore", DependsOn("version"),
+            Target("lint",
+                () => RunAsync("dotnet", $"format --check --verbosity detailed")
+            );
+
+            Target("format",
+                () => RunAsync("dotnet", $"format")
+            );
+
+            Target("restore", DependsOn("version", "lint"),
                 () => RunAsync("dotnet", $"restore {logOptions("restore")}")
             );
 
@@ -34,10 +43,12 @@ namespace Tasty.Build
 
             Target("test", DependsOn("build"), async () =>
             {
+                var (fullFramework, netcore) = FindTfms();
+
                 var tfms = RuntimeInformation
                             .IsOSPlatform(OSPlatform.Windows)
-                            ? new[] { "net462", "netcoreapp3.1" }
-                            : new[] { "netcoreapp3.1" };
+                            ? new[] { fullFramework, netcore }
+                            : new[] { netcore };
 
                 var tests = tfms
                     .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Tasty.Tests/Xenial.Tasty.Tests.csproj --no-build --no-restore --framework {tfm}"))

@@ -9,15 +9,19 @@ Settings[Keys.UseCache] = true;
 Settings[Keys.LinkHideExtensions] = false;
 Settings[Keys.LinkHideIndexPages] = true;
 Settings[DocsKeys.IncludeDateInPostPath] = true;
-Settings[DocsKeys.IncludeGlobalNamespace] = true;
+Settings[DocsKeys.IncludeGlobalNamespace] = false;
+Settings[DocsKeys.ImplicitInheritDoc] = true;
 
 Settings[Keys.Host] = "tasty.xenial.io";
 Settings[DocsKeys.Title] = "Tasty Xenial Documentation";
 Settings[DocsKeys.Logo] = "assets/img/logo.svg";
 
+Settings[DocsKeys.ValidateRelativeLinks] = true;
+Settings[DocsKeys.ValidateLinksAsError] = true;
+
 Settings[DocsKeys.SourceFiles] = new []
 {
-    "../src/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs"
+    "../../src/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs"
 };
 
 // Add any pipeline customizations here

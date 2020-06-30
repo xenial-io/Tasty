@@ -1,3 +1,3 @@
-Title: About This Project
+Title: 'About Tasty'
 ---
 This project is awesome!

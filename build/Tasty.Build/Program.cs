@@ -61,6 +61,10 @@ namespace Tasty.Build
                 () => RunAsync("dotnet", $"pack src/Xenial.Tasty/Xenial.Tasty.csproj --no-restore --no-build {logOptions("pack")}")
             );
 
+            Target("docs",
+                () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")
+            );
+
             Target("default", DependsOn("test"));
 
             await RunTargetsAndExitAsync(args);

@@ -1,0 +1,29 @@
+@import "bootstrap/_variables.less";
+@import "bootstrap/mixins.less";
+@import "adminlte/variables.less";
+@import "adminlte/mixins.less";
+@import "webfonts/catamaran.css";
+
+.main-header .logo {
+    padding: 0;
+}
+
+.main-header .logo .logo-lg {
+    background-color: #fff;
+    height: 100%;
+    border-radius: 5px 5px 0 0;
+    padding: 0 25px;
+    float: left;
+}
+
+.main-header .logo .logo-lg img {
+    width: auto;
+    height: 70%;
+}
+
+.main-header .logo .logo-lg::after {
+    content: " xenial.io";
+    color: @brand-primary;
+    font-weight: bold;
+    font-size: @font-size-h2;
+}

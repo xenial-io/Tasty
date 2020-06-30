@@ -1,0 +1,23 @@
+#recipe Docs
+
+//https://github.com/Wyamio/Wyam
+//https://wyam.io/recipes/docs/
+
+// Customize your settings and add new ones here
+Settings[Keys.LinksUseHttps] = true;
+Settings[Keys.UseCache] = true;
+Settings[Keys.LinkHideExtensions] = false;
+Settings[Keys.LinkHideIndexPages] = true;
+Settings[DocsKeys.IncludeDateInPostPath] = true;
+Settings[DocsKeys.IncludeGlobalNamespace] = true;
+
+Settings[Keys.Host] = "tasty.xenial.io";
+Settings[DocsKeys.Title] = "Tasty Xenial Documentation";
+Settings[DocsKeys.Logo] = "assets/img/logo.svg";
+
+Settings[DocsKeys.SourceFiles] = new []
+{
+    "../src/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs"
+};
+
+// Add any pipeline customizations here

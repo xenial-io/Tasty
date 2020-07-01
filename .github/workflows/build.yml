@@ -32,11 +32,7 @@ jobs:
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
-    - name: Setup .NET Core 2x
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 2.1.0
-    - name: Setup .NET Core 3x
+    - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x

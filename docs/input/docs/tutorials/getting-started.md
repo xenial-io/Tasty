@@ -120,4 +120,4 @@ Outcome:         Success
 
 # 7. Congratulations
 
-You wrote your first very delicious test! Let's look into some more [features](async-code).
+You wrote your very first delicious test! Let's look into some more [features with async code](async-code).

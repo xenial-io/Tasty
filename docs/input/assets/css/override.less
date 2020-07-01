@@ -12,7 +12,7 @@
     background-color: #fff;
     height: 100%;
     border-radius: 5px 5px 0 0;
-    padding: 0 25px;
+    padding: 0 15px;
     float: left;
 }
 
@@ -22,8 +22,53 @@
 }
 
 .main-header .logo .logo-lg::after {
-    content: " xenial.io";
+    content: " tasty.xenial.io";
     color: @brand-primary;
     font-weight: bold;
     font-size: @font-size-h2;
+}
+
+.teasor {
+    text-align: center;
+    .teasor__buttons {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: auto;  
+        padding: 0;
+        @media (min-width: 768px) { 
+            flex-direction: row;
+            width: 100%;
+        }
+        li {
+            width: auto;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            a {
+                display: block;
+                padding: 1rem;
+                font-weight: bold;
+                font-size: 2rem;
+                text-transform: uppercase;
+                border: 1px solid @brand-primary;
+            }
+        }
+    }
+    .teasor__logo {
+        margin-bottom: 3rem;
+        span {
+            display: block;
+            font-weight: bold;
+            padding: 1rem;
+            font-size: 4rem;
+        }
+    }
+
+    .teasor_content {
+        margin-top: 2rem;
+        font-size: 2rem;
+    }
 }

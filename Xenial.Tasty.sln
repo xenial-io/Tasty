@@ -33,25 +33,30 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.CalculatorTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.NestedDescribeTests", "test\integration\Xenial.Tasty.NestedDescribeTests\Xenial.Tasty.NestedDescribeTests.csproj", "{CDE3863D-A970-4FE9-8184-7D6564531A32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.ReturnValueTests", "test\integration\Xenial.Tasty.ReturnValueTests\Xenial.Tasty.ReturnValueTests.csproj", "{7755B927-FFDF-47D2-A371-08D0009A22E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.ReturnValueTests", "test\integration\Xenial.Tasty.ReturnValueTests\Xenial.Tasty.ReturnValueTests.csproj", "{7755B927-FFDF-47D2-A371-08D0009A22E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.DataDrivenTests", "test\integration\Xenial.Tasty.DataDrivenTests\Xenial.Tasty.DataDrivenTests.csproj", "{5A95BA7A-629D-48EE-988C-B75828BD8610}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.DataDrivenTests", "test\integration\Xenial.Tasty.DataDrivenTests\Xenial.Tasty.DataDrivenTests.csproj", "{5A95BA7A-629D-48EE-988C-B75828BD8610}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.DeclarativeTests", "test\integration\Xenial.Tasty.DeclarativeTests\Xenial.Tasty.DeclarativeTests.csproj", "{00459DDC-F2A7-4BB0-BED6-82C24344F8D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.DeclarativeTests", "test\integration\Xenial.Tasty.DeclarativeTests\Xenial.Tasty.DeclarativeTests.csproj", "{00459DDC-F2A7-4BB0-BED6-82C24344F8D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.LifecycleNativeTests", "test\integration\Xenial.Tasty.LifecycleNativeTests\Xenial.Tasty.LifecycleNativeTests.csproj", "{C4B3F9E7-FA53-4427-93B7-34484BDA35A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.LifecycleNativeTests", "test\integration\Xenial.Tasty.LifecycleNativeTests\Xenial.Tasty.LifecycleNativeTests.csproj", "{C4B3F9E7-FA53-4427-93B7-34484BDA35A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.LifecycleTests", "test\integration\Xenial.Tasty.LifecycleTests\Xenial.Tasty.LifecycleTests.csproj", "{20C96098-F8A1-475B-9139-CEC7C1343FF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.LifecycleTests", "test\integration\Xenial.Tasty.LifecycleTests\Xenial.Tasty.LifecycleTests.csproj", "{20C96098-F8A1-475B-9139-CEC7C1343FF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.ColorSchemeTests", "test\integration\Xenial.Tasty.ColorSchemeTests\Xenial.Tasty.ColorSchemeTests.csproj", "{82C1B08A-4312-429D-A888-078BB893A52E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.ColorSchemeTests", "test\integration\Xenial.Tasty.ColorSchemeTests\Xenial.Tasty.ColorSchemeTests.csproj", "{82C1B08A-4312-429D-A888-078BB893A52E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{9CAF2D6C-1E62-4F98-844F-07EFAAEEC5F4}"
+	ProjectSection(SolutionItems) = preProject
+		demos\Directory.Build.props = demos\Directory.Build.props
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncTastyTests", "demos\AsyncTastyTests\AsyncTastyTests.csproj", "{1014E1FE-30A6-4E5F-AB61-027171BCA5B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncTastyTests", "demos\AsyncTastyTests\AsyncTastyTests.csproj", "{1014E1FE-30A6-4E5F-AB61-027171BCA5B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFirstTastyTests", "demos\MyFirstTastyTests\MyFirstTastyTests.csproj", "{50235BD6-5EFF-43EE-A405-0869FE898174}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFirstTastyTests", "demos\MyFirstTastyTests\MyFirstTastyTests.csproj", "{50235BD6-5EFF-43EE-A405-0869FE898174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGroupTests", "demos\TestGroupTests\TestGroupTests.csproj", "{849D72DB-8A7F-4504-A447-742BD40825F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGroupTests", "demos\TestGroupTests\TestGroupTests.csproj", "{849D72DB-8A7F-4504-A447-742BD40825F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeSetupTests", "demos\NativeSetupTests\NativeSetupTests.csproj", "{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -231,6 +236,18 @@ Global
 		{849D72DB-8A7F-4504-A447-742BD40825F2}.Release|x64.Build.0 = Release|Any CPU
 		{849D72DB-8A7F-4504-A447-742BD40825F2}.Release|x86.ActiveCfg = Release|Any CPU
 		{849D72DB-8A7F-4504-A447-742BD40825F2}.Release|x86.Build.0 = Release|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Debug|x64.Build.0 = Debug|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Debug|x86.Build.0 = Debug|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Release|x64.ActiveCfg = Release|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Release|x64.Build.0 = Release|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Release|x86.ActiveCfg = Release|Any CPU
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -251,6 +268,7 @@ Global
 		{1014E1FE-30A6-4E5F-AB61-027171BCA5B2} = {9CAF2D6C-1E62-4F98-844F-07EFAAEEC5F4}
 		{50235BD6-5EFF-43EE-A405-0869FE898174} = {9CAF2D6C-1E62-4F98-844F-07EFAAEEC5F4}
 		{849D72DB-8A7F-4504-A447-742BD40825F2} = {9CAF2D6C-1E62-4F98-844F-07EFAAEEC5F4}
+		{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B} = {9CAF2D6C-1E62-4F98-844F-07EFAAEEC5F4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D25470F-FCE8-4F98-A5B0-BE1C68CFEE7D}

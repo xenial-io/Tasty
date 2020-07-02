@@ -12,5 +12,9 @@
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
     <TargetFrameworks>$(NetCoreVersion)</TargetFrameworks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
+  </ItemGroup>
   
 </Project>

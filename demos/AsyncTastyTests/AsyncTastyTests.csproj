@@ -1,7 +1,3 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
-  </ItemGroup>
   
 </Project>

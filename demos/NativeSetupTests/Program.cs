@@ -10,11 +10,11 @@ namespace NativeSetupTests
         public string LastName { get; set; }
         public override string ToString()
         {
-            if(!string.IsNullOrEmpty(FirstName) && string.IsNullOrEmpty(LastName))
+            if (!string.IsNullOrEmpty(FirstName) && string.IsNullOrEmpty(LastName))
             {
                 return FirstName;
             }
-            if(!string.IsNullOrEmpty(LastName) && string.IsNullOrEmpty(FirstName))
+            if (!string.IsNullOrEmpty(LastName) && string.IsNullOrEmpty(FirstName))
             {
                 return LastName;
             }
@@ -29,8 +29,8 @@ namespace NativeSetupTests
             Describe("Native setup", () =>
             {
                 (Person p, Func<Person, bool>) CreatePerson(
-                    string firstName = null, 
-                    string lastName = null, 
+                    string firstName = null,
+                    string lastName = null,
                     Func<Person, bool> check = null
                 )
                 {
@@ -45,7 +45,7 @@ namespace NativeSetupTests
                 It("should allow only a first name", () =>
                 {
                     var (person, check) = CreatePerson(
-                        firstName: "John", 
+                        firstName: "John",
                         check: (p) => p.ToString() == "John"
                     );
                     return check(person);
@@ -54,7 +54,7 @@ namespace NativeSetupTests
                 It("should allow only a last name", () =>
                 {
                     var (person, check) = CreatePerson(
-                        lastName: "Doe", 
+                        lastName: "Doe",
                         check: (p) => p.ToString() == "Doe"
                     );
                     return check(person);
@@ -64,7 +64,7 @@ namespace NativeSetupTests
                 {
                     var (person, check) = CreatePerson(
                         firstName: "John",
-                        lastName: "Doe", 
+                        lastName: "Doe",
                         check: (p) => p.ToString() == "John Doe"
                     );
                     return check(person);

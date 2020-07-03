@@ -214,6 +214,17 @@ namespace Xenial.Delicious.Scopes
             AddToGroup(hook);
         }
 
+        public void BeforeEach(Action action)
+        {
+            var hook = new TestBeforeEachHook(() =>
+            {
+                action();
+                return Task.FromResult(true);
+            }, null);
+
+            AddToGroup(hook);
+        }
+
         public void AfterEach(Func<Task> action)
         {
             var hook = new TestAfterEachHook(async () =>
@@ -225,50 +236,27 @@ namespace Xenial.Delicious.Scopes
             AddToGroup(hook);
         }
 
+        public void AfterEach(Action action)
+        {
+            var hook = new TestAfterEachHook(() =>
+            {
+                action();
+                return Task.FromResult(true);
+            }, null);
+
+            AddToGroup(hook);
+        }
+
         void AddToGroup(TestBeforeEachHook hook)
         {
-            if (CurrentGroup == null)
-            {
-                var groups = Executors.OfType<TestGroup>().ToList();
-                if (groups.Count > 0)
-                {
-                    var group = groups.First();
-                    hook.Group = group;
-                    group.BeforeEachHooks.Add(hook);
-                }
-                else
-                {
-                    BeforeEachHooks.Add(hook);
-                }
-            }
-            else
-            {
-                hook.Group = CurrentGroup;
-                CurrentGroup.BeforeEachHooks.Add(hook);
-            }
+            hook.Group = CurrentGroup;
+            CurrentGroup.BeforeEachHooks.Add(hook);
         }
 
         void AddToGroup(TestAfterEachHook hook)
         {
-            if (CurrentGroup == null)
-            {
-                var groups = Executors.OfType<TestGroup>().ToList();
-                if (groups.Count > 0)
-                {
-                    var group = groups.First();
-                    hook.Group = group;
-                    group.AfterEachHooks.Add(hook);
-                }
-                else
-                {
-                    AfterEachHooks.Add(hook);
-                }
-            }
-            else
-            {
-                hook.Group = CurrentGroup;
-                CurrentGroup.AfterEachHooks.Add(hook);
-            }
+            hook.Group = CurrentGroup;
+            CurrentGroup.AfterEachHooks.Add(hook);
         }
 
         public async Task<int> Run(string[] args)

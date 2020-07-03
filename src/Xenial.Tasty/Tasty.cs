@@ -233,10 +233,24 @@ namespace Xenial
             => DefaultScope.BeforeEach(action);
 
         /// <summary>
+        /// Add a callback that runs before each <see cref="TestCase"/> and each <see cref="TestGroup"/> in this scope
+        /// </summary>
+        /// <param name="action">The action.</param>
+        public static void BeforeEach(Action action)
+            => DefaultScope.BeforeEach(action);
+
+        /// <summary>
         /// Add a callback that runs after each <see cref="TestCase"/> and each <see cref="TestGroup"/> in this scope
         /// </summary>
         /// <param name="action">The action.</param>
         public static void AfterEach(Func<Task> action)
+            => DefaultScope.AfterEach(action);
+
+        /// <summary>
+        /// Add a callback that runs after each <see cref="TestCase"/> and each <see cref="TestGroup"/> in this scope
+        /// </summary>
+        /// <param name="action">The action.</param>
+        public static void AfterEach(Action action)
             => DefaultScope.AfterEach(action);
 
         /// <summary>

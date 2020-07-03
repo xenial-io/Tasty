@@ -140,4 +140,6 @@ Outcome:         Success
 > As you probably have seen, the order in which nested test cases are executed is a bit confusing.
 > We will cover that later in the lifecycle of the test pipeline.
 
-You wrote your very first delicious tests with groups! As you can see it's very easy to group tests however you want. Next we are looking into the [setup and teardown feature](setup-teardown).
+# 3. Congratulations
+
+You wrote your very first delicious tests with groups! As you can see it's very easy to group tests however you want. Next we are looking into the [setup and teardown feature](setup-teardown.html).

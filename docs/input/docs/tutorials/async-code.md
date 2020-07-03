@@ -79,6 +79,6 @@ Outcome:         Success
 =================================================================================================
 ```
 
-# 7. Congratulations
+# 4. Congratulations
 
-You wrote your very first async delicious test! Let's look into some more [features with test groups](test-groups).
+You wrote your very first async delicious test! Let's look into some more [features with test groups](test-groups.html).

@@ -251,3 +251,6 @@ Outcome:         Success
 
 > Note: This behavior is currently wrong and is [subject to change](https://github.com/xenial-io/Tasty/issues/13).
 
+# 5. Congratulations
+
+You wrote your very first delicious test lifecycle hooks! Next you will learn how to get into zen mode with [focused tests](focused-tests.html).

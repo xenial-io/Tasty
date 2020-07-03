@@ -21,7 +21,7 @@ Settings[DocsKeys.Logo] = "assets/img/logo.svg";
 
 Settings[DocsKeys.SourceFiles] = new string []
 {
-    //"../../src/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs"
+    "../../src/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs"
 };
 
 // Add any pipeline customizations here

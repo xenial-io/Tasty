@@ -7,6 +7,7 @@ using static Bullseye.Targets;
 using System.Threading.Tasks;
 using Tasty.Build.Helpers;
 using System.Xml.Linq;
+using System.Collections.Generic;
 
 namespace Tasty.Build
 {
@@ -25,6 +26,16 @@ namespace Tasty.Build
             static string logOptions(string target)
                 => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/tasty.{target}.binlog";
 
+            const string Configuration = "Release";
+
+            Func<string> properties = () => string.Join(" ", new Dictionary<string, string>
+            {
+                ["Version"] = version.NugetVersion,
+                ["AssemblyVersion"] = version.AssemblyVersion,
+                ["InformationalVersion"] = version.InformationalVersion,
+                ["Configuration"] = Configuration,
+            }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
+
             Target("lint",
                 () => RunAsync("dotnet", $"format --check --verbosity detailed")
             );
@@ -38,7 +49,7 @@ namespace Tasty.Build
             );
 
             Target("build", DependsOn("restore"),
-                () => RunAsync("dotnet", $"build --no-restore {logOptions("build")}")
+                () => RunAsync("dotnet", $"build --no-restore -c {Configuration} {logOptions("build")} {properties()}")
             );
 
             Target("test", DependsOn("build"), async () =>
@@ -51,14 +62,14 @@ namespace Tasty.Build
                             : new[] { netcore };
 
                 var tests = tfms
-                    .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Tasty.Tests/Xenial.Tasty.Tests.csproj --no-build --no-restore --framework {tfm}"))
+                    .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Tasty.Tests/Xenial.Tasty.Tests.csproj --no-build --no-restore --framework {tfm} -c {Configuration} {properties()}"))
                     .ToArray();
 
                 await Task.WhenAll(tests);
             });
 
             Target("pack", DependsOn("test"),
-                () => RunAsync("dotnet", $"pack src/Xenial.Tasty/Xenial.Tasty.csproj --no-restore --no-build {logOptions("pack")}")
+                () => RunAsync("dotnet", $"pack src/Xenial.Tasty/Xenial.Tasty.csproj --no-restore --no-build -c {Configuration} {logOptions("pack")} {properties()}")
             );
 
             Target("docs",

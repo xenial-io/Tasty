@@ -19,6 +19,7 @@ namespace Tasty.Build.Helpers
             WriteLine();
             WriteLine($"BranchName: '{GitVersion.Current.BranchName}'");
             WriteLine($"Sha: '{GitVersion.Current.Sha}'");
+            WriteLine($"NugetVersion: '{NugetVersion}'");
             WriteLine($"VersionSuffix: '{VersionSuffix}'");
             WriteLine($"PreReleaseTag: '{GitVersion.Current.PreReleaseTag}'");
             WriteLine($"PreReleaseTagWithDash: '{GitVersion.Current.PreReleaseTagWithDash}'");
@@ -41,6 +42,9 @@ namespace Tasty.Build.Helpers
 
         public string AssemblyVersion =>
             $"{GitVersion.Current.MajorMinorPatch}.{GitVersion.Current.CommitsSinceVersionSource}";
+
+        public string NugetVersion =>
+            $"{GitVersion.Current.NuGetVersionV2}";
 
         public string Publisher =>
             "CN=Xenial, O=Xenial, L=Graz, S=Styria, C=Austria";

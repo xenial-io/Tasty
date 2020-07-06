@@ -1,4 +1,5 @@
 Description: Getting started
+Title: Getting started
 Order: 10
 ---
 
@@ -120,4 +121,4 @@ Outcome:         Success
 
 # 7. Congratulations
 
-You wrote your very first delicious test! Let's look into some more [features with async code](async-code.html).
+You wrote your very first delicious test! Let's look into some more [features with async code](20-async-code.html).

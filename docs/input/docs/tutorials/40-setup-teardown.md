@@ -253,4 +253,4 @@ Outcome:         Success
 
 # 5. Congratulations
 
-You wrote your very first delicious test lifecycle hooks! Next you will learn how to get into zen mode with [focused tests](focused-tests.html).
+You wrote your very first delicious test lifecycle hooks! Next you will learn how to get into zen mode with [focused tests](50-focused-tests.html).

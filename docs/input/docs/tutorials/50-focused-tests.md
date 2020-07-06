@@ -1,4 +1,5 @@
 Description: Focused tests
+Title: Focused tests
 Order: 50
 ---
 
@@ -116,4 +117,4 @@ Outcome:         Success
 
 # 3. Congratulations
 
-You wrote your very first delicious focused tests! Next you will learn how to get rapid feedback with [watch mode](watch-mode.html).
+You wrote your very first delicious focused tests! Next you will learn how to get rapid feedback with [watch mode](60-watch-mode.html).

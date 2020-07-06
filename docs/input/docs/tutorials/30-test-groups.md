@@ -1,4 +1,5 @@
 Description: Test Groups / Describe
+Title: Test Groups
 Order: 30
 ---
 
@@ -142,4 +143,4 @@ Outcome:         Success
 
 # 3. Congratulations
 
-You wrote your very first delicious tests with groups! As you can see it's very easy to group tests however you want. Next we are looking into the [setup and teardown feature](setup-teardown.html).
+You wrote your very first delicious tests with groups! As you can see it's very easy to group tests however you want. Next we are looking into the [setup and teardown feature](40-setup-teardown.html).

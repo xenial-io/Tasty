@@ -1,4 +1,5 @@
 Description: Async code
+Title: Async code
 Order: 20
 ---
 Cause Tasty is async all the way through testing async code is pretty easy:
@@ -81,4 +82,4 @@ Outcome:         Success
 
 # 4. Congratulations
 
-You wrote your very first async delicious test! Let's look into some more [features with test groups](test-groups.html).
+You wrote your very first async delicious test! Let's look into some more [features with test groups](30-test-groups.html).

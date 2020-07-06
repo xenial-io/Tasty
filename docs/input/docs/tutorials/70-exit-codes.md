@@ -1,4 +1,5 @@
 Description: Exit codes
+Title: Exit codes
 Order: 70
 ---
 
@@ -58,4 +59,4 @@ echo %errorlevel%
 
 > The exit-codes are not settled yet from an API perspective and are subject to change.
 
-You wrote your very first delicious test with exit-codes! Next we look at [data driven tests](data-driven-tests.html).
+You wrote your very first delicious test with exit-codes! Next we look at [data driven tests](80-data-driven-tests.html).

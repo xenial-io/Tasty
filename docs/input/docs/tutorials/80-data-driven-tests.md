@@ -3,6 +3,9 @@ Title: Data driven tests
 Order: 80
 ---
 In order to do data-driven tests in `Tasty` you don't have to learn anything new!
+
+# 1. Use a standard foreach loop with tuples
+
 A test case is basically described by the name of the test in combination with an lambda expression, you just can use string interpolation and some loops (or `LINQ` statements if you are going the more functional way):
 
 ```cs
@@ -56,4 +59,6 @@ Outcome:         Success
 =================================================================================================
 ```
 
-You wrote your very first delicious data driven test! Next we look at [data driven tests](80-data-driven-tests.html).
+# 2. Congratulations
+
+You wrote your very first delicious data driven test! Next we look at [organizing tests](90-organize-tests.html).

@@ -5,6 +5,8 @@ Order: 70
 
 In order to communicate test failures to other tools like for example `Bullseye` and `Simplexec` and other CI/CD tools as `Azure DevOps` or `Github Actions`, Tasty returns exit-codes after executing tests. At the moment it will report `0` if all tests are successful and `1` if any test case failed.
 
+1. Use async await at top level
+
 By using the top level `async` `await` feature from the C# compiler, it's really easy to use that:
 
 ```cs
@@ -58,5 +60,7 @@ echo %errorlevel%
 ```
 
 > The exit-codes are not settled yet from an API perspective and are subject to change.
+
+# 2. Congratulations
 
 You wrote your very first delicious test with exit-codes! Next we look at [data driven tests](80-data-driven-tests.html).

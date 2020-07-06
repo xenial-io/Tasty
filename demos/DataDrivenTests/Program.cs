@@ -8,14 +8,14 @@ namespace DataDrivenTests
     {
         static void Main(string[] args)
         {
-            var cases  = new[]
+            var cases = new[]
             {
                 (1, 2, 3),
                 (99, 1, 100),
                 (-1, 1, 0)
             };
 
-            foreach(var (a, b, expected) in cases)
+            foreach (var (a, b, expected) in cases)
             {
                 It($"{a} + {b} = {expected}", () =>
                 {

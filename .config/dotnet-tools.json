@@ -31,6 +31,12 @@
       "commands": [
         "toast"
       ]
+    },
+    "wyam.tool": {
+      "version": "2.2.9",
+      "commands": [
+        "wyam"
+      ]
     }
   }
 }

@@ -9,10 +9,10 @@ Tasty is a [.NET library](https://www.nuget.org/packages/Tasty) that runs delici
 
 Tasty can do anything. It's not restricted to be a testing framework.
 
-Platform support: [.NET Standard 2.0 and upwards, including net462](https://docs.microsoft.com/en-us/dotnet/standard/net-standard).
-Documentation: [tasty.xenial.io](https://tasty.xenial.io)
+Platform support: [.NET Standard 2.0 and upwards, including net462](https://docs.microsoft.com/en-us/dotnet/standard/net-standard).  
 
 - [Quick start](#quick-start)
+- [Documentation](https://tasty.xenial.io)
 
 ## Quick start
 

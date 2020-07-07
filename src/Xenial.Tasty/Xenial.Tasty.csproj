@@ -3,6 +3,10 @@
   <PropertyGroup>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <RootNamespace>Xenial.Delicious</RootNamespace>
+    <PackageId>Xenial.Tasty</PackageId>
+    <PackageProjectUrl>https://github.com/xenial-io/Tasty</PackageProjectUrl>
+    <PackageDescription>Tasty - Delicious dotnet testing</PackageDescription>
+    <PackageTags>Xenial, Tasty, Testing, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
   </PropertyGroup>
     
 </Project>

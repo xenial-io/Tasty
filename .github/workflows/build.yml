@@ -42,13 +42,13 @@ jobs:
     - name: Build
       run: dotnet run --project build/Tasty.Build/Tasty.Build.csproj docs
     - uses: actions/upload-artifact@v2
-      if: startsWith(github.ref, "v")
+      if: startsWith(github.ref, 'refs/tags/v')
       with:
         name: docs
         path: artifacts/docs/
   deploy-docs:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, "v")
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: [docs]
     steps:
       - uses: actions/download-artifact@v2

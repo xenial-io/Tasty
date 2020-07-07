@@ -54,11 +54,10 @@ jobs:
         with:
           name: docs
           path: artifacts/docs/
-      - uses: actions/checkout@v2
       - name: Upload ftp
         uses: sebastianpopp/ftp-action@releases/v2
         with:
           host: ${{ secrets.FTP_HOST }}
           user: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          localDir: "artifacts/docs"
+          localDir: artifacts/docs/

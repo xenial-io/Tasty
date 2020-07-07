@@ -26,32 +26,39 @@ jobs:
 #        dotnet-version: 3.1.x
 #    - name: Build
 #      run: dotnet run --project build/Tasty.Build/Tasty.Build.csproj
-#  docs:
-#    runs-on: windows-latest
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Fetch all history for all tags and branches
-#      run: |
-#        git fetch --prune --unshallow
-#    - name: Setup .NET Core
-#      uses: actions/setup-dotnet@v1
-#      with:
-#        dotnet-version: 3.1.x
-#    - name: Restore tools
-#      run: dotnet tool restore
-#    - name: Build
-#      run: dotnet run --project build/Tasty.Build/Tasty.Build.csproj docs
-#    outputs: 
-#      docs: ./artifacts/docs
+  docs:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
+        git fetch --prune --unshallow
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+    - name: Restore tools
+      run: dotnet tool restore
+    - name: Build
+      run: dotnet run --project build/Tasty.Build/Tasty.Build.csproj docs
+    - uses: actions/upload-artifact@v2
+      with:
+        name: docs
+        path: artifacts/docs/
   deploy-docs:
     runs-on: ubuntu-latest
     #if: startsWith(github.event.release.tag_name, v)
-    #needs: [docs]
+    needs: [docs]
     steps:
-      - name: FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+      - uses: actions/download-artifact@v2
         with:
-          ftp-server: ${{ secrets.FTP_HOST }}
-          ftp-username: ${{ secrets.FTP_USER }}
-          ftp-password: ${{ secrets.FTP_PASS }}
-          git-ftp-args: --dry-run
+          name: docs
+          path: artifacts/docs/
+      - uses: actions/checkout@v2
+      - name: Upload ftp
+        uses: sebastianpopp/ftp-action@releases/v2
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          localDir: "artifacts/docs"

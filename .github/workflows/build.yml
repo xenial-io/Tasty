@@ -3,6 +3,7 @@ name: Xenial.Tasty
 on:
   push:
     branches: [ master ]
+    tags: [v*]
   pull_request:
     branches: [ master ]
 
@@ -40,3 +41,15 @@ jobs:
       run: dotnet tool restore
     - name: Build
       run: dotnet run --project build/Tasty.Build/Tasty.Build.csproj docs
+    outputs: 
+      docs: ./artifacts/docs
+  deploy-docs:
+    runs-on: ubuntu-latest
+    #if: startsWith(github.event.release.tag_name, v)
+    needs: [docs]
+    steps:
+      - name: Pip Installer
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: wheel, creep 
+    

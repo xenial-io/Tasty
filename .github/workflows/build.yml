@@ -56,9 +56,9 @@ jobs:
             creep
       - name: EnvVars
         env: |
-          FTP_USER
-          FTP_HOST
-          FTP_PASS
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
         run: |
           echo "{\"default\": {\"connection\": \"ftp://$FtpUser:$FtpPass@$FtpHost\" }}"
     

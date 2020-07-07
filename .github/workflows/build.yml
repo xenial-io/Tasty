@@ -53,5 +53,10 @@ jobs:
         with:
           packages: |
             wheel
-            creep 
+            creep
+      - name: EnvVars
+        env: |
+          FTP_USER
+          FTP_HOST
+          FTP_PASS
     

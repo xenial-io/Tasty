@@ -85,4 +85,3 @@ jobs:
         run: dotnet nuget push artifacts\nuget\*.nupkg --skip-duplicate -s https://api.nuget.org/v3/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
-    

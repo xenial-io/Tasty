@@ -48,17 +48,10 @@ jobs:
     #if: startsWith(github.event.release.tag_name, v)
     #needs: [docs]
     steps:
-      - name: Pip Installer
-        uses: BSFishy/pip-action@v1
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
-          packages: |
-            wheel
-            creep
-      - name: EnvVars
-        env: |
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USER: ${{ secrets.FTP_USER }}
-          FTP_PASS: ${{ secrets.FTP_PASS }}
-        run: |
-          echo "{\"default\": {\"connection\": \"ftp://$FtpUser:$FtpPass@$FtpHost\" }}"
-    
+          ftp-server: ${{ secrets.FTP_HOST }}
+          ftp-username: ${{ secrets.FTP_USER }}
+          ftp-password: ${{ secrets.FTP_PASS }}
+          git-ftp-args: --dry-run

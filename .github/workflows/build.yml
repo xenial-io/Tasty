@@ -59,4 +59,6 @@ jobs:
           FTP_USER
           FTP_HOST
           FTP_PASS
+        run: |
+          echo "{\"default\": {\"connection\": \"ftp://$FtpUser:$FtpPass@$FtpHost\" }}"
     

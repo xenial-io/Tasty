@@ -77,4 +77,12 @@ jobs:
         with:
           name: nuget
           path: artifacts/nuget/
+      - name: Setup .NET Core
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+      - name: Publish to nuget.org
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
+        run: dotnet nuget push ./artifacts/nuget/*.nupkg --skip-duplicate
     

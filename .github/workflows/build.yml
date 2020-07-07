@@ -82,7 +82,7 @@ jobs:
         with:
           dotnet-version: 3.1.x
       - name: Publish to nuget.org
+        run: dotnet nuget push ./artifacts/nuget/*.nupkg --skip-duplicate
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
-        run: dotnet nuget push ./artifacts/nuget/*.nupkg --skip-duplicate
     

@@ -15,14 +15,6 @@ namespace Tasty.Build
     {
         static async Task Main(string[] args)
         {
-            XenialVersionInfo version = null;
-
-            Target("version", () =>
-            {
-                version = new XenialVersionInfo();
-                version.PrintVersion();
-            });
-
             static string logOptions(string target)
                 => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/tasty.{target}.binlog";
 
@@ -30,9 +22,6 @@ namespace Tasty.Build
 
             Func<string> properties = () => string.Join(" ", new Dictionary<string, string>
             {
-                ["Version"] = version.NugetVersion,
-                ["AssemblyVersion"] = version.AssemblyVersion,
-                ["InformationalVersion"] = version.InformationalVersion,
                 ["Configuration"] = Configuration,
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 

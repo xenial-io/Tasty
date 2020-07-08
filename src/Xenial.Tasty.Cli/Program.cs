@@ -13,16 +13,20 @@ namespace Xenial.Tasty.Tool
 
             var interactiveCommand = new Command("interactive")
             {
-                Handler = CommandHandler.Create(() => Interactive())
+                Handler = CommandHandler.Create<string>(Interactive)
             };
             interactiveCommand.AddAlias("i");
+            var arg = new Option<string>("--project");
+            arg.AddAlias("-p");
+            interactiveCommand.Add(arg);
             rootCommand.Add(interactiveCommand);
 
             return await rootCommand.InvokeAsync(args);
         }
 
-        static Task<int> Interactive()
+        static Task<int> Interactive(string project)
         {
+            Console.WriteLine(project);
             return Task.FromResult(0);
         }
     }

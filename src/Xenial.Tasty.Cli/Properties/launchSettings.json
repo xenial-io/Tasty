@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Xenial.Tasty.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "i -p ../../test/Xenial.Tasty.Tests"
+    }
+  }
+}

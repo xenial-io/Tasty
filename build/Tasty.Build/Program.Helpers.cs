@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
+
+using static SimpleExec.Command;
 
 namespace Tasty.Build
 {
@@ -13,6 +16,19 @@ namespace Tasty.Build
             var fullFramework = props.Descendants("FullFrameworkVersion").First().Value;
             var netcore = props.Descendants("NetCoreVersion").First().Value;
             return (fullFramework, netcore);
+        }
+
+        async static Task EnsureTools()
+        {
+            try
+            {
+                await RunAsync("dotnet", "format --version");
+            }
+            catch (SimpleExec.NonZeroExitCodeException)
+            {
+                //Can't find dotnet format, assuming tools are not installed
+                await RunAsync("dotnet", "tool restore");
+            }
         }
     }
 }

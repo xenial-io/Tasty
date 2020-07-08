@@ -23,15 +23,17 @@ namespace Tasty.Build
                 ["Configuration"] = Configuration,
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
-            Target("clean",
+            Target("ensure-tools", () => EnsureTools());
+
+            Target("clean", DependsOn("ensure-tools"),
                 () => RunAsync("dotnet", $"rimraf . -i **/bin/**/*.* -i **/obj/**/*.* -i artifacts/**/*.* -e node_modules/**/*.* -e build/**/*.* -q")
             );
 
-            Target("lint",
+            Target("lint", DependsOn("ensure-tools"),
                 () => RunAsync("dotnet", $"format --check --verbosity detailed")
             );
 
-            Target("format",
+            Target("format", DependsOn("ensure-tools"),
                 () => RunAsync("dotnet", $"format")
             );
 

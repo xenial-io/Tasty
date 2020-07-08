@@ -36,6 +36,10 @@ namespace Tasty.Build
                 ["Configuration"] = Configuration,
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
+            Target("clean",
+                () => RunAsync("dotnet", $"rimraf . -i **/bin/**/*.* -i **/obj/**/*.* -i artifacts/**/*.* -e node_modules/**/*.* -e build/**/*.* -q")
+            );
+
             Target("lint",
                 () => RunAsync("dotnet", $"format --check --verbosity detailed")
             );

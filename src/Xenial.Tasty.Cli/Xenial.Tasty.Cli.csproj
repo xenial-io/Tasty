@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks></TargetFrameworks>
+    <TargetFramework>$(NetCoreVersion)</TargetFramework>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>tasty</ToolCommandName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20303.1" />
+    <PackageReference Include="SimpleExec" Version="6.2.0" />
+  </ItemGroup>
+
+</Project>

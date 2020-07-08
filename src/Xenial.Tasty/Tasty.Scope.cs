@@ -269,6 +269,14 @@ namespace Xenial.Delicious.Scopes
                 }
                 catch (IOException) { /* Handle is invalid */}
             }
+            var isInteractive = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE");
+            if (!string.IsNullOrEmpty(isInteractive))
+            {
+                if (bool.TryParse(isInteractive, out var result))
+                {
+                    Console.WriteLine("INTERACTIVE MODE ACTIVATED");
+                }
+            }
 
             await new TestExecutor(this).Execute();
 

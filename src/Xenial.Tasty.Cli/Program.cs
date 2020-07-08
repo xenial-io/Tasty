@@ -1,7 +1,10 @@
 ﻿using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.IO;
 using System.Threading.Tasks;
+
+using static SimpleExec.Command;
 
 namespace Xenial.Tasty.Tool
 {
@@ -24,10 +27,24 @@ namespace Xenial.Tasty.Tool
             return await rootCommand.InvokeAsync(args);
         }
 
-        static Task<int> Interactive(string project)
+        static async Task<int> Interactive(string project)
         {
-            Console.WriteLine(project);
-            return Task.FromResult(0);
+            var path = Path.GetFullPath(project);
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+            {
+                var directoryName = new DirectoryInfo(path).Name;
+                var csProjFileName = Path.Combine(path, $"{directoryName}.csproj");
+                if (File.Exists(csProjFileName))
+                {
+                    Console.WriteLine(csProjFileName);
+                    await RunAsync("dotnet", $"run -p \"{csProjFileName}\" -f netcoreapp3.1",
+                        configureEnvironment: (env) =>
+                        {
+                            env.Add("TASTY_INTERACTIVE", "true");
+                        });
+                }
+            }
+            return 0;
         }
     }
 }

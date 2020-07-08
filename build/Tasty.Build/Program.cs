@@ -5,8 +5,6 @@ using System.Runtime.InteropServices;
 using static SimpleExec.Command;
 using static Bullseye.Targets;
 using System.Threading.Tasks;
-using Tasty.Build.Helpers;
-using System.Xml.Linq;
 using System.Collections.Generic;
 
 namespace Tasty.Build
@@ -37,7 +35,7 @@ namespace Tasty.Build
                 () => RunAsync("dotnet", $"format")
             );
 
-            Target("restore", DependsOn("version", "lint"),
+            Target("restore", DependsOn("lint"),
                 () => RunAsync("dotnet", $"restore {logOptions("restore")}")
             );
 

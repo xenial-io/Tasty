@@ -68,7 +68,7 @@ jobs:
           password: ${{ secrets.FTP_PASS }}
           localDir: artifacts/docs/
   deploy-packages:
-    runs-on: linux-latest
+    runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [build]
     steps:

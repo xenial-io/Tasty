@@ -12,7 +12,9 @@ NoTitle: true
      <ul class="teasor__buttons">
         <li><a href="~/docs/tutorials/10-getting-started.html">Get started</a></li>
         <li><a href="~/docs/">Docs</a></li>
-        <li><a href="#">Get help</a></li>
+        <li><a href="https://github.com/xenial-io/Tasty" target="_blank">Github</a></li>
+        <li><a href="https://www.nuget.org/packages/Xenial.Tasty/" target="_blank">Nuget</a></li>
+        <li><a href="https://github.com/xenial-io/Tasty/issues" target="_blank">Get help</a></li>
     </ul>
 </div>
 Highly inspired by the syntax of javascript testing frameworks like jest and jasmine (or mocha) it tries to simplify the overhead of writing tests in C# (I didn't research F# or VB.NET yet).

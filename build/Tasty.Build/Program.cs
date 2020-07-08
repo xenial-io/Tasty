@@ -5,8 +5,6 @@ using System.Runtime.InteropServices;
 using static SimpleExec.Command;
 using static Bullseye.Targets;
 using System.Threading.Tasks;
-using Tasty.Build.Helpers;
-using System.Xml.Linq;
 using System.Collections.Generic;
 
 namespace Tasty.Build
@@ -15,14 +13,6 @@ namespace Tasty.Build
     {
         static async Task Main(string[] args)
         {
-            XenialVersionInfo version = null;
-
-            Target("version", () =>
-            {
-                version = new XenialVersionInfo();
-                version.PrintVersion();
-            });
-
             static string logOptions(string target)
                 => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/tasty.{target}.binlog";
 
@@ -30,25 +20,24 @@ namespace Tasty.Build
 
             Func<string> properties = () => string.Join(" ", new Dictionary<string, string>
             {
-                ["Version"] = version.NugetVersion,
-                ["AssemblyVersion"] = version.AssemblyVersion,
-                ["InformationalVersion"] = version.InformationalVersion,
                 ["Configuration"] = Configuration,
             }.Select(p => $"/P:{p.Key}=\"{p.Value}\""));
 
-            Target("clean",
+            Target("ensure-tools", () => EnsureTools());
+
+            Target("clean", DependsOn("ensure-tools"),
                 () => RunAsync("dotnet", $"rimraf . -i **/bin/**/*.* -i **/obj/**/*.* -i artifacts/**/*.* -e node_modules/**/*.* -e build/**/*.* -q")
             );
 
-            Target("lint",
+            Target("lint", DependsOn("ensure-tools"),
                 () => RunAsync("dotnet", $"format --check --verbosity detailed")
             );
 
-            Target("format",
+            Target("format", DependsOn("ensure-tools"),
                 () => RunAsync("dotnet", $"format")
             );
 
-            Target("restore", DependsOn("version", "lint"),
+            Target("restore", DependsOn("lint"),
                 () => RunAsync("dotnet", $"restore {logOptions("restore")}")
             );
 

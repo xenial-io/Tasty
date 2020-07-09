@@ -7,5 +7,9 @@
     <PackageDescription>Tasty - Delicious dotnet testing</PackageDescription>
     <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StreamJsonRpc" Version="2.4.48" />
+  </ItemGroup>
     
 </Project>

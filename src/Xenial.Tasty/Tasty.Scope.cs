@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Visitors;
+
 using static Xenial.Delicious.Visitors.TestIterator;
 
 namespace Xenial.Delicious.Scopes
@@ -274,7 +276,20 @@ namespace Xenial.Delicious.Scopes
             {
                 if (bool.TryParse(isInteractive, out var result))
                 {
-                    Console.WriteLine("INTERACTIVE MODE ACTIVATED");
+                    if (result)
+                    {
+                        Console.WriteLine("INTERACTIVE MODE ACTIVATED");
+                        var connectionType = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_TYPE");
+                        Console.WriteLine(connectionType);
+                        if (connectionType == "NamedPipes")
+                        {
+                            var connectionId = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_ID");
+                            Console.WriteLine(connectionId);
+                            var stream = new NamedPipeClientStream(".", connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
+                            await stream.ConnectAsync();
+                            Console.WriteLine("Connected");
+                        }
+                    }
                 }
             }
 

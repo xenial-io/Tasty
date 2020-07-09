@@ -2,6 +2,7 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
+using System.IO.Pipes;
 using System.Threading.Tasks;
 
 using static SimpleExec.Command;
@@ -37,11 +38,21 @@ namespace Xenial.Tasty.Tool
                 if (File.Exists(csProjFileName))
                 {
                     Console.WriteLine(csProjFileName);
-                    await RunAsync("dotnet", $"run -p \"{csProjFileName}\" -f netcoreapp3.1",
+
+                    var connectionId = $"TASTY_{Guid.NewGuid()}";
+
+                    var stream = new NamedPipeServerStream(connectionId, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                    var connectionTask = stream.WaitForConnectionAsync();
+                    var remoteTask = RunAsync("dotnet", $"run -p \"{csProjFileName}\" -f netcoreapp3.1",
                         configureEnvironment: (env) =>
                         {
                             env.Add("TASTY_INTERACTIVE", "true");
+                            env.Add("TASTY_INTERACTIVE_CON_TYPE", "NamedPipes");
+                            env.Add("TASTY_INTERACTIVE_CON_ID", connectionId);
                         });
+
+                    await connectionTask;
+                    await remoteTask;
                 }
             }
             return 0;

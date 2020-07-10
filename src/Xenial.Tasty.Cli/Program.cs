@@ -50,9 +50,11 @@ namespace Xenial.Tasty.Tool
                             env.Add("TASTY_INTERACTIVE_CON_TYPE", "NamedPipes");
                             env.Add("TASTY_INTERACTIVE_CON_ID", connectionId);
                         });
-
+                    Console.WriteLine("Connecting. NamedPipeServerStream...");
                     await connectionTask;
+                    Console.WriteLine("Connected. NamedPipeServerStream...");
                     await remoteTask;
+                    Console.WriteLine("Connected. Sending request...");
                 }
             }
             return 0;

@@ -5,7 +5,7 @@
 
 # Tasty - Delicious dotnet testing
 
-Tasty is a [.NET library](https://www.nuget.org/packages/Tasty) that runs delicious dotnet tests and is inspired by [jest](http://jestjs.io/), [bullseye](https://github.com/adamralph/bullseye) and [simple-exec](https://github.com/adamralph/simple-exec).
+Tasty is a [.NET library](https://www.nuget.org/packages/Xenial.Tasty) that runs delicious dotnet tests and is inspired by [jest](http://jestjs.io/), [bullseye](https://github.com/adamralph/bullseye) and [simple-exec](https://github.com/adamralph/simple-exec).
 
 Tasty can do anything. It's not restricted to be a testing framework.
 

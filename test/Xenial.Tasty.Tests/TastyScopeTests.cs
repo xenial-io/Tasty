@@ -21,7 +21,8 @@ namespace Xenial.Delicious.Tests
                 {
                     var scope = new TastyScope
                     {
-                        ClearBeforeRun = false
+                        ClearBeforeRun = false,
+                        ListenForInteractive = false
                     };
                     var group = scope.Describe(description, () => { });
                     return (scope, group);

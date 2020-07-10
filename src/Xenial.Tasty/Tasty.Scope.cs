@@ -17,6 +17,8 @@ namespace Xenial.Delicious.Scopes
     public class TastyScope : TestGroup
     {
         public bool ClearBeforeRun { get; set; } = true;
+        internal bool ListenForInteractive { get; set; } = true;
+
         private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
         private readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
 
@@ -271,23 +273,27 @@ namespace Xenial.Delicious.Scopes
                 }
                 catch (IOException) { /* Handle is invalid */}
             }
-            var isInteractive = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE");
-            if (!string.IsNullOrEmpty(isInteractive))
+
+            if (ListenForInteractive)
             {
-                if (bool.TryParse(isInteractive, out var result))
+                var isInteractive = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE");
+                if (!string.IsNullOrEmpty(isInteractive))
                 {
-                    if (result)
+                    if (bool.TryParse(isInteractive, out var result))
                     {
-                        Console.WriteLine("INTERACTIVE MODE ACTIVATED");
-                        var connectionType = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_TYPE");
-                        Console.WriteLine(connectionType);
-                        if (connectionType == "NamedPipes")
+                        if (result)
                         {
-                            var connectionId = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_ID");
-                            Console.WriteLine(connectionId);
-                            var stream = new NamedPipeClientStream(".", connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
-                            await stream.ConnectAsync();
-                            Console.WriteLine("Connected");
+                            Console.WriteLine("INTERACTIVE MODE ACTIVATED");
+                            var connectionType = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_TYPE");
+                            Console.WriteLine(connectionType);
+                            if (connectionType == "NamedPipes")
+                            {
+                                var connectionId = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_ID");
+                                Console.WriteLine(connectionId);
+                                var stream = new NamedPipeClientStream(".", connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
+                                await stream.ConnectAsync();
+                                Console.WriteLine("Connected");
+                            }
                         }
                     }
                 }

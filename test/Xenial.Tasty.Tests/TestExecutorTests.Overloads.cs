@@ -26,7 +26,8 @@ namespace Xenial.Delicious.Tests
                 {
                     var scope = new TastyScope
                     {
-                        ClearBeforeRun = false
+                        ClearBeforeRun = false,
+                        ListenForInteractive = false
                     };
                     var action = A.Fake<T>();
                     return (scope, action);

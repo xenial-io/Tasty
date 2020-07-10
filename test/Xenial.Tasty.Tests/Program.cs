@@ -17,7 +17,7 @@ namespace Xenial.Delicious.Tests
                 DefaultRuntimeCases();
                 OverloadRuntimeCases();
                 ForcingTestCases();
-                //IntegrationTests();
+                IntegrationTests();
             });
 
             return await Run(args);

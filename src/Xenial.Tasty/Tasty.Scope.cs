@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+
+using StreamJsonRpc;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
@@ -293,6 +297,9 @@ namespace Xenial.Delicious.Scopes
                                 var stream = new NamedPipeClientStream(".", connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
                                 await stream.ConnectAsync();
                                 Console.WriteLine("Connected");
+
+                                var remote = JsonRpc.Attach<TastyRemote>(stream);
+                                this.RegisterReporter(test => remote.Report(test.FullName));
                             }
                         }
                     }
@@ -321,5 +328,10 @@ namespace Xenial.Delicious.Scopes
         }
 
         public Task<int> Run() => Run(Array.Empty<string>());
+    }
+
+    public interface TastyRemote
+    {
+        Task Report(string @case);
     }
 }

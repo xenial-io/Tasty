@@ -4,6 +4,7 @@ using StreamJsonRpc;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Visitors;
 
@@ -299,7 +301,19 @@ namespace Xenial.Delicious.Scopes
                                 Console.WriteLine("Connected");
 
                                 var remote = JsonRpc.Attach<TastyRemote>(stream);
-                                this.RegisterReporter(test => remote.Report(test.FullName));
+                                Debugger.Launch();
+                                RegisterReporter(test => remote.Report(new SerializableTestCase
+                                {
+                                    FullName = test.FullName,
+                                    Name=  test.Name,
+                                    AdditionalMessage = test.AdditionalMessage,
+                                    Duration = test.Duration,
+                                    Exception = test.Exception,
+                                    IgnoredReason = test.IgnoredReason,
+                                    IsForced = test.IsForced?.Invoke(),
+                                    IsIgnored = test.IsIgnored?.Invoke(),
+                                    TestOutcome = test.TestOutcome
+                                }));
                             }
                         }
                     }
@@ -332,6 +346,6 @@ namespace Xenial.Delicious.Scopes
 
     public interface TastyRemote
     {
-        Task Report(string @case);
+        Task Report(SerializableTestCase @case);
     }
 }

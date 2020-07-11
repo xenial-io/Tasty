@@ -1,21 +1,17 @@
-﻿using Newtonsoft.Json;
-
-using StreamJsonRpc;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json;
+using StreamJsonRpc;
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Visitors;
-
 using static Xenial.Delicious.Visitors.TestIterator;
 
 namespace Xenial.Delicious.Scopes
@@ -305,7 +301,7 @@ namespace Xenial.Delicious.Scopes
                                 RegisterReporter(test => remote.Report(new SerializableTestCase
                                 {
                                     FullName = test.FullName,
-                                    Name=  test.Name,
+                                    Name = test.Name,
                                     AdditionalMessage = test.AdditionalMessage,
                                     Duration = test.Duration,
                                     Exception = test.Exception,

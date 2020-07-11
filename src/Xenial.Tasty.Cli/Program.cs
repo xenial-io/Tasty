@@ -1,21 +1,18 @@
-﻿using StreamJsonRpc;
-
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
 using System.IO.Pipes;
+using System.Text;
 using System.Threading.Tasks;
-
+using StreamJsonRpc;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
-using Xenial.Delicious.Utils;
-
-using static Xenial.Delicious.Utils.Actions;
-using static SimpleExec.Command;
 using Xenial.Delicious.Reporters;
-using System.Text;
-using System.Collections.Generic;
+using Xenial.Delicious.Utils;
+using static SimpleExec.Command;
+using static Xenial.Delicious.Utils.Actions;
 
 namespace Xenial.Tasty.Tool
 {
@@ -53,7 +50,7 @@ namespace Xenial.Tasty.Tool
 
                     using var stream = new NamedPipeServerStream(connectionId, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
                     var connectionTask = stream.WaitForConnectionAsync();
-                    var remoteTask = ReadAsync("dotnet", 
+                    var remoteTask = ReadAsync("dotnet",
                         $"run -p \"{csProjFileName}\" -f netcoreapp3.1",
                         noEcho: true,
                         configureEnvironment: (env) =>
@@ -69,7 +66,7 @@ namespace Xenial.Tasty.Tool
                     var server = new TastyServer();
                     var tastyServer = JsonRpc.Attach(stream, server);
                     Console.WriteLine("Connected. NamedPipeServerStream...");
-                    
+
                     await remoteTask;
                 }
             }

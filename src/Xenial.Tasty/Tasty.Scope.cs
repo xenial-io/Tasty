@@ -5,13 +5,18 @@ using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Newtonsoft.Json;
+
 using StreamJsonRpc;
+
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Visitors;
+
 using static Xenial.Delicious.Visitors.TestIterator;
 
 namespace Xenial.Delicious.Scopes
@@ -19,10 +24,12 @@ namespace Xenial.Delicious.Scopes
     public class TastyScope : TestGroup
     {
         public bool ClearBeforeRun { get; set; } = true;
-        internal bool ListenForInteractive { get; set; } = true;
 
         private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
         private readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
+        internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
+        internal ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
+        private readonly List<TransportStreamFactoryFunctor> TransportStreamFactories = new List<TransportStreamFactoryFunctor>();
 
         internal TestGroup CurrentGroup { get; set; }
 
@@ -41,6 +48,12 @@ namespace Xenial.Delicious.Scopes
         public TastyScope RegisterReporter(AsyncTestSummaryReporter summaryReporter)
         {
             SummaryReporters.Add(summaryReporter);
+            return this;
+        }
+
+        public TastyScope RegisterTransport(TransportStreamFactoryFunctor transportStreamFactory)
+        {
+            TransportStreamFactories.Add(transportStreamFactory);
             return this;
         }
 
@@ -276,42 +289,15 @@ namespace Xenial.Delicious.Scopes
                 catch (IOException) { /* Handle is invalid */}
             }
 
-            if (ListenForInteractive)
+            if (await IsInteractiveRunHook())
             {
-                var isInteractive = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE");
-                if (!string.IsNullOrEmpty(isInteractive))
+                foreach (var remoteStreamFactoryFunctor in TransportStreamFactories)
                 {
-                    if (bool.TryParse(isInteractive, out var result))
+                    var remoteStreamFactory = await remoteStreamFactoryFunctor();
+                    if (remoteStreamFactory != null)
                     {
-                        if (result)
-                        {
-                            Console.WriteLine("INTERACTIVE MODE ACTIVATED");
-                            var connectionType = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_TYPE");
-                            Console.WriteLine(connectionType);
-                            if (connectionType == "NamedPipes")
-                            {
-                                var connectionId = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_ID");
-                                Console.WriteLine(connectionId);
-                                var stream = new NamedPipeClientStream(".", connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
-                                await stream.ConnectAsync();
-                                Console.WriteLine("Connected");
-
-                                var remote = JsonRpc.Attach<TastyRemote>(stream);
-                                Debugger.Launch();
-                                RegisterReporter(test => remote.Report(new SerializableTestCase
-                                {
-                                    FullName = test.FullName,
-                                    Name = test.Name,
-                                    AdditionalMessage = test.AdditionalMessage,
-                                    Duration = test.Duration,
-                                    Exception = test.Exception,
-                                    IgnoredReason = test.IgnoredReason,
-                                    IsForced = test.IsForced?.Invoke(),
-                                    IsIgnored = test.IsIgnored?.Invoke(),
-                                    TestOutcome = test.TestOutcome
-                                }));
-                            }
-                        }
+                        var remoteStream = await remoteStreamFactory.Invoke();
+                        var disposable = await ConnectToRemoteRunHook(this, remoteStream);
                     }
                 }
             }
@@ -340,7 +326,7 @@ namespace Xenial.Delicious.Scopes
         public Task<int> Run() => Run(Array.Empty<string>());
     }
 
-    public interface TastyRemote
+    public interface TastyRemote : IDisposable
     {
         Task Report(SerializableTestCase @case);
     }

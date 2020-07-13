@@ -42,7 +42,7 @@ namespace Xenial.Delicious.Reporters
             var ignoredTests = tests.Where(m => m.TestOutcome == TestOutcome.Ignored).Count();
             var inconclusiveTests = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Count();
             var successTests = tests.Where(m => m.TestOutcome == TestOutcome.Success).Count();
-            var outcome = tests.Where(t => t.TestOutcome > TestOutcome.Ignored).Min(t => t.TestOutcome);
+            var outcome = tests.Where(t => t.TestOutcome > TestOutcome.Ignored).MinOrDefault(t => t.TestOutcome);
 
             var totalTime = tests.Sum(m => m.Duration);
             var failedTime = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Sum(m => m.Duration);

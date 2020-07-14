@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Commands;
 using Xenial.Delicious.Execution.TestGroupMiddleware;
 using Xenial.Delicious.Execution.TestMiddleware;
-using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
-using Xenial.Delicious.Visitors;
 
 namespace Xenial.Delicious.Execution
 {

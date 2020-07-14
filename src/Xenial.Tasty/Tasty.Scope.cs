@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Net.Security;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
-
-using StreamJsonRpc;
 
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;

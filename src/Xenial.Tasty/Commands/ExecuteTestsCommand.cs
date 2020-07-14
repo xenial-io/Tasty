@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
-using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Visitors;
 
 namespace Xenial.Delicious.Commands

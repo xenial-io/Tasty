@@ -160,21 +160,7 @@ namespace Xenial.Delicious.Reporters
                 Console.WriteLine(formattableString);
             }, ResetColor);
 
-        private static void WriteLine(ConsoleColor color, FormattableString formattableString)
-            => Finally(() =>
-            {
-                Console.ForegroundColor = color;
-                Console.WriteLine(formattableString);
-            }, ResetColor);
-
         private static void Write(ConsoleColor color, string formattableString)
-            => Finally(() =>
-            {
-                Console.ForegroundColor = color;
-                Console.Write(formattableString);
-            }, ResetColor);
-
-        private static void Write(ConsoleColor color, FormattableString formattableString)
             => Finally(() =>
             {
                 Console.ForegroundColor = color;

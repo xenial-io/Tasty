@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using StreamJsonRpc;
+
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Scopes;
 

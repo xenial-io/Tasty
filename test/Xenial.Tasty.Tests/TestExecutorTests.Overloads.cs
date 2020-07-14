@@ -3,10 +3,7 @@ using System.Threading.Tasks;
 
 using FakeItEasy;
 
-using Shouldly;
-
 using Xenial.Delicious.Execution;
-using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
 
 using static Xenial.Tasty;

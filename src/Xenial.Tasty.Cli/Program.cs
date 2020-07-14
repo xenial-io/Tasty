@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
@@ -186,17 +185,6 @@ namespace Xenial.Tasty.Tool
             static ConsoleReporter()
                 => Console.OutputEncoding = Encoding.UTF8;
 
-            static Lazy<int> SeparatorSize = new Lazy<int>(() =>
-            {
-                const int fallBackSize = 100;
-                try
-                {
-                    return Console.BufferWidth;
-                }
-                catch (IOException) { /* Handle is invalid */ }
-                return fallBackSize;
-            });
-
 
             //public static Task ReportSummary(IEnumerable<TestCase> tests)
             //{
@@ -321,27 +309,6 @@ namespace Xenial.Tasty.Tool
                 {
                     Console.ForegroundColor = color;
                     Console.WriteLine(formattableString);
-                }, ResetColor);
-
-            private static void WriteLine(ConsoleColor color, FormattableString formattableString)
-                => Finally(() =>
-                {
-                    Console.ForegroundColor = color;
-                    Console.WriteLine(formattableString);
-                }, ResetColor);
-
-            private static void Write(ConsoleColor color, string formattableString)
-                => Finally(() =>
-                {
-                    Console.ForegroundColor = color;
-                    Console.Write(formattableString);
-                }, ResetColor);
-
-            private static void Write(ConsoleColor color, FormattableString formattableString)
-                => Finally(() =>
-                {
-                    Console.ForegroundColor = color;
-                    Console.Write(formattableString);
                 }, ResetColor);
 
             private static void ResetColor()

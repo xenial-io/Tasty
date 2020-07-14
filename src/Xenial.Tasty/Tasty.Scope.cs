@@ -328,6 +328,7 @@ namespace Xenial.Delicious.Scopes
 
     public interface TastyRemote : IDisposable
     {
+        public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
         Task Report(SerializableTestCase @case);
     }
 }

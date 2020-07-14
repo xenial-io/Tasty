@@ -5,12 +5,18 @@ using System.CommandLine.Invocation;
 using System.IO;
 using System.IO.Pipes;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+
+using Microsoft.VisualBasic;
+
 using StreamJsonRpc;
+
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Utils;
+
 using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.Actions;
 
@@ -64,18 +70,73 @@ namespace Xenial.Tasty.Tool
                     Console.WriteLine("Connecting. NamedPipeServerStream...");
                     await connectionTask;
                     var server = new TastyServer();
-                    var tastyServer = JsonRpc.Attach(stream, server);
+                    using var tastyServer = JsonRpc.Attach(stream, server);
+
+                    var uiTask = Task.Run(async () => await WaitForInput(server));
+
                     Console.WriteLine("Connected. NamedPipeServerStream...");
 
-                    await remoteTask;
+                    await Task.WhenAll(remoteTask, uiTask);
                 }
             }
             return 0;
         }
+        static Task WaitForInput(TastyServer tastyServer)
+        {
+            var cts = new CancellationTokenSource();
+            return Task.Run(() =>
+            {
+                Console.CancelKeyPress += (_, e) =>
+                {
+                    if (e.Cancel)
+                    {
+                        cts.Cancel();
+                    }
+                };
+
+                Action? ReadInput()
+                {
+                    var info = Console.ReadKey();
+                    if (info.Key == ConsoleKey.E || info.Key == ConsoleKey.Enter)
+                    {
+                        return () =>
+                        {
+                            Console.WriteLine("Executing Tests");
+                            tastyServer.DoExecuteCommand(new ExecuteCommandEventArgs
+                            {
+                                CommandName = "Execute"
+                            });
+                        };
+                    }
+                    if (info.Key == ConsoleKey.C)
+                    {
+                        cts.Cancel();
+                        return null;
+                    }
+                    return () => ReadInput();
+                }
+                var action = ReadInput();
+                while (!cts.IsCancellationRequested && action != null)
+                {
+                    action();
+                    action = ReadInput();
+                }
+
+            }, cts.Token);
+        }
+    }
+
+    public interface TastyClient
+    {
+        Task ExecuteCommand(string command);
     }
 
     public class TastyServer
     {
+        public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
+
+        internal void DoExecuteCommand(ExecuteCommandEventArgs args) => this.ExecuteCommand?.Invoke(this, args);
+
         public Task Report(SerializableTestCase @case)
         {
             return ConsoleReporter.Report(@case);

@@ -18,10 +18,12 @@ namespace Xenial.Delicious.Execution
         private IList<Func<TestDelegate, TestDelegate>> TestMiddlewares = new List<Func<TestDelegate, TestDelegate>>();
         private IList<Func<TestGroupDelegate, TestGroupDelegate>> TestGroupMiddlewares = new List<Func<TestGroupDelegate, TestGroupDelegate>>();
         internal TastyScope Scope { get; }
+        internal TastyRemote? Remote { get; }
 
-        public TestExecutor(TastyScope scope)
+        public TestExecutor(TastyScope scope, TastyRemote? remote = null)
         {
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+            Remote = remote;
 
             this
                 .UseTestGroupReporters()
@@ -61,6 +63,37 @@ namespace Xenial.Delicious.Execution
             var testQueue = await ExecuteTestsCommand.Execute(this);
             testQueue = await ExecuteTestsCommand.VisitForcedTestCases(testQueue);
             await ExecuteTestsCommand.Execute(this, testQueue);
+        }
+
+        public Task<bool> WaitForCommand()
+        {
+            if(Remote != null)
+            {
+                var tcs = new TaskCompletionSource<bool>();
+
+                async void ExecuteCommand(object _, Protocols.ExecuteCommandEventArgs e)
+                {
+                    await Execute();
+                    tcs.SetResult(true);
+                }
+                void CancellationRequested(object _, EventArgs __)
+                {
+                    tcs.SetResult(false);
+                }
+                void Exit(object _, EventArgs __)
+                {
+                    tcs.SetCanceled();
+                }
+                Remote.ExecuteCommand -= ExecuteCommand;
+                Remote.ExecuteCommand += ExecuteCommand;
+                Remote.CancellationRequested -= CancellationRequested;
+                Remote.CancellationRequested += CancellationRequested;
+                Remote.Exit -= Exit;
+                Remote.Exit += Exit;
+
+                return tcs.Task;
+            }
+            return Task.FromResult(false);
         }
 
         internal TestDelegate BuildTestMiddleware()

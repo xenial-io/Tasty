@@ -75,8 +75,18 @@ namespace Xenial.Tasty.Tool
                     var uiTask = Task.Run(async () => await WaitForInput(server));
 
                     Console.WriteLine("Connected. NamedPipeServerStream...");
-
-                    await Task.WhenAll(remoteTask, uiTask);
+                    try
+                    {
+                        await Task.WhenAll(remoteTask, uiTask);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return 0;
+                    }
+                    catch (SimpleExec.NonZeroExitCodeException e)
+                    {
+                        return e.ExitCode;
+                    }
                 }
             }
             return 0;
@@ -96,12 +106,19 @@ namespace Xenial.Tasty.Tool
 
                 Action? ReadInput()
                 {
+                    Console.WriteLine("Interactive Mode");
+                    Console.WriteLine("================");
+                    Console.WriteLine("e - Execute Tests");
+                    Console.WriteLine("Enter - Execute Tests");
+                    Console.WriteLine("c - Cancel");
+                    Console.WriteLine("x - Force Exit");
+                    Console.WriteLine("================");
                     var info = Console.ReadKey();
+                    Console.WriteLine($"Executing {info.KeyChar}");
                     if (info.Key == ConsoleKey.E || info.Key == ConsoleKey.Enter)
                     {
                         return () =>
                         {
-                            Console.WriteLine("Executing Tests");
                             tastyServer.DoExecuteCommand(new ExecuteCommandEventArgs
                             {
                                 CommandName = "Execute"
@@ -110,6 +127,13 @@ namespace Xenial.Tasty.Tool
                     }
                     if (info.Key == ConsoleKey.C)
                     {
+                        tastyServer.DoRequestCancellation();
+                        cts.Cancel();
+                        return null;
+                    }
+                    if (info.Key == ConsoleKey.X)
+                    {
+                        tastyServer.DoRequestExit();
                         cts.Cancel();
                         return null;
                     }
@@ -134,8 +158,12 @@ namespace Xenial.Tasty.Tool
     public class TastyServer
     {
         public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
+        public event EventHandler? CancellationRequested;
+        public event EventHandler? Exit;
 
         internal void DoExecuteCommand(ExecuteCommandEventArgs args) => this.ExecuteCommand?.Invoke(this, args);
+        internal void DoRequestCancellation() => this.CancellationRequested?.Invoke(this, EventArgs.Empty);
+        internal void DoRequestExit() => this.Exit?.Invoke(this, EventArgs.Empty);
 
         public Task Report(SerializableTestCase @case)
         {

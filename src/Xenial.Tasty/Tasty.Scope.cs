@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Net.Security;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
@@ -298,28 +299,53 @@ namespace Xenial.Delicious.Scopes
                     {
                         var remoteStream = await remoteStreamFactory.Invoke();
                         var disposable = await ConnectToRemoteRunHook(this, remoteStream);
+                        if (disposable is TastyRemote server)
+                        {
+                            var executor = new TestExecutor(this, server);
+                            try
+                            {
+                                while (await executor.WaitForCommand())
+                                {
+                                    var cases = this.Descendants().OfType<TestCase>().ToList();
+
+                                    await Task.WhenAll(SummaryReporters
+                                        .Select(async r =>
+                                        {
+                                            await r.Invoke(cases);
+                                        }).ToArray());
+                                }
+                            }
+                            catch(TaskCanceledException)
+                            {
+                                return 1;
+                            }
+                            return 0;
+                        }
                     }
                 }
             }
-
-            await new TestExecutor(this).Execute();
-
-            var cases = this.Descendants().OfType<TestCase>().ToList();
-
-            await Task.WhenAll(SummaryReporters
-                .Select(async r =>
-                {
-                    await r.Invoke(cases);
-                }).ToArray());
-
-            var failedCase = cases
-                .FirstOrDefault(m => m.TestOutcome == TestOutcome.Failed);
-
-            if (failedCase != null)
+            else
             {
-                return 1;
-            }
+                await new TestExecutor(this).Execute();
 
+                var cases = this.Descendants().OfType<TestCase>().ToList();
+
+                await Task.WhenAll(SummaryReporters
+                    .Select(async r =>
+                    {
+                        await r.Invoke(cases);
+                    }).ToArray());
+
+                var failedCase = cases
+                    .FirstOrDefault(m => m.TestOutcome == TestOutcome.Failed);
+
+                if (failedCase != null)
+                {
+                    return 1;
+                }
+
+                return 0;
+            }
             return 0;
         }
 
@@ -329,6 +355,8 @@ namespace Xenial.Delicious.Scopes
     public interface TastyRemote : IDisposable
     {
         public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
+        public event EventHandler? CancellationRequested;
+        public event EventHandler? Exit;
         Task Report(SerializableTestCase @case);
     }
 }

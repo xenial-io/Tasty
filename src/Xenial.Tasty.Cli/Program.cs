@@ -8,8 +8,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.VisualBasic;
-
 using StreamJsonRpc;
 
 using Xenial.Delicious.Metadata;
@@ -30,7 +28,7 @@ namespace Xenial.Tasty.Tool
 
             var interactiveCommand = new Command("interactive")
             {
-                Handler = CommandHandler.Create<string>(Interactive)
+                Handler = CommandHandler.Create<string, CancellationToken>(Interactive)
             };
             interactiveCommand.AddAlias("i");
             var arg = new Option<string>("--project");
@@ -41,56 +39,64 @@ namespace Xenial.Tasty.Tool
             return await rootCommand.InvokeAsync(args);
         }
 
-        static async Task<int> Interactive(string project)
+        static async Task<int> Interactive(string project, CancellationToken cancellationToken)
         {
-            var path = Path.GetFullPath(project);
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+            try
             {
-                var directoryName = new DirectoryInfo(path).Name;
-                var csProjFileName = Path.Combine(path, $"{directoryName}.csproj");
-                if (File.Exists(csProjFileName))
+                var path = Path.GetFullPath(project);
+                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
                 {
-                    Console.WriteLine(csProjFileName);
+                    var directoryName = new DirectoryInfo(path).Name;
+                    var csProjFileName = Path.Combine(path, $"{directoryName}.csproj");
+                    if (File.Exists(csProjFileName))
+                    {
+                        Console.WriteLine(csProjFileName);
 
-                    var connectionId = $"TASTY_{Guid.NewGuid()}";
+                        var connectionId = $"TASTY_{Guid.NewGuid()}";
 
-                    using var stream = new NamedPipeServerStream(connectionId, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-                    var connectionTask = stream.WaitForConnectionAsync();
-                    var remoteTask = ReadAsync("dotnet",
-                        $"run -p \"{csProjFileName}\" -f netcoreapp3.1",
-                        noEcho: true,
-                        configureEnvironment: (env) =>
+                        using var stream = new NamedPipeServerStream(connectionId, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                        var connectionTask = stream.WaitForConnectionAsync(cancellationToken);
+                        var remoteTask = ReadAsync("dotnet",
+                            $"run -p \"{csProjFileName}\" -f netcoreapp3.1",
+                            noEcho: true,
+                            configureEnvironment: (env) =>
+                            {
+                                env.Add("TASTY_INTERACTIVE", "true");
+                                env.Add("TASTY_INTERACTIVE_CON_TYPE", "NamedPipes");
+                                env.Add("TASTY_INTERACTIVE_CON_ID", connectionId);
+                            }
+                        );
+
+                        Console.WriteLine("Connecting. NamedPipeServerStream...");
+                        await connectionTask;
+                        var server = new TastyServer();
+                        using var tastyServer = JsonRpc.Attach(stream, server);
+
+                        var uiTask = Task.Run(async () => await WaitForInput(server));
+
+                        Console.WriteLine("Connected. NamedPipeServerStream...");
+                        try
                         {
-                            env.Add("TASTY_INTERACTIVE", "true");
-                            env.Add("TASTY_INTERACTIVE_CON_TYPE", "NamedPipes");
-                            env.Add("TASTY_INTERACTIVE_CON_ID", connectionId);
+                            await Task.WhenAll(remoteTask, uiTask);
                         }
-                    );
-
-                    Console.WriteLine("Connecting. NamedPipeServerStream...");
-                    await connectionTask;
-                    var server = new TastyServer();
-                    using var tastyServer = JsonRpc.Attach(stream, server);
-
-                    var uiTask = Task.Run(async () => await WaitForInput(server));
-
-                    Console.WriteLine("Connected. NamedPipeServerStream...");
-                    try
-                    {
-                        await Task.WhenAll(remoteTask, uiTask);
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        return 0;
-                    }
-                    catch (SimpleExec.NonZeroExitCodeException e)
-                    {
-                        return e.ExitCode;
+                        catch (TaskCanceledException)
+                        {
+                            return 0;
+                        }
+                        catch (SimpleExec.NonZeroExitCodeException e)
+                        {
+                            return e.ExitCode;
+                        }
                     }
                 }
+                return 0;
             }
-            return 0;
+            catch(TaskCanceledException)
+            {
+                return 1;
+            }
         }
+
         static Task WaitForInput(TastyServer tastyServer)
         {
             var cts = new CancellationTokenSource();
@@ -100,7 +106,10 @@ namespace Xenial.Tasty.Tool
                 {
                     if (e.Cancel)
                     {
+                        Console.WriteLine("Cancelling execution...");
+                        tastyServer.DoRequestExit();
                         cts.Cancel();
+                        throw new TaskCanceledException(null, null, cts.Token);
                     }
                 };
 

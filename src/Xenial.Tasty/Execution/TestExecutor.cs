@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Commands;
 using Xenial.Delicious.Execution.TestGroupMiddleware;
 using Xenial.Delicious.Execution.TestMiddleware;
 using Xenial.Delicious.Metadata;
@@ -57,67 +58,9 @@ namespace Xenial.Delicious.Execution
 
         public async Task Execute()
         {
-            var groupQueue = new Queue<TestGroup>(Scope.Descendants().OfType<TestGroup>());
-            var testQueue = new Queue<TestCase>();
-
-            while (groupQueue.Count > 0)
-            {
-                var currentGroup = groupQueue.Dequeue();
-                await Execute(groupQueue, testQueue, currentGroup);
-            }
-
-            testQueue = VisitForcedTestCases(testQueue);
-
-            while (testQueue.Count > 0)
-            {
-                var currentTest = testQueue.Dequeue();
-                await Execute(currentTest);
-            }
-        }
-
-        private static Queue<TestCase> VisitForcedTestCases(Queue<TestCase> testQueue)
-        {
-            if (testQueue.Count(t => t.IsForced != null) > 0)
-            {
-                var forcedTestQueue = new Queue<TestCase>();
-                while (testQueue.Count > 0)
-                {
-                    var currentTest = testQueue.Dequeue();
-                    if (currentTest.IsForced != null)
-                    {
-                        try
-                        {
-                            var result = currentTest.IsForced();
-                            if (result)
-                            {
-                                forcedTestQueue.Enqueue(currentTest);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            currentTest.Exception = ex;
-                            currentTest.TestOutcome = TestOutcome.Failed;
-                        }
-                    }
-                }
-                return forcedTestQueue;
-            }
-
-            return testQueue;
-        }
-
-        internal async Task Execute(Queue<TestGroup> groupQueue, Queue<TestCase> testQueue, TestGroup testGroup)
-        {
-            var app = BuildTestGroupMiddleware();
-            var context = new TestGroupContext(testGroup, Scope, groupQueue, testQueue);
-            await app(context);
-        }
-
-        internal async Task Execute(TestCase testCase)
-        {
-            var app = BuildTestMiddleware();
-            var context = new TestExecutionContext(testCase, Scope, testCase.Group);
-            await app(context);
+            var testQueue = await ExecuteTestsCommand.Execute(this);
+            testQueue = await ExecuteTestsCommand.VisitForcedTestCases(testQueue);
+            await ExecuteTestsCommand.Execute(this, testQueue);
         }
 
         internal TestDelegate BuildTestMiddleware()

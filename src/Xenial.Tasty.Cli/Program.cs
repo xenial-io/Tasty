@@ -91,7 +91,7 @@ namespace Xenial.Tasty.Tool
                 }
                 return 0;
             }
-            catch(TaskCanceledException)
+            catch (TaskCanceledException)
             {
                 return 1;
             }

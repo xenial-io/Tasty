@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Commands;
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
@@ -24,6 +25,7 @@ namespace Xenial.Delicious.Scopes
         internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
         internal ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
         private readonly List<TransportStreamFactoryFunctor> TransportStreamFactories = new List<TransportStreamFactoryFunctor>();
+        private readonly Dictionary<string, TastyCommand> Commands = new Dictionary<string, TastyCommand>();
 
         internal TestGroup CurrentGroup { get; set; }
 
@@ -31,6 +33,18 @@ namespace Xenial.Delicious.Scopes
         {
             Executor = () => Task.FromResult(true);
             CurrentGroup = this;
+        }
+
+        public TastyScope RegisterCommand(string name, Func<TastyScope, Task> command, string? description = null, bool isDefault = false)
+        {
+            Commands[name] = new TastyCommand(name, command, description, isDefault);
+            return this;
+        }
+
+        public TastyScope RegisterCommand(Func<(string name, Func<TastyScope, Task> command, string? description, bool? isDefault)> commandRegistration)
+        {
+            var (name, command, description, isDefault) = commandRegistration();
+            return RegisterCommand(name, command, description, isDefault ?? false);
         }
 
         public TastyScope RegisterReporter(AsyncTestReporter reporter)

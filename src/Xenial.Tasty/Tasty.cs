@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Xenial.Delicious.Commands;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
@@ -32,6 +34,7 @@ namespace Xenial
             DefaultScope = new TastyScope();
             ConsoleReporter.Register();
             DefaultScope.RegisterTransport(NamedPipeRemoteHook.CreateNamedPipeTransportStream);
+            DefaultScope.RegisterCommand(ExecuteTestsCommand.Register);
         }
 
         private static readonly TastyScope DefaultScope;

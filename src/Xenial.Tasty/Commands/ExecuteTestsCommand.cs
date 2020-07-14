@@ -5,12 +5,21 @@ using System.Threading.Tasks;
 
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Visitors;
 
 namespace Xenial.Delicious.Commands
 {
     public static class ExecuteTestsCommand
     {
+        public static (string name, Func<TastyScope, Task> command, string? description, bool? isDefault) Register()
+            => ("e", Execute, "Execute all tests in default order", true);
+
+        public static async Task Execute(TastyScope scope)
+        {
+            await Task.FromResult(true);
+        }
+
         public static async Task<Queue<TestCase>> Execute(TestExecutor executor)
         {
             var groupQueue = new Queue<TestGroup>(executor.Scope.Descendants().OfType<TestGroup>());

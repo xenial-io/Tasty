@@ -315,7 +315,7 @@ namespace Xenial.Delicious.Scopes
                                         }).ToArray());
                                 }
                             }
-                            catch(TaskCanceledException)
+                            catch (TaskCanceledException)
                             {
                                 return 1;
                             }

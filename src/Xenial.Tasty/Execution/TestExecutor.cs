@@ -67,7 +67,7 @@ namespace Xenial.Delicious.Execution
 
         public Task<bool> WaitForCommand()
         {
-            if(Remote != null)
+            if (Remote != null)
             {
                 var tcs = new TaskCompletionSource<bool>();
 

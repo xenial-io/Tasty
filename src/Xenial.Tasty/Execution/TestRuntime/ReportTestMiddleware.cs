@@ -159,6 +159,22 @@ namespace Xenial.Delicious.Execution.TestRuntime
             });
     }
 
+    public static class ResetConsoleColorMiddleware
+    {
+        public static TestExecutor UseResetConsoleColor(this TestExecutor executor)
+            => executor.UseRuntime(async (context, next) =>
+            {
+                try
+                {
+                    await next();
+                }
+                finally
+                {
+                    Console.ResetColor();
+                }
+            });
+    }
+
     public static class RunCommandMiddleware
     {
         public static TestExecutor UseRunCommands(this TestExecutor executor)
@@ -172,8 +188,11 @@ namespace Xenial.Delicious.Execution.TestRuntime
                     }
                     else
                     {
-                        var defaultCommand = context.Scope.Commands.FirstOrDefault(p => p.Value.IsDefault);
-                        await defaultCommand.Value.Command(context);
+                        var defaultCommand = context.Scope.Commands.Values.FirstOrDefault(p => p.IsDefault);
+                        if (defaultCommand != null)
+                        {
+                            await defaultCommand.Command(context);
+                        }
                     }
                 }
                 finally

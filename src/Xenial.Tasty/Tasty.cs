@@ -34,7 +34,6 @@ namespace Xenial
             DefaultScope = new TastyScope();
             ConsoleReporter.Register();
             DefaultScope.RegisterTransport(NamedPipeRemoteHook.CreateNamedPipeTransportStream);
-            DefaultScope.RegisterCommand(ExecuteTestsCommand.Register);
         }
 
         private static readonly TastyScope DefaultScope;

@@ -28,6 +28,7 @@ namespace Xenial.Delicious.Scopes
         {
             Executor = () => Task.FromResult(true);
             CurrentGroup = this;
+            RegisterCommand(ExecuteTestsCommand.Register);
         }
 
         public TastyScope RegisterCommand(string name, Func<RuntimeContext, Task> command, string? description = null, bool isDefault = false)

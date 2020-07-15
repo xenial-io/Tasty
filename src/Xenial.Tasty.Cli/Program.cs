@@ -169,13 +169,22 @@ namespace Xenial.Tasty.Tool
         public event EventHandler? CancellationRequested;
         public event EventHandler? Exit;
 
-        internal void DoExecuteCommand(ExecuteCommandEventArgs args) => this.ExecuteCommand?.Invoke(this, args);
-        internal void DoRequestCancellation() => this.CancellationRequested?.Invoke(this, EventArgs.Empty);
-        internal void DoRequestExit() => this.Exit?.Invoke(this, EventArgs.Empty);
+        internal void DoExecuteCommand(ExecuteCommandEventArgs args) => ExecuteCommand?.Invoke(this, args);
+        internal void DoRequestCancellation() => CancellationRequested?.Invoke(this, EventArgs.Empty);
+        internal void DoRequestExit() => Exit?.Invoke(this, EventArgs.Empty);
 
         public Task Report(SerializableTestCase @case)
         {
             return ConsoleReporter.Report(@case);
+        }
+
+        public void ClearConsole()
+        {
+            try
+            {
+                Console.Clear();
+            }
+            catch (IOException) { /* Handle is invalid */}
         }
 
         public static class ConsoleReporter

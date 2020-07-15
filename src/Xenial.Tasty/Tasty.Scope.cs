@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Commands;
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
-using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
-using Xenial.Delicious.Visitors;
-
-using static Xenial.Delicious.Visitors.TestIterator;
 
 namespace Xenial.Delicious.Scopes
 {
@@ -25,7 +20,7 @@ namespace Xenial.Delicious.Scopes
         internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
         internal ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
         internal List<TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new List<TransportStreamFactoryFunctor>();
-        private readonly Dictionary<string, TastyCommand> Commands = new Dictionary<string, TastyCommand>();
+        internal Dictionary<string, TastyCommand> Commands { get; } = new Dictionary<string, TastyCommand>();
 
         internal TestGroup CurrentGroup { get; set; }
 
@@ -35,13 +30,13 @@ namespace Xenial.Delicious.Scopes
             CurrentGroup = this;
         }
 
-        public TastyScope RegisterCommand(string name, Func<TastyScope, Task> command, string? description = null, bool isDefault = false)
+        public TastyScope RegisterCommand(string name, Func<RuntimeContext, Task> command, string? description = null, bool isDefault = false)
         {
             Commands[name] = new TastyCommand(name, command, description, isDefault);
             return this;
         }
 
-        public TastyScope RegisterCommand(Func<(string name, Func<TastyScope, Task> command, string? description, bool? isDefault)> commandRegistration)
+        public TastyScope RegisterCommand(Func<(string name, Func<RuntimeContext, Task> command, string? description, bool? isDefault)> commandRegistration)
         {
             var (name, command, description, isDefault) = commandRegistration();
             return RegisterCommand(name, command, description, isDefault ?? false);
@@ -288,70 +283,8 @@ namespace Xenial.Delicious.Scopes
 
         public async Task<int> Run(string[] args)
         {
-            if (ClearBeforeRun)
-            {
-                try
-                {
-                    Console.Clear();
-                }
-                catch (IOException) { /* Handle is invalid */}
-            }
-
-            if (await IsInteractiveRunHook())
-            {
-                foreach (var remoteStreamFactoryFunctor in TransportStreamFactories)
-                {
-                    var remoteStreamFactory = await remoteStreamFactoryFunctor();
-                    if (remoteStreamFactory != null)
-                    {
-                        var remoteStream = await remoteStreamFactory.Invoke();
-                        var server = await ConnectToRemoteRunHook(this, remoteStream);
-
-                        var executor = new TestExecutor(this, server);
-                        try
-                        {
-                            while (await executor.WaitForCommand())
-                            {
-                                var cases = this.Descendants().OfType<TestCase>().ToList();
-
-                                await Task.WhenAll(SummaryReporters
-                                    .Select(async r =>
-                                    {
-                                        await r.Invoke(cases);
-                                    }).ToArray());
-                            }
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            return 1;
-                        }
-                        return 0;
-                    }
-                }
-            }
-            else
-            {
-                await new TestExecutor(this).Execute();
-
-                var cases = this.Descendants().OfType<TestCase>().ToList();
-
-                await Task.WhenAll(SummaryReporters
-                    .Select(async r =>
-                    {
-                        await r.Invoke(cases);
-                    }).ToArray());
-
-                var failedCase = cases
-                    .FirstOrDefault(m => m.TestOutcome == TestOutcome.Failed);
-
-                if (failedCase != null)
-                {
-                    return 1;
-                }
-
-                return 0;
-            }
-            return 0;
+            var executor = new TestExecutor(this);
+            return await executor.Execute();
         }
 
         public Task<int> Run() => Run(Array.Empty<string>());

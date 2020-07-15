@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -95,9 +96,29 @@ namespace Xenial.Delicious.Execution.TestRuntime
                 }
             });
     }
+
+    public static class FinishPipelineMiddleware
+    {
+        public static TestExecutor UseFinishPipeline(this TestExecutor executor)
+            => executor.UseRuntime(async (context, next) =>
+            {
+                try
+                {
+                    await next();
+                }
+                finally
+                {
+                    if (!context.IsInteractive)
+                    {
+                        context.IsFinished = true;
+                    }
+                }
+            });
+    }
+
     public static class RemoteStreamDisposalMiddleware
     {
-        public static TestExecutor UseRemote(this TestExecutor executor)
+        public static TestExecutor UseRemoteDisposal(this TestExecutor executor)
             => executor.UseRuntime(async (context, next) =>
             {
                 try
@@ -113,5 +134,73 @@ namespace Xenial.Delicious.Execution.TestRuntime
                     }
                 }
             });
+    }
+
+    public static class ClearConsoleMiddleware
+    {
+        public static TestExecutor UseClearConsole(this TestExecutor executor)
+            => executor.UseRuntime(async (context, next) =>
+            {
+                try
+                {
+                    if (context.Scope.ClearBeforeRun)
+                    {
+                        try
+                        {
+                            Console.Clear();
+                        }
+                        catch (IOException) { /* Handle is invalid */}
+                    }
+                }
+                finally
+                {
+                    await next();
+                }
+            });
+    }
+
+    public static class RunCommandMiddleware
+    {
+        public static TestExecutor UseRunCommands(this TestExecutor executor)
+            => executor.UseRuntime(async (context, next) =>
+            {
+                try
+                {
+                    if (context.IsInteractive)
+                    {
+
+                    }
+                    else
+                    {
+                        var defaultCommand = context.Scope.Commands.FirstOrDefault(p => p.Value.IsDefault);
+                        await defaultCommand.Value.Command(context);
+                    }
+                }
+                finally
+                {
+                    await next();
+                }
+            });
+
+    }
+
+    public static class ClearRemoteConsoleMiddleware
+    {
+        public static TestExecutor UseRemoteClearConsole(this TestExecutor executor)
+            => executor.UseRuntime(async (context, next) =>
+            {
+                try
+                {
+                    if (context.Scope.ClearBeforeRun && context.Remote != null)
+                    {
+                        await context.Remote.ClearConsole();
+                    }
+                }
+                finally
+                {
+                    await next();
+                }
+            });
+
     }
 }

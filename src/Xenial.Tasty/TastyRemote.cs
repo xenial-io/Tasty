@@ -11,6 +11,7 @@ namespace Xenial.Delicious.Scopes
         public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
         public event EventHandler? CancellationRequested;
         public event EventHandler? Exit;
+        Task ClearConsole();
         Task Report(SerializableTestCase @case);
     }
 }

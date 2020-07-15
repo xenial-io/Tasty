@@ -12,15 +12,19 @@ namespace Xenial.Delicious.Commands
 {
     public static class ExecuteTestsCommand
     {
-        public static (string name, Func<TastyScope, Task> command, string? description, bool? isDefault) Register()
+        public static (string name, Func<RuntimeContext, Task> command, string? description, bool? isDefault) Register()
             => ("e", Execute, "Execute all tests in default order", true);
 
-        public static async Task Execute(TastyScope scope)
+        public static async Task Execute(RuntimeContext context)
         {
+            context.TestQueue = await Execute(context.Executor);
+            context.TestQueue = await VisitForcedTestCases(context.TestQueue);
+            await Execute(context.Executor, context.TestQueue);
+
             await Task.FromResult(true);
         }
 
-        public static async Task<Queue<TestCase>> Execute(TestExecutor executor)
+        static async Task<Queue<TestCase>> Execute(TestExecutor executor)
         {
             var groupQueue = new Queue<TestGroup>(executor.Scope.Descendants().OfType<TestGroup>());
             var testQueue = new Queue<TestCase>();

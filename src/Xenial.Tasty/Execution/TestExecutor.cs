@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Commands;
@@ -17,19 +18,21 @@ namespace Xenial.Delicious.Execution
         private IList<Func<TestGroupDelegate, TestGroupDelegate>> TestGroupMiddlewares = new List<Func<TestGroupDelegate, TestGroupDelegate>>();
         private IList<Func<RuntimeDelegate, RuntimeDelegate>> RuntimeMiddlewares = new List<Func<RuntimeDelegate, RuntimeDelegate>>();
         internal TastyScope Scope { get; }
-        internal TastyRemote? Remote { get; }
 
-        public TestExecutor(TastyScope scope, TastyRemote? remote = null)
+        public TestExecutor(TastyScope scope)
         {
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
-            Remote = remote;
 
             this
+                .UseFinishPipeline()
                 .UseRemoteDisposal()
                 .UseExitCodeReporter()
                 .UseSummaryReporters()
+                .UseRunCommands()
+                .UseRemoteClearConsole()
                 .UseRemote()
                 .UseInteractiveRunDetection()
+                .UseClearConsole()
                 ;
 
             this
@@ -71,43 +74,53 @@ namespace Xenial.Delicious.Execution
             return this;
         }
 
-        public async Task Execute()
+        public async Task<int> Execute()
         {
-            var testQueue = await ExecuteTestsCommand.Execute(this);
-            testQueue = await ExecuteTestsCommand.VisitForcedTestCases(testQueue);
-            await ExecuteTestsCommand.Execute(this, testQueue);
-        }
+            using var context = new RuntimeContext(Scope, this);
 
-        public Task<bool> WaitForCommand()
-        {
-            if (Remote != null)
+            while (!context.IsFinished)
             {
-                var tcs = new TaskCompletionSource<bool>();
+                var app = BuildRuntimeMiddleware();
 
-                async void ExecuteCommand(object _, Protocols.ExecuteCommandEventArgs e)
-                {
-                    await Execute();
-                    tcs.SetResult(true);
-                }
-                void CancellationRequested(object _, EventArgs __)
-                {
-                    tcs.SetResult(false);
-                }
-                void Exit(object _, EventArgs __)
-                {
-                    tcs.SetCanceled();
-                }
-                Remote.ExecuteCommand -= ExecuteCommand;
-                Remote.ExecuteCommand += ExecuteCommand;
-                Remote.CancellationRequested -= CancellationRequested;
-                Remote.CancellationRequested += CancellationRequested;
-                Remote.Exit -= Exit;
-                Remote.Exit += Exit;
-
-                return tcs.Task;
+                await app(context);
             }
-            return Task.FromResult(false);
+
+            //var testQueue = await ExecuteTestsCommand.Execute(this);
+            //testQueue = await ExecuteTestsCommand.VisitForcedTestCases(testQueue);
+            //await ExecuteTestsCommand.Execute(this, testQueue);
+            return context.ExitCode;
         }
+
+        //public Task<bool> WaitForCommand()
+        //{
+        //    if (Remote != null)
+        //    {
+        //        var tcs = new TaskCompletionSource<bool>();
+
+        //        async void ExecuteCommand(object _, Protocols.ExecuteCommandEventArgs e)
+        //        {
+        //            await Execute();
+        //            tcs.SetResult(true);
+        //        }
+        //        void CancellationRequested(object _, EventArgs __)
+        //        {
+        //            tcs.SetResult(false);
+        //        }
+        //        void Exit(object _, EventArgs __)
+        //        {
+        //            tcs.SetCanceled();
+        //        }
+        //        Remote.ExecuteCommand -= ExecuteCommand;
+        //        Remote.ExecuteCommand += ExecuteCommand;
+        //        Remote.CancellationRequested -= CancellationRequested;
+        //        Remote.CancellationRequested += CancellationRequested;
+        //        Remote.Exit -= Exit;
+        //        Remote.Exit += Exit;
+
+        //        return tcs.Task;
+        //    }
+        //    return Task.FromResult(false);
+        //}
 
         internal RuntimeDelegate BuildRuntimeMiddleware()
         {

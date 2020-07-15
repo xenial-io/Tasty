@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-using Xenial.Delicious.Scopes;
+using Xenial.Delicious.Execution;
 
 namespace Xenial.Delicious.Commands
 {
     public class TastyCommand
     {
-        public TastyCommand(string name, Func<TastyScope, Task> command, string? description, bool isDefault = false)
+        public TastyCommand(string name, Func<RuntimeContext, Task> command, string? description, bool isDefault = false)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Command = command ?? throw new ArgumentNullException(nameof(command));
@@ -18,7 +16,7 @@ namespace Xenial.Delicious.Commands
         }
 
         public string Name { get; }
-        public Func<TastyScope, Task> Command { get; }
+        public Func<RuntimeContext, Task> Command { get; }
         public string? Description { get; }
         public bool IsDefault { get; } = false;
     }

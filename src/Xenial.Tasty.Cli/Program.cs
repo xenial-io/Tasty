@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -71,11 +73,15 @@ namespace Xenial.Tasty.Tool
                         var server = new TastyServer();
                         using var tastyServer = JsonRpc.Attach(stream, server);
 
-                        var uiTask = Task.Run(async () => await WaitForInput(server));
-
                         Console.WriteLine("Connected. NamedPipeServerStream...");
                         try
                         {
+                            var uiTask = Task.Run(async () =>
+                            {
+                                var commands = await Task.Run(async () => await WaitForCommands(server), cancellationToken);
+                                await Task.Run(async () => await WaitForInput(commands, server), cancellationToken);
+                            }, cancellationToken);
+
                             await Task.WhenAll(remoteTask, uiTask);
                         }
                         catch (TaskCanceledException)
@@ -96,9 +102,26 @@ namespace Xenial.Tasty.Tool
             }
         }
 
-        static Task WaitForInput(TastyServer tastyServer)
+        static Task<IList<SerializableTastyCommand>> WaitForCommands(TastyServer tastyServer)
+        {
+            var tcs = new TaskCompletionSource<IList<SerializableTastyCommand>>();
+            var cts = new CancellationTokenSource();
+
+            cts.CancelAfter(10000);
+            cts.Token.Register(() => tcs.SetCanceled());
+
+            tastyServer.CommandsRegistered = (c) =>
+            {
+                tcs.SetResult(c);
+            };
+
+            return tcs.Task;
+        }
+
+        static Task WaitForInput(IList<SerializableTastyCommand> commands, TastyServer tastyServer)
         {
             var cts = new CancellationTokenSource();
+
             return Task.Run(() =>
             {
                 Console.CancelKeyPress += (_, e) =>
@@ -116,35 +139,49 @@ namespace Xenial.Tasty.Tool
                 {
                     Console.WriteLine("Interactive Mode");
                     Console.WriteLine("================");
-                    Console.WriteLine("e - Execute Tests");
-                    Console.WriteLine("Enter - Execute Tests");
+
+                    foreach (var c in commands)
+                    {
+                        Console.WriteLine($"{c.Name} - {c.Description}" + (c.IsDefault ? " (default)" : string.Empty));
+                    }
+
                     Console.WriteLine("c - Cancel");
                     Console.WriteLine("x - Force Exit");
                     Console.WriteLine("================");
-                    var info = Console.ReadKey();
-                    Console.WriteLine($"Executing {info.KeyChar}");
-                    if (info.Key == ConsoleKey.E || info.Key == ConsoleKey.Enter)
+                    var info = Console.ReadKey(true);
+                    var key = info.Key.ToString().ToLower();
+
+                    var command = info.Key == ConsoleKey.Enter
+                        ? commands.FirstOrDefault(c => c.IsDefault)
+                        : commands.FirstOrDefault(c => c.Name.ToLowerInvariant() == key);
+
+                    if (command != null)
                     {
+                        Console.WriteLine($"Executing {command.Name} - {command.Description}");
+
                         return () =>
                         {
                             tastyServer.DoExecuteCommand(new ExecuteCommandEventArgs
                             {
-                                CommandName = "Execute"
+                                CommandName = command.Name
                             });
                         };
                     }
+
                     if (info.Key == ConsoleKey.C)
                     {
                         tastyServer.DoRequestCancellation();
                         cts.Cancel();
                         return null;
                     }
+
                     if (info.Key == ConsoleKey.X)
                     {
                         tastyServer.DoRequestExit();
                         cts.Cancel();
                         return null;
                     }
+
                     return () => ReadInput();
                 }
                 var action = ReadInput();
@@ -156,11 +193,6 @@ namespace Xenial.Tasty.Tool
 
             }, cts.Token);
         }
-    }
-
-    public interface TastyClient
-    {
-        Task ExecuteCommand(string command);
     }
 
     public class TastyServer
@@ -176,6 +208,12 @@ namespace Xenial.Tasty.Tool
         public Task Report(SerializableTestCase @case)
         {
             return ConsoleReporter.Report(@case);
+        }
+
+        internal Action<IList<SerializableTastyCommand>>? CommandsRegistered;
+        public void RegisterCommands(IList<SerializableTastyCommand> commands)
+        {
+            CommandsRegistered?.Invoke(commands);
         }
 
         public void ClearConsole()

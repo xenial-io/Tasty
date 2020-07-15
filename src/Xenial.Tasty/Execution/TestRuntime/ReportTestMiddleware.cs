@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Visitors;
 
 namespace Xenial.Delicious.Execution.TestRuntime
@@ -175,6 +176,33 @@ namespace Xenial.Delicious.Execution.TestRuntime
             });
     }
 
+    public static class RegisterCommandsMiddleware
+    {
+        public static TestExecutor UseRegisterCommands(this TestExecutor executor)
+            => executor.UseRuntime(async (context, next) =>
+            {
+                try
+                {
+                    if (context.Remote != null)
+                    {
+                        var commands = context.Scope.Commands.Values.Select(c => new SerializableTastyCommand
+                        {
+                            Name = c.Name,
+                            Description = c.Description,
+                            IsDefault = c.IsDefault
+                        }).ToList();
+
+                        await context.Remote.RegisterCommands(commands);
+                    }
+                }
+                finally
+                {
+                    await next();
+                }
+            });
+
+    }
+
     public static class RunCommandMiddleware
     {
         public static TestExecutor UseRunCommands(this TestExecutor executor)
@@ -182,9 +210,45 @@ namespace Xenial.Delicious.Execution.TestRuntime
             {
                 try
                 {
-                    if (context.IsInteractive)
+                    if (context.IsInteractive && context.Remote != null)
                     {
+                        var tcs = new TaskCompletionSource<bool>();
 
+                        async void ExecuteCommand(object _, ExecuteCommandEventArgs e)
+                        {
+                            var command = context.Scope.Commands.Values.FirstOrDefault(p => p.Name == e.CommandName);
+                            if (command != null)
+                            {
+                                try
+                                {
+                                    await command.Command(context);
+                                    tcs.SetResult(true);
+                                }
+                                catch (Exception ex)
+                                {
+                                    tcs.SetException(ex);
+                                }
+                            }
+                        }
+
+                        void CancellationRequested(object _, EventArgs __)
+                        {
+                            tcs.SetResult(false);
+                        }
+
+                        void Exit(object _, EventArgs __)
+                        {
+                            tcs.SetCanceled();
+                        }
+
+                        context.Remote.ExecuteCommand -= ExecuteCommand;
+                        context.Remote.ExecuteCommand += ExecuteCommand;
+                        context.Remote.CancellationRequested -= CancellationRequested;
+                        context.Remote.CancellationRequested += CancellationRequested;
+                        context.Remote.Exit -= Exit;
+                        context.Remote.Exit += Exit;
+
+                        await tcs.Task;
                     }
                     else
                     {

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Protocols;
@@ -13,5 +13,6 @@ namespace Xenial.Delicious.Scopes
         public event EventHandler? Exit;
         Task ClearConsole();
         Task Report(SerializableTestCase @case);
+        Task RegisterCommands(IList<SerializableTastyCommand> commands);
     }
 }

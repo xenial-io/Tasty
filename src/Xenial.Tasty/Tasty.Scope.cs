@@ -21,10 +21,10 @@ namespace Xenial.Delicious.Scopes
         public bool ClearBeforeRun { get; set; } = true;
 
         private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
-        private readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
+        internal readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
         internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
         internal ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
-        private readonly List<TransportStreamFactoryFunctor> TransportStreamFactories = new List<TransportStreamFactoryFunctor>();
+        internal List<TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new List<TransportStreamFactoryFunctor>();
         private readonly Dictionary<string, TastyCommand> Commands = new Dictionary<string, TastyCommand>();
 
         internal TestGroup CurrentGroup { get; set; }
@@ -305,29 +305,27 @@ namespace Xenial.Delicious.Scopes
                     if (remoteStreamFactory != null)
                     {
                         var remoteStream = await remoteStreamFactory.Invoke();
-                        var disposable = await ConnectToRemoteRunHook(this, remoteStream);
-                        if (disposable is TastyRemote server)
-                        {
-                            var executor = new TestExecutor(this, server);
-                            try
-                            {
-                                while (await executor.WaitForCommand())
-                                {
-                                    var cases = this.Descendants().OfType<TestCase>().ToList();
+                        var server = await ConnectToRemoteRunHook(this, remoteStream);
 
-                                    await Task.WhenAll(SummaryReporters
-                                        .Select(async r =>
-                                        {
-                                            await r.Invoke(cases);
-                                        }).ToArray());
-                                }
-                            }
-                            catch (TaskCanceledException)
+                        var executor = new TestExecutor(this, server);
+                        try
+                        {
+                            while (await executor.WaitForCommand())
                             {
-                                return 1;
+                                var cases = this.Descendants().OfType<TestCase>().ToList();
+
+                                await Task.WhenAll(SummaryReporters
+                                    .Select(async r =>
+                                    {
+                                        await r.Invoke(cases);
+                                    }).ToArray());
                             }
-                            return 0;
                         }
+                        catch (TaskCanceledException)
+                        {
+                            return 1;
+                        }
+                        return 0;
                     }
                 }
             }
@@ -357,13 +355,5 @@ namespace Xenial.Delicious.Scopes
         }
 
         public Task<int> Run() => Run(Array.Empty<string>());
-    }
-
-    public interface TastyRemote : IDisposable
-    {
-        public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
-        public event EventHandler? CancellationRequested;
-        public event EventHandler? Exit;
-        Task Report(SerializableTestCase @case);
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xenial.Delicious.Commands;
 using Xenial.Delicious.Execution.TestGroupMiddleware;
 using Xenial.Delicious.Execution.TestMiddleware;
+using Xenial.Delicious.Execution.TestRuntime;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Execution
@@ -14,6 +15,7 @@ namespace Xenial.Delicious.Execution
     {
         private IList<Func<TestDelegate, TestDelegate>> TestMiddlewares = new List<Func<TestDelegate, TestDelegate>>();
         private IList<Func<TestGroupDelegate, TestGroupDelegate>> TestGroupMiddlewares = new List<Func<TestGroupDelegate, TestGroupDelegate>>();
+        private IList<Func<RuntimeDelegate, RuntimeDelegate>> RuntimeMiddlewares = new List<Func<RuntimeDelegate, RuntimeDelegate>>();
         internal TastyScope Scope { get; }
         internal TastyRemote? Remote { get; }
 
@@ -21,6 +23,14 @@ namespace Xenial.Delicious.Execution
         {
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
             Remote = remote;
+
+            this
+                .UseRemoteDisposal()
+                .UseExitCodeReporter()
+                .UseSummaryReporters()
+                .UseRemote()
+                .UseInteractiveRunDetection()
+                ;
 
             this
                 .UseTestGroupReporters()
@@ -52,6 +62,12 @@ namespace Xenial.Delicious.Execution
         public TestExecutor Use(Func<TestGroupDelegate, TestGroupDelegate> middleware)
         {
             TestGroupMiddlewares.Add(middleware);
+            return this;
+        }
+
+        public TestExecutor Use(Func<RuntimeDelegate, RuntimeDelegate> middleware)
+        {
+            RuntimeMiddlewares.Add(middleware);
             return this;
         }
 
@@ -91,6 +107,21 @@ namespace Xenial.Delicious.Execution
                 return tcs.Task;
             }
             return Task.FromResult(false);
+        }
+
+        internal RuntimeDelegate BuildRuntimeMiddleware()
+        {
+            RuntimeDelegate app = context =>
+            {
+                return Task.CompletedTask;
+            };
+
+            foreach (var middleware in RuntimeMiddlewares.Reverse())
+            {
+                app = middleware(app);
+            }
+
+            return app;
         }
 
         internal TestDelegate BuildTestMiddleware()

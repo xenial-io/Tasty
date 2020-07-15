@@ -17,7 +17,7 @@ namespace Xenial.Delicious.Remote
     public delegate Task<TransportStreamFactory?> TransportStreamFactoryFunctor();
     public delegate Task<Stream> TransportStreamFactory();
 
-    public delegate Task<IDisposable> ConnectToRemote(TastyScope scope, Stream remoteStream);
+    public delegate Task<TastyRemote> ConnectToRemote(TastyScope scope, Stream remoteStream);
 
     //[EnumeratorCancellation] 
     public delegate IAsyncEnumerable<SerializableTestCase> ReportTests(IAsyncEnumerable<SerializableTestCase> tests, CancellationToken cancellationToken);
@@ -37,7 +37,7 @@ namespace Xenial.Delicious.Remote
             return Task.FromResult(false);
         }
 
-        public static Task<IDisposable> AttachToStream(TastyScope scope, Stream remoteStream)
+        public static Task<TastyRemote> AttachToStream(TastyScope scope, Stream remoteStream)
         {
             var remote = JsonRpc.Attach<TastyRemote>(remoteStream);
 
@@ -54,7 +54,7 @@ namespace Xenial.Delicious.Remote
                 TestOutcome = test.TestOutcome
             }));
 
-            return Task.FromResult((IDisposable)remote);
+            return Task.FromResult(remote);
         }
     }
 

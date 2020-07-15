@@ -10,7 +10,7 @@ namespace Xenial.Delicious.Execution
     {
         private bool disposedValue;
 
-        public RuntimeContext(TastyScope scope) 
+        public RuntimeContext(TastyScope scope)
             => Scope = scope ?? throw new ArgumentNullException(nameof(scope));
 
         public TastyScope Scope { get; }

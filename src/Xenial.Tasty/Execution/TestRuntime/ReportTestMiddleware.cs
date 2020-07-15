@@ -44,8 +44,8 @@ namespace Xenial.Delicious.Execution.TestRuntime
                     var failedCase = cases
                         .FirstOrDefault(m => m.TestOutcome == TestOutcome.Failed);
 
-                    context.ExitCode = failedCase != null 
-                        ? 1 
+                    context.ExitCode = failedCase != null
+                        ? 1
                         : 0;
                 }
             });
@@ -74,7 +74,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
             {
                 try
                 {
-                    if(context.IsInteractive)
+                    if (context.IsInteractive)
                     {
                         foreach (var remoteStreamFactoryFunctor in context.Scope.TransportStreamFactories)
                         {

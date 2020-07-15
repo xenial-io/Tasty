@@ -25,15 +25,16 @@ namespace Xenial.Delicious.Execution
 
             this
                 .UseClearConsole()
+                .UseRemoteClearConsole()
                 .UseFinishPipeline()
                 .UseResetConsoleColor()
                 .UseRemoteDisposal()
                 .UseExitCodeReporter()
                 .UseSummaryReporters()
-                .UseRunCommands()
-                .UseRemoteClearConsole()
-                .UseRemote()
                 .UseInteractiveRunDetection()
+                .UseRemote()
+                .UseRegisterCommands()
+                .UseRunCommands()
                 ;
 
             this

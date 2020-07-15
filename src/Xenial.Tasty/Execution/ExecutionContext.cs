@@ -21,7 +21,7 @@ namespace Xenial.Delicious.Execution
 
         public TastyScope Scope { get; }
         public TestExecutor Executor { get; }
-        public bool IsRemoteAttached { get; set; }
+        public bool IsRemoteAttached => RemoteStream != null;
         public Stream? RemoteStream { get; set; }
         public TastyRemote? Remote { get; set; }
         public int ExitCode { get; internal set; }

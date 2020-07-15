@@ -112,6 +112,7 @@ namespace Xenial.Tasty.Tool
 
             tastyServer.CommandsRegistered = (c) =>
             {
+                cts.Dispose();
                 tcs.SetResult(c);
             };
 

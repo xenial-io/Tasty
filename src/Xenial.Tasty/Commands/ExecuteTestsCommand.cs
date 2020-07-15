@@ -10,18 +10,28 @@ using Xenial.Delicious.Visitors;
 
 namespace Xenial.Delicious.Commands
 {
+    public static class ExitCommand
+    {
+        public static (string name, Func<RuntimeContext, Task> command, string? description, bool? isDefault) Register()
+            => ("x", Execute, "Exit interactive run", false);
+
+        static Task Execute(RuntimeContext context)
+        {
+            context.IsFinished = true;
+            return Task.CompletedTask;
+        }
+    }
+
     public static class ExecuteTestsCommand
     {
         public static (string name, Func<RuntimeContext, Task> command, string? description, bool? isDefault) Register()
             => ("e", Execute, "Execute all tests in default order", true);
 
-        public static async Task Execute(RuntimeContext context)
+        static async Task Execute(RuntimeContext context)
         {
             context.TestQueue = await Execute(context.Executor);
             context.TestQueue = await VisitForcedTestCases(context.TestQueue);
             await Execute(context.Executor, context.TestQueue);
-
-            await Task.FromResult(true);
         }
 
         static async Task<Queue<TestCase>> Execute(TestExecutor executor)

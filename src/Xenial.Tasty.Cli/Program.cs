@@ -123,20 +123,25 @@ namespace Xenial.Tasty.Tool
         {
             var cts = new CancellationTokenSource();
 
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 Console.CancelKeyPress += (_, e) =>
                 {
                     if (e.Cancel)
                     {
                         Console.WriteLine("Cancelling execution...");
-                        tastyServer.DoRequestExit();
                         cts.Cancel();
                         throw new TaskCanceledException(null, null, cts.Token);
                     }
                 };
 
-                Action? ReadInput()
+                tastyServer.FinishSignaled = () =>
+                {
+                    Console.WriteLine("Cancelling execution...");
+                    cts.Cancel();
+                };
+
+                async Task<Func<Task>?> ReadInput()
                 {
                     Console.WriteLine("Interactive Mode");
                     Console.WriteLine("================");
@@ -147,9 +152,24 @@ namespace Xenial.Tasty.Tool
                     }
 
                     Console.WriteLine("c - Cancel");
-                    Console.WriteLine("x - Force Exit");
                     Console.WriteLine("================");
-                    var info = Console.ReadKey(true);
+
+                    Task<ConsoleKeyInfo> ReadKey()
+                    {
+                        var keyTcs = new TaskCompletionSource<ConsoleKeyInfo>();
+                        cts.Token.Register(() => keyTcs.SetCanceled());
+
+                        _ = Task.Run(() =>
+                        {
+                            var info = Console.ReadKey(true);
+                            keyTcs.SetResult(info);
+                        });
+
+                        return keyTcs.Task;
+                    }
+
+                    var info = await ReadKey();
+
                     var key = info.Key.ToString().ToLower();
 
                     var command = info.Key == ConsoleKey.Enter
@@ -160,9 +180,9 @@ namespace Xenial.Tasty.Tool
                     {
                         Console.WriteLine($"Executing {command.Name} - {command.Description}");
 
-                        return () =>
+                        return async () =>
                         {
-                            tastyServer.DoExecuteCommand(new ExecuteCommandEventArgs
+                            await tastyServer.DoExecuteCommand(new ExecuteCommandEventArgs
                             {
                                 CommandName = command.Name
                             });
@@ -171,25 +191,18 @@ namespace Xenial.Tasty.Tool
 
                     if (info.Key == ConsoleKey.C)
                     {
-                        tastyServer.DoRequestCancellation();
+                        await tastyServer.DoRequestCancellation();
                         cts.Cancel();
                         return null;
                     }
 
-                    if (info.Key == ConsoleKey.X)
-                    {
-                        tastyServer.DoRequestExit();
-                        cts.Cancel();
-                        return null;
-                    }
-
-                    return () => ReadInput();
+                    return async () => await ReadInput();
                 }
-                var action = ReadInput();
+                var action = await ReadInput();
                 while (!cts.IsCancellationRequested && action != null)
                 {
-                    action();
-                    action = ReadInput();
+                    await action();
+                    action = await ReadInput();
                 }
 
             }, cts.Token);
@@ -200,21 +213,32 @@ namespace Xenial.Tasty.Tool
     {
         public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
         public event EventHandler? CancellationRequested;
-        public event EventHandler? Exit;
 
-        internal void DoExecuteCommand(ExecuteCommandEventArgs args) => ExecuteCommand?.Invoke(this, args);
-        internal void DoRequestCancellation() => CancellationRequested?.Invoke(this, EventArgs.Empty);
-        internal void DoRequestExit() => Exit?.Invoke(this, EventArgs.Empty);
-
-        public Task Report(SerializableTestCase @case)
+        internal async Task DoExecuteCommand(ExecuteCommandEventArgs args)
         {
-            return ConsoleReporter.Report(@case);
+            ExecuteCommand?.Invoke(this, args);
+            await Task.CompletedTask;
         }
 
+        internal async Task DoRequestCancellation()
+        {
+            CancellationRequested?.Invoke(this, EventArgs.Empty);
+            await Task.CompletedTask;
+        }
+
+        public Task Report(SerializableTestCase @case)
+            => ConsoleReporter.Report(@case);
+
         internal Action<IList<SerializableTastyCommand>>? CommandsRegistered;
+        internal Action? FinishSignaled;
         public void RegisterCommands(IList<SerializableTastyCommand> commands)
         {
             CommandsRegistered?.Invoke(commands);
+        }
+
+        public void SignalFinish()
+        {
+            FinishSignaled?.Invoke();
         }
 
         public void ClearConsole()

@@ -14,5 +14,6 @@ namespace Xenial.Delicious.Scopes
         Task ClearConsole();
         Task Report(SerializableTestCase @case);
         Task RegisterCommands(IList<SerializableTastyCommand> commands);
+        Task SignalFinish();
     }
 }

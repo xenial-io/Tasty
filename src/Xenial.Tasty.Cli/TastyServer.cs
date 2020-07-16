@@ -40,13 +40,13 @@ namespace Xenial.Tasty.Tool
         internal Action<IList<SerializableTastyCommand>>? CommandsRegistered;
         internal Action? TestRunEndSignaled;
         internal Action? TestRunCompletedSignaled;
-        public void RegisterCommands(IList<SerializableTastyCommand> commands) 
+        public void RegisterCommands(IList<SerializableTastyCommand> commands)
             => CommandsRegistered?.Invoke(commands);
 
-        public void SignalTestRunEnd() 
+        public void SignalTestRunEnd()
             => TestRunEndSignaled?.Invoke();
 
-        public void SignalTestRunCompleted() 
+        public void SignalTestRunCompleted()
             => TestRunCompletedSignaled?.Invoke();
 
 

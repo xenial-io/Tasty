@@ -189,12 +189,13 @@ namespace Xenial.Delicious.Cli
                     }
                     if (info.Key == ConsoleKey.C)
                     {
-                        return async () =>
+                        return () => Promise(async (_, reject) =>
                         {
                             Console.WriteLine($"Requesting cancellation");
 
                             await tastyServer.DoRequestCancellation();
-                        };
+                            reject();
+                        });
                     }
 
                     return () =>
@@ -203,14 +204,31 @@ namespace Xenial.Delicious.Cli
                     };
                 };
 
-                Task waitForInput() => Promise(async (resolve) =>
+                Task waitForInput() => Promise(async (resolve, reject) =>
                 {
                     writeCommands();
                     var input = await readInput();
-                    var cancel = cancelKeyPress();
-                    var endTestPipeline = endTestPipelineSignaled();
-                    await Task.WhenAny(input(), cancel, endTestPipeline);
-                    await waitForInput();
+
+                    var stop = Promise(async (_, reject) =>
+                    {
+                        var cancel = cancelKeyPress();
+                        var endTestPipeline = endTestPipelineSignaled();
+                        try
+                        {
+                            await Task.WhenAny(cancel, endTestPipeline);
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            reject();
+                        }
+                    });
+                    var inputTask = input();
+                    var tasks = new[] { inputTask, stop };
+                    await Task.WhenAny(tasks);
+                    if (!tasks.Any(m => m.Status == TaskStatus.Canceled))
+                    {
+                        await waitForInput();
+                    }
                 });
                 return waitForInput();
             });

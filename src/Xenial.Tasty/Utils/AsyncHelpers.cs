@@ -18,6 +18,18 @@ namespace Xenial.Delicious.Utils
             return tsc.Task;
         }
 
+        public static async Task Promise(Func<Action, Action, Task> functor)
+        {
+            var tsc = new TaskCompletionSource<bool>();
+
+            Action resolve = () => tsc.SetResult(true);
+            Action reject = () => tsc.SetCanceled();
+
+            await functor(resolve, reject);
+
+            await tsc.Task;
+        }
+
         public static Task<T> Promise<T>(Action<Action<T>, Action> functor)
         {
             var tsc = new TaskCompletionSource<T>();

@@ -13,7 +13,9 @@ namespace Xenial.Delicious.Scopes
         public event EventHandler? Exit;
         Task ClearConsole();
         Task Report(SerializableTestCase @case);
+        Task Report(IEnumerable<SerializableTestCase> @cases);
         Task RegisterCommands(IList<SerializableTastyCommand> commands);
-        Task SignalFinish();
+        Task SignalTestRunEnd();
+        Task SignalTestRunCompleted();
     }
 }

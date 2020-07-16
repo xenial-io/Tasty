@@ -15,7 +15,7 @@ namespace Xenial.Delicious.Scopes
         Task Report(SerializableTestCase @case);
         Task Report(IEnumerable<SerializableTestCase> @cases);
         Task RegisterCommands(IList<SerializableTastyCommand> commands);
-        Task SignalTestRunEnd();
-        Task SignalTestRunCompleted();
+        Task SignalEndTestPipeline();
+        Task SignalTestPipelineCompleted();
     }
 }

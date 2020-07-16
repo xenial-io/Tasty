@@ -25,8 +25,8 @@ namespace Xenial.Delicious.Execution
 
             this
                 .UseClearConsole()
-                .UseRemoteClearConsole()
-                .UseFinishPipeline()
+                .UseEndTestPipelinePipeline()
+                .UseTestPipelineCompleted()
                 .UseResetConsoleColor()
                 .UseRemoteDisposal()
                 .UseExitCodeReporter()
@@ -34,6 +34,7 @@ namespace Xenial.Delicious.Execution
                 .UseInteractiveRunDetection()
                 .UseRemote()
                 .UseRegisterCommands()
+                .UseRemoteClearConsole()
                 .UseRunCommands()
                 ;
 
@@ -80,7 +81,7 @@ namespace Xenial.Delicious.Execution
         {
             using var context = new RuntimeContext(Scope, this);
 
-            while (!context.IsFinished)
+            while (!context.EndPipeLine)
             {
                 var app = BuildRuntimeMiddleware();
 

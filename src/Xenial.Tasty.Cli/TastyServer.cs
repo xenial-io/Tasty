@@ -12,7 +12,7 @@ using Xenial.Delicious.Utils;
 
 using static Xenial.Delicious.Utils.Actions;
 
-namespace Xenial.Tasty.Tool
+namespace Xenial.Delicious.Cli
 {
     public class TastyServer
     {
@@ -38,17 +38,16 @@ namespace Xenial.Tasty.Tool
            => ConsoleReporter.ReportSummary(@cases);
 
         internal Action<IList<SerializableTastyCommand>>? CommandsRegistered;
-        internal Action? TestRunEndSignaled;
-        internal Action? TestRunCompletedSignaled;
+        internal Action? EndTestPipelineSignaled;
+        internal Action? TestPipelineCompletedSignaled = () => { };
         public void RegisterCommands(IList<SerializableTastyCommand> commands)
             => CommandsRegistered?.Invoke(commands);
 
-        public void SignalTestRunEnd()
-            => TestRunEndSignaled?.Invoke();
+        public void SignalEndTestPipeline()
+            => EndTestPipelineSignaled?.Invoke();
 
-        public void SignalTestRunCompleted()
-            => TestRunCompletedSignaled?.Invoke();
-
+        public void SignalTestPipelineCompleted()
+            => TestPipelineCompletedSignaled?.Invoke();
 
         public void ClearConsole()
         {

@@ -26,7 +26,7 @@ namespace Xenial.Delicious.Execution
         public TastyRemote? Remote { get; set; }
         public int ExitCode { get; internal set; }
         public bool IsInteractive { get; internal set; }
-        public bool IsFinished { get; set; }
+        public bool EndPipeLine { get; set; }
         public Queue<TestCase> TestQueue { get; set; } = new Queue<TestCase>();
         protected virtual void Dispose(bool disposing)
         {

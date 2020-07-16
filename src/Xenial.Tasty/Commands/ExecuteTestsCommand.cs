@@ -17,7 +17,7 @@ namespace Xenial.Delicious.Commands
 
         static Task Execute(RuntimeContext context)
         {
-            context.IsFinished = true;
+            context.EndPipeLine = true;
             return Task.CompletedTask;
         }
     }

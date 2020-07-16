@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks></TargetFrameworks>
+    <RootNamespace>Xenial.Delicious.Cli</RootNamespace>
     <TargetFramework>$(NetCoreVersion)</TargetFramework>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>tasty</ToolCommandName>
@@ -16,6 +17,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Tasty\Xenial.Tasty.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\" />
   </ItemGroup>
 
 </Project>

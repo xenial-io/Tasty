@@ -1,10 +1,9 @@
-﻿using System.Diagnostics;
-
+﻿
 namespace Xenial.Delicious.Execution.TestRuntime
 {
-    public static class FinishPipelineMiddleware
+    public static class EndTestPipelineMiddleware
     {
-        public static TestExecutor UseFinishPipeline(this TestExecutor executor)
+        public static TestExecutor UseEndTestPipelinePipeline(this TestExecutor executor)
             => executor.UseRuntime(async (context, next) =>
             {
                 try
@@ -15,11 +14,11 @@ namespace Xenial.Delicious.Execution.TestRuntime
                 {
                     if (!context.IsInteractive)
                     {
-                        context.IsFinished = true;
+                        context.EndPipeLine = true;
                     }
-                    if (context.IsFinished && context.Remote != null)
+                    if (context.EndPipeLine && context.Remote != null)
                     {
-                        await context.Remote.SignalFinish();
+                        await context.Remote.SignalEndTestPipeline();
                     }
                 }
             });

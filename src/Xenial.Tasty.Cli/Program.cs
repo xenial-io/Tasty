@@ -5,21 +5,19 @@ using System.CommandLine.Invocation;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.VisualStudio.Threading;
+
 using StreamJsonRpc;
 
-using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
-using Xenial.Delicious.Reporters;
-using Xenial.Delicious.Utils;
 
 using static SimpleExec.Command;
-using static Xenial.Delicious.Utils.Actions;
+using static Xenial.Delicious.Cli.Helpers.PromiseHelper;
 
-namespace Xenial.Tasty.Tool
+namespace Xenial.Delicious.Cli
 {
     class Program
     {
@@ -76,9 +74,22 @@ namespace Xenial.Tasty.Tool
                         Console.WriteLine("Connected. NamedPipeServerStream...");
                         try
                         {
+                            Func<TastyServer, Task<IList<SerializableTastyCommand>>> waitForCommands = (TastyServer tastyServer) =>
+                                Promise<IList<SerializableTastyCommand>>((resolve, reject) =>
+                                {
+                                    var cts = new CancellationTokenSource();
+                                    cts.CancelAfter(10000);
+                                    cts.Token.Register(() => reject(cts.Token));
+                                    tastyServer.CommandsRegistered = (c) =>
+                                    {
+                                        cts.Dispose();
+                                        resolve(c);
+                                    };
+                                });
+
                             var uiTask = Task.Run(async () =>
                             {
-                                var commands = await Task.Run(async () => await WaitForCommands(server), cancellationToken);
+                                var commands = await waitForCommands(server);
                                 await Task.Run(async () => await WaitForInput(commands, server), cancellationToken);
                             }, cancellationToken);
 
@@ -102,46 +113,40 @@ namespace Xenial.Tasty.Tool
             }
         }
 
-        static Task<IList<SerializableTastyCommand>> WaitForCommands(TastyServer tastyServer)
-        {
-            var tcs = new TaskCompletionSource<IList<SerializableTastyCommand>>();
-            var cts = new CancellationTokenSource();
-
-            cts.CancelAfter(10000);
-            cts.Token.Register(() => tcs.SetCanceled());
-
-            tastyServer.CommandsRegistered = (c) =>
-            {
-                cts.Dispose();
-                tcs.SetResult(c);
-            };
-
-            return tcs.Task;
-        }
-
         static Task WaitForInput(IList<SerializableTastyCommand> commands, TastyServer tastyServer)
-        {
-            var cts = new CancellationTokenSource();
-
-            return Task.Run(async () =>
+            => Promise((resolve) =>
             {
-                Console.CancelKeyPress += (_, e) =>
+                Func<Task> cancelKeyPress = () => Promise((resolve, reject) =>
+               {
+                   Console.CancelKeyPress += (_, e) =>
+                   {
+                       if (e.Cancel)
+                       {
+                           Console.WriteLine("Cancelling execution...");
+                           reject();
+                       }
+                   };
+               });
+
+                Func<Task> endTestPipelineSignaled = () => Promise((resolve, reject) =>
                 {
-                    if (e.Cancel)
+                    tastyServer.EndTestPipelineSignaled = () =>
                     {
                         Console.WriteLine("Cancelling execution...");
-                        cts.Cancel();
-                        throw new TaskCanceledException(null, null, cts.Token);
-                    }
-                };
+                        reject();
+                    };
+                });
 
-                tastyServer.TestRunEndSignaled = () =>
+                Func<Task<ConsoleKeyInfo>> readConsoleKey = () => Promise<ConsoleKeyInfo>(resolve =>
                 {
-                    Console.WriteLine("Cancelling execution...");
-                    cts.Cancel();
-                };
+                    _ = Task.Run(() =>
+                    {
+                        var info = Console.ReadKey(true);
+                        resolve(info);
+                    });
+                });
 
-                async Task<Func<Task>?> ReadInput()
+                Action writeCommands = () =>
                 {
                     Console.WriteLine("Interactive Mode");
                     Console.WriteLine("================");
@@ -153,59 +158,61 @@ namespace Xenial.Tasty.Tool
 
                     Console.WriteLine("c - Cancel");
                     Console.WriteLine("================");
+                };
 
-                    Task<ConsoleKeyInfo> ReadKey()
-                    {
-                        var keyTcs = new TaskCompletionSource<ConsoleKeyInfo>();
-                        cts.Token.Register(() => keyTcs.SetCanceled());
-
-                        _ = Task.Run(() =>
-                        {
-                            var info = Console.ReadKey(true);
-                            keyTcs.SetResult(info);
-                        });
-
-                        return keyTcs.Task;
-                    }
-
-                    var info = await ReadKey();
-
+                Func<ConsoleKeyInfo, SerializableTastyCommand?> findCommand = (info) =>
+                {
                     var key = info.Key.ToString().ToLower();
 
                     var command = info.Key == ConsoleKey.Enter
                         ? commands.FirstOrDefault(c => c.IsDefault)
                         : commands.FirstOrDefault(c => c.Name.ToLowerInvariant() == key);
 
+                    return command;
+                };
+
+                Func<Task<Func<Task>>> readInput = async () =>
+                {
+                    var info = await readConsoleKey();
+                    var command = findCommand(info);
                     if (command != null)
                     {
-                        Console.WriteLine($"Executing {command.Name} - {command.Description}");
-
                         return async () =>
                         {
+                            Console.WriteLine($"Executing {command.Name} - {command.Description}");
+
                             await tastyServer.DoExecuteCommand(new ExecuteCommandEventArgs
                             {
                                 CommandName = command.Name
                             });
                         };
                     }
-
                     if (info.Key == ConsoleKey.C)
                     {
-                        await tastyServer.DoRequestCancellation();
-                        cts.Cancel();
-                        return null;
+                        return async () =>
+                        {
+                            Console.WriteLine($"Requesting cancellation");
+
+                            await tastyServer.DoRequestCancellation();
+                        };
                     }
 
-                    return async () => await ReadInput();
-                }
-                var action = await ReadInput();
-                while (!cts.IsCancellationRequested && action != null)
-                {
-                    await action();
-                    action = await ReadInput();
-                }
+                    return () =>
+                    {
+                        writeCommands();
+                        return Task.CompletedTask;
+                    };
+                };
 
-            }, cts.Token);
-        }
+                return Promise(async (resolve) =>
+                {
+                    writeCommands();
+                    var input = await readInput();
+                    var cancel = cancelKeyPress();
+                    var endTestPipeline = endTestPipelineSignaled();
+                    await Task.WhenAny(input(), cancel, endTestPipeline);
+                    resolve();
+                });
+            });
     }
 }

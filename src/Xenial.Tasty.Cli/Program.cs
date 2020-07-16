@@ -15,7 +15,7 @@ using StreamJsonRpc;
 using Xenial.Delicious.Protocols;
 
 using static SimpleExec.Command;
-using static Xenial.Delicious.Cli.Helpers.PromiseHelper;
+using static Xenial.Delicious.Utils.PromiseHelper;
 
 namespace Xenial.Delicious.Cli
 {
@@ -199,20 +199,20 @@ namespace Xenial.Delicious.Cli
 
                     return () =>
                     {
-                        writeCommands();
                         return Task.CompletedTask;
                     };
                 };
 
-                return Promise(async (resolve) =>
+                Task waitForInput() => Promise(async (resolve) =>
                 {
                     writeCommands();
                     var input = await readInput();
                     var cancel = cancelKeyPress();
                     var endTestPipeline = endTestPipelineSignaled();
                     await Task.WhenAny(input(), cancel, endTestPipeline);
-                    resolve();
+                    await waitForInput();
                 });
+                return waitForInput();
             });
     }
 }

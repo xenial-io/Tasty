@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using Xenial.Delicious.Commands;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
 
@@ -28,6 +29,7 @@ namespace Xenial.Delicious.Execution
         public bool IsInteractive { get; internal set; }
         public bool EndPipeLine { get; set; }
         public Queue<TestCase> TestQueue { get; set; } = new Queue<TestCase>();
+        public TastyCommand? CurrentCommand { get; set; }
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

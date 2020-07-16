@@ -24,7 +24,6 @@ namespace Xenial.Delicious.Execution
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
 
             this
-                .UseClearConsole()
                 .UseEndTestPipelinePipeline()
                 .UseTestPipelineCompleted()
                 .UseResetConsoleColor()
@@ -34,6 +33,8 @@ namespace Xenial.Delicious.Execution
                 .UseInteractiveRunDetection()
                 .UseRemote()
                 .UseRegisterCommands()
+                .UseSelectCommand()
+                .UseClearConsole()
                 .UseRemoteClearConsole()
                 .UseRunCommands()
                 ;

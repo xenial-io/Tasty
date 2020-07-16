@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Xenial.Delicious.Cli.Helpers
+namespace Xenial.Delicious.Utils
 {
     public static class PromiseHelper
     {

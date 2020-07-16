@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/xenial-io/Tasty#readme",
   "devDependencies": {
-    "@commitlint/cli": "^9.1.1",
+    "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^8.3.4",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",

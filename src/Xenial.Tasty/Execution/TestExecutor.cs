@@ -89,42 +89,8 @@ namespace Xenial.Delicious.Execution
                 await app(context);
             }
 
-            //var testQueue = await ExecuteTestsCommand.Execute(this);
-            //testQueue = await ExecuteTestsCommand.VisitForcedTestCases(testQueue);
-            //await ExecuteTestsCommand.Execute(this, testQueue);
             return context.ExitCode;
         }
-
-        //public Task<bool> WaitForCommand()
-        //{
-        //    if (Remote != null)
-        //    {
-        //        var tcs = new TaskCompletionSource<bool>();
-
-        //        async void ExecuteCommand(object _, Protocols.ExecuteCommandEventArgs e)
-        //        {
-        //            await Execute();
-        //            tcs.SetResult(true);
-        //        }
-        //        void CancellationRequested(object _, EventArgs __)
-        //        {
-        //            tcs.SetResult(false);
-        //        }
-        //        void Exit(object _, EventArgs __)
-        //        {
-        //            tcs.SetCanceled();
-        //        }
-        //        Remote.ExecuteCommand -= ExecuteCommand;
-        //        Remote.ExecuteCommand += ExecuteCommand;
-        //        Remote.CancellationRequested -= CancellationRequested;
-        //        Remote.CancellationRequested += CancellationRequested;
-        //        Remote.Exit -= Exit;
-        //        Remote.Exit += Exit;
-
-        //        return tcs.Task;
-        //    }
-        //    return Task.FromResult(false);
-        //}
 
         internal RuntimeDelegate BuildRuntimeMiddleware()
         {

@@ -18,6 +18,6 @@ namespace Xenial.Delicious.Commands
         public string Name { get; }
         public Func<RuntimeContext, Task> Command { get; }
         public string? Description { get; }
-        public bool IsDefault { get; } = false;
+        public bool IsDefault { get; internal set; } = false;
     }
 }

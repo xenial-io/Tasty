@@ -34,8 +34,28 @@ namespace Xenial.Delicious.Scopes
 
         public TastyScope RegisterCommand(string name, Func<RuntimeContext, Task> command, string? description = null, bool isDefault = false)
         {
+            if(isDefault)
+            {
+                foreach(var cmd in Commands.Values)
+                {
+                    cmd.IsDefault = false;
+                }
+            }
+
             Commands[name] = new TastyCommand(name, command, description, isDefault);
             return this;
+        }
+
+        public TastyScope RegisterCommand(Func<(string name, Func<RuntimeContext, Task> command)> commandRegistration)
+        {
+            var (name, command) = commandRegistration();
+            return RegisterCommand(name, command, string.Empty, false);
+        }
+
+        public TastyScope RegisterCommand(Func<(string name, Func<RuntimeContext, Task> command, string? description)> commandRegistration)
+        {
+            var (name, command, description) = commandRegistration();
+            return RegisterCommand(name, command, description, false);
         }
 
         public TastyScope RegisterCommand(Func<(string name, Func<RuntimeContext, Task> command, string? description, bool? isDefault)> commandRegistration)

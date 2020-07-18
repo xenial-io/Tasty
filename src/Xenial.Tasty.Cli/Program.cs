@@ -208,10 +208,7 @@ namespace Xenial.Delicious.Cli
                         });
                     }
 
-                    return () =>
-                    {
-                        return Task.CompletedTask;
-                    };
+                    return () => Task.CompletedTask;
                 };
 
                 Task waitForInput() => Promise(async (resolve, reject) =>

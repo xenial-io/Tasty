@@ -5,6 +5,7 @@ using System.CommandLine.Invocation;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -91,6 +92,7 @@ namespace Xenial.Delicious.Cli
                             {
                                 var commands = await waitForCommands(server);
                                 await Task.Run(async () => await WaitForInput(commands, server), cancellationToken);
+                                Console.WriteLine("UI-Task ended");
                             }, cancellationToken);
 
                             await Task.WhenAll(remoteTask, uiTask);
@@ -114,26 +116,35 @@ namespace Xenial.Delicious.Cli
         }
 
         static Task WaitForInput(IList<SerializableTastyCommand> commands, TastyServer tastyServer)
-            => Promise((resolve) =>
+            => Promise(async (resolve) =>
             {
                 Func<Task> cancelKeyPress = () => Promise((resolve, reject) =>
-               {
-                   Console.CancelKeyPress += (_, e) =>
-                   {
-                       if (e.Cancel)
-                       {
-                           Console.WriteLine("Cancelling execution...");
-                           reject();
-                       }
-                   };
-               });
+                {
+                    Console.CancelKeyPress += (_, e) =>
+                    {
+                        if (e.Cancel)
+                        {
+                            Console.WriteLine("Cancelling execution...");
+                            reject();
+                        }
+                    };
+                });
 
-                Func<Task> endTestPipelineSignaled = () => Promise((resolve, reject) =>
+                Func<Task> endTestPipelineSignaled = () => Promise((resolve) =>
                 {
                     tastyServer.EndTestPipelineSignaled = () =>
                     {
-                        Console.WriteLine("Cancelling execution...");
-                        reject();
+                        Console.WriteLine("Pipeline ended.");
+                        resolve();
+                    };
+                });
+
+                Func<Task> testPipelineCompletedSignaled = () => Promise((resolve) =>
+                {
+                    tastyServer.TestPipelineCompletedSignaled = () =>
+                    {
+                        Console.WriteLine("Pipeline completed.");
+                        resolve();
                     };
                 });
 
@@ -209,28 +220,35 @@ namespace Xenial.Delicious.Cli
                     writeCommands();
                     var input = await readInput();
 
-                    var stop = Promise(async (_, reject) =>
+                    var cancel = cancelKeyPress();
+                    var endTestPipeline = endTestPipelineSignaled();
+                    var completedTestPipleLine = testPipelineCompletedSignaled();
+
+                    try
                     {
-                        var cancel = cancelKeyPress();
-                        var endTestPipeline = endTestPipelineSignaled();
-                        try
-                        {
-                            await Task.WhenAny(cancel, endTestPipeline);
-                        }
-                        catch (TaskCanceledException)
+                        var inputTask = input();
+                        if (inputTask.IsCanceled)
                         {
                             reject();
+                            return;
                         }
-                    });
-                    var inputTask = input();
-                    var tasks = new[] { inputTask, stop };
-                    await Task.WhenAny(tasks);
-                    if (!tasks.Any(m => m.Status == TaskStatus.Canceled))
-                    {
-                        await waitForInput();
+                        var result = await Task.WhenAny(cancel, endTestPipeline, completedTestPipleLine);
                     }
+                    catch (TaskCanceledException)
+                    {
+                        reject();
+                        return;
+                    }
+                    if (endTestPipeline.IsCompletedSuccessfully)
+                    {
+                        resolve();
+                        return;
+                    }
+
+                    await waitForInput();
                 });
-                return waitForInput();
+                await waitForInput();
+                resolve();
             });
     }
 }

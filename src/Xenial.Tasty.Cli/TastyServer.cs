@@ -39,7 +39,7 @@ namespace Xenial.Delicious.Cli
 
         internal Action<IList<SerializableTastyCommand>>? CommandsRegistered;
         internal Action? EndTestPipelineSignaled;
-        internal Action? TestPipelineCompletedSignaled = () => { };
+        internal Action? TestPipelineCompletedSignaled;
         public void RegisterCommands(IList<SerializableTastyCommand> commands)
             => CommandsRegistered?.Invoke(commands);
 

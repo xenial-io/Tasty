@@ -24,7 +24,7 @@ namespace Xenial.Delicious.Execution
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
 
             this
-                .UseEndTestPipelinePipeline()
+                .UseEndTestPipeline()
                 .UseTestPipelineCompleted()
                 .UseResetConsoleColor()
                 .UseRemoteDisposal()

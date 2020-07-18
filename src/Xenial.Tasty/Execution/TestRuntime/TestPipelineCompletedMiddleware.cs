@@ -12,7 +12,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
                 }
                 finally
                 {
-                    if (context.Remote != null)
+                    if (context.Remote != null && !context.EndPipeLine)
                     {
                         await context.Remote.SignalTestPipelineCompleted();
                     }

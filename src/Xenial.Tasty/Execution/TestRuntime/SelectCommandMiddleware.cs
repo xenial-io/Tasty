@@ -28,10 +28,12 @@ namespace Xenial.Delicious.Execution.TestRuntime
                         });
                         context.CurrentCommand = command;
                     }
+                    else
+                    {
+                        var defaultCommand = context.Scope.Commands.Values.FirstOrDefault(p => p.IsDefault);
 
-                    var defaultCommand = context.Scope.Commands.Values.FirstOrDefault(p => p.IsDefault);
-
-                    context.CurrentCommand = defaultCommand;
+                        context.CurrentCommand = defaultCommand;
+                    }
                 }
                 finally
                 {

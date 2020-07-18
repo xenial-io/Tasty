@@ -1,9 +1,11 @@
 ﻿
+using Xenial.Delicious.Commands;
+
 namespace Xenial.Delicious.Execution.TestRuntime
 {
     public static class EndTestPipelineMiddleware
     {
-        public static TestExecutor UseEndTestPipelinePipeline(this TestExecutor executor)
+        public static TestExecutor UseEndTestPipeline(this TestExecutor executor)
             => executor.UseRuntime(async (context, next) =>
             {
                 try

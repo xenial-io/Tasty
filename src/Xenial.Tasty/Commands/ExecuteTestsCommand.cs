@@ -9,18 +9,6 @@ using Xenial.Delicious.Visitors;
 
 namespace Xenial.Delicious.Commands
 {
-    public static class ExitCommand
-    {
-        public static (string name, Func<RuntimeContext, Task> command, string? description, bool? isDefault) Register()
-            => ("x", Execute, "Exit interactive run", false);
-
-        static Task Execute(RuntimeContext context)
-        {
-            context.EndPipeLine = true;
-            return Task.CompletedTask;
-        }
-    }
-
     public static class ExecuteTestsCommand
     {
         public static (string name, Func<RuntimeContext, Task> command, string? description, bool? isDefault) Register()
@@ -54,7 +42,7 @@ namespace Xenial.Delicious.Commands
             await app(context);
         }
 
-        public static Task<Queue<TestCase>> VisitForcedTestCases(Queue<TestCase> testQueue)
+        static Task<Queue<TestCase>> VisitForcedTestCases(Queue<TestCase> testQueue)
         {
             if (testQueue.Count(t => t.IsForced != null) > 0)
             {
@@ -85,7 +73,7 @@ namespace Xenial.Delicious.Commands
             return Task.FromResult(testQueue);
         }
 
-        public static async Task Execute(TestExecutor executor, Queue<TestCase> testQueue)
+        static async Task Execute(TestExecutor executor, Queue<TestCase> testQueue)
         {
             while (testQueue.Count > 0)
             {
@@ -94,7 +82,7 @@ namespace Xenial.Delicious.Commands
             }
         }
 
-        private static async Task Execute(TestExecutor executor, TestCase testCase)
+        static async Task Execute(TestExecutor executor, TestCase testCase)
         {
             var app = executor.BuildTestMiddleware();
             var context = new TestExecutionContext(testCase, executor.Scope, testCase.Group);

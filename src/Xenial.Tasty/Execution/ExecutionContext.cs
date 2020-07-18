@@ -22,7 +22,7 @@ namespace Xenial.Delicious.Execution
         public bool IsInteractive { get; internal set; }
         public bool EndPipeLine { get; internal set; }
         public Queue<TestCase> TestQueue { get; set; } = new Queue<TestCase>();
-        public TastyCommand? CurrentCommand { get; set; }
+        internal TastyCommand? CurrentCommand { get; set; }
 
         private bool disposedValue;
         protected virtual void Dispose(bool disposing)

@@ -34,9 +34,9 @@ namespace Xenial.Delicious.Scopes
 
         public TastyScope RegisterCommand(string name, Func<RuntimeContext, Task> command, string? description = null, bool isDefault = false)
         {
-            if(isDefault)
+            if (isDefault)
             {
-                foreach(var cmd in Commands.Values)
+                foreach (var cmd in Commands.Values)
                 {
                     cmd.IsDefault = false;
                 }

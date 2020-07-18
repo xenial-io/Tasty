@@ -58,7 +58,7 @@ namespace Xenial.Delicious.Cli
             catch (IOException) { /* Handle is invalid */}
         }
 
-        public void ResetColor() 
+        public void ResetColor()
             => Console.ResetColor();
 
         public static class ConsoleReporter

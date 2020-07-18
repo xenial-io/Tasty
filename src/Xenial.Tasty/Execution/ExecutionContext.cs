@@ -14,13 +14,10 @@ namespace Xenial.Delicious.Execution
     {
         private bool disposedValue;
 
-        public RuntimeContext(TastyScope scope, TestExecutor executor)
-            => (Scope, Executor) = (
-                scope ?? throw new ArgumentNullException(nameof(scope)),
-                executor ?? throw new ArgumentNullException(nameof(executor))
-            );
+        public RuntimeContext(TestExecutor executor)
+            => Executor = executor ?? throw new ArgumentNullException(nameof(executor));
 
-        public TastyScope Scope { get; }
+        public TastyScope Scope => Executor.Scope;
         public TestExecutor Executor { get; }
         public bool IsRemoteAttached => RemoteStream != null;
         public Stream? RemoteStream { get; set; }

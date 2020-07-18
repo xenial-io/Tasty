@@ -79,7 +79,7 @@ namespace Xenial.Delicious.Execution
 
         public async Task<int> Execute()
         {
-            using var context = new RuntimeContext(Scope, this);
+            using var context = new RuntimeContext(this);
 
             while (!context.EndPipeLine)
             {

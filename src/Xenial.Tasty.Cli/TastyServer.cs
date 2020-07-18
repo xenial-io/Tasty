@@ -92,7 +92,7 @@ namespace Xenial.Delicious.Cli
                 var totalTime = tests.Sum(m => m.Duration);
                 var failedTime = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Sum(m => m.Duration);
                 var ignoredTime = tests.Where(m => m.TestOutcome == TestOutcome.Ignored).Sum(m => m.Duration);
-                var inconclusiveTime = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Sum(m => m.Duration);
+                var notRunTime = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Sum(m => m.Duration);
                 var successTime = tests.Where(m => m.TestOutcome == TestOutcome.Success).Sum(m => m.Duration);
 
                 var totalTimeString = totalTime.AsDuration();
@@ -117,7 +117,7 @@ namespace Xenial.Delicious.Cli
                 Write(Scheme.DefaultColor, $" | ");
                 Write(ignoredTests > 0 ? Scheme.WarningColor : Scheme.DefaultColor, ignoredTime.AsDuration());
                 Write(Scheme.DefaultColor, $" | ");
-                Write(notRunTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, inconclusiveTime.AsDuration());
+                Write(notRunTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, notRunTime.AsDuration());
                 Write(Scheme.DefaultColor, $" | ");
                 Write(successTests > 0 ? Scheme.SuccessColor : Scheme.DefaultColor, successTime.AsDuration());
                 Write(Scheme.DefaultColor, $" | ");

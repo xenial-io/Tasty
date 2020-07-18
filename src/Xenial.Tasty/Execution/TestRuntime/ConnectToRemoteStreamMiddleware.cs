@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 
 namespace Xenial.Delicious.Execution.TestRuntime
 {
@@ -13,13 +14,22 @@ namespace Xenial.Delicious.Execution.TestRuntime
                     {
                         foreach (var remoteStreamFactoryFunctor in context.Scope.TransportStreamFactories)
                         {
-                            var remoteStreamFactory = await remoteStreamFactoryFunctor();
-                            if (remoteStreamFactory != null)
+                            var cts = new CancellationTokenSource();
+                            try
                             {
-                                context.RemoteStream = await remoteStreamFactory.Invoke();
-                                context.Remote = await context.Scope.ConnectToRemoteRunHook(context.Scope, context.RemoteStream);
+                                cts.CancelAfter(10000); //TODO: Make configurable
+                                var remoteStreamFactory = await remoteStreamFactoryFunctor(cts.Token);
+                                if (remoteStreamFactory != null)
+                                {
+                                    context.RemoteStream = await remoteStreamFactory.Invoke();
+                                    context.Remote = await context.Scope.ConnectToRemoteRunHook(context.Scope, context.RemoteStream);
 
-                                break;
+                                    break;
+                                }
+                            }
+                            finally
+                            {
+                                cts.Dispose();
                             }
                         }
                     }

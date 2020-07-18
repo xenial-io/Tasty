@@ -14,13 +14,10 @@ namespace Xenial.Delicious.Remote
 {
     public delegate Task<bool> IsInteractiveRun();
 
-    public delegate Task<TransportStreamFactory?> TransportStreamFactoryFunctor();
+    public delegate Task<TransportStreamFactory?> TransportStreamFactoryFunctor(CancellationToken token = default);
     public delegate Task<Stream> TransportStreamFactory();
 
     public delegate Task<TastyRemote> ConnectToRemote(TastyScope scope, Stream remoteStream);
-
-    //[EnumeratorCancellation] 
-    public delegate IAsyncEnumerable<SerializableTestCase> ReportTests(IAsyncEnumerable<SerializableTestCase> tests, CancellationToken cancellationToken);
 
     public static class TastyRemoteDefaults
     {
@@ -60,7 +57,7 @@ namespace Xenial.Delicious.Remote
 
     public static class NamedPipeRemoteHook
     {
-        public static Task<TransportStreamFactory?> CreateNamedPipeTransportStream()
+        public static Task<TransportStreamFactory?> CreateNamedPipeTransportStream(CancellationToken token = default)
         {
             var connectionType = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_TYPE");
             if (connectionType != null && connectionType.ToLowerInvariant() == "NamedPipes".ToLowerInvariant())
@@ -68,17 +65,17 @@ namespace Xenial.Delicious.Remote
                 var connectionId = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_ID");
                 if (!string.IsNullOrEmpty(connectionId))
                 {
-                    TransportStreamFactory functor = () => CreateNamedPipeTransportStream(connectionId);
+                    TransportStreamFactory functor = () => CreateNamedPipeTransportStream(connectionId, token);
                     return Task.FromResult<TransportStreamFactory?>(functor);
                 }
             }
             return Task.FromResult<TransportStreamFactory?>(null);
         }
 
-        static async Task<Stream> CreateNamedPipeTransportStream(string connectionId)
+        static async Task<Stream> CreateNamedPipeTransportStream(string connectionId, CancellationToken token = default)
         {
             var stream = new NamedPipeClientStream(".", connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
-            await stream.ConnectAsync();
+            await stream.ConnectAsync(token);
             return stream;
         }
     }

@@ -8,9 +8,9 @@ using Xenial.Delicious.Metadata;
 
 namespace Xenial.Delicious.Utils
 {
-    public static class EnumerableExtensions
+    internal static class EnumerableExtensions
     {
-        public static TestOutcome MinOrDefault<TSource>(this IEnumerable<TSource> sequence, Func<TSource, TestOutcome> selector)
+        internal static TestOutcome MinOrDefault<TSource>(this IEnumerable<TSource> sequence, Func<TSource, TestOutcome> selector)
         {
             if (sequence.Any())
             {
@@ -26,7 +26,7 @@ namespace Xenial.Delicious.Utils
     /// <summary>
     /// CastExtentions for fluent casting
     /// </summary>
-    public static class CastExtentions
+    internal static class CastExtentions
     {
         /// <summary>
         /// Tries to cast the specified object to the type of T.<br/>
@@ -37,7 +37,7 @@ namespace Xenial.Delicious.Utils
         /// <returns>A casted object to the type of T</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerStepThrough]
-        public static T? As<T>(this object obj)
+        internal static T? As<T>(this object obj)
             where T : class
             => obj is T item ? item : default;
 
@@ -50,7 +50,7 @@ namespace Xenial.Delicious.Utils
         /// <returns>A casted object to the type of T</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerStepThrough]
-        public static T Cast<T>(this object obj)
+        internal static T Cast<T>(this object obj)
             => (T)obj;
     }
 }

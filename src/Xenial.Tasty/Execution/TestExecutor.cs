@@ -34,6 +34,7 @@ namespace Xenial.Delicious.Execution
                 .UseSelectCommand()
                 .UseClearConsole()
                 .UseRemoteClearConsole()
+                .UseResetRemoteConsoleColor()
                 .UseRunCommands()
                 ;
 

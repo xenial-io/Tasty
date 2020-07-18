@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace Xenial.Delicious.Utils
 {
-    public static class PromiseHelper
+    internal static class PromiseHelper
     {
-        public static Task Promise(Action<Action, Action> functor)
+        internal static Task Promise(Action<Action, Action> functor)
         {
             var tsc = new TaskCompletionSource<bool>();
 
@@ -18,7 +18,7 @@ namespace Xenial.Delicious.Utils
             return tsc.Task;
         }
 
-        public static async Task Promise(Func<Action, Action, Task> functor)
+        internal static async Task Promise(Func<Action, Action, Task> functor)
         {
             var tsc = new TaskCompletionSource<bool>();
 
@@ -30,7 +30,7 @@ namespace Xenial.Delicious.Utils
             await tsc.Task;
         }
 
-        public static Task<T> Promise<T>(Action<Action<T>, Action> functor)
+        internal static Task<T> Promise<T>(Action<Action<T>, Action> functor)
         {
             var tsc = new TaskCompletionSource<T>();
 
@@ -42,7 +42,7 @@ namespace Xenial.Delicious.Utils
             return tsc.Task;
         }
 
-        public static Task<T> Promise<T>(Action<Action<T>, Action<CancellationToken>> functor)
+        internal static Task<T> Promise<T>(Action<Action<T>, Action<CancellationToken>> functor)
         {
             var tsc = new TaskCompletionSource<T>();
 
@@ -54,7 +54,7 @@ namespace Xenial.Delicious.Utils
             return tsc.Task;
         }
 
-        public static Task Promise(Action<Action, Action<CancellationToken>> functor)
+        internal static Task Promise(Action<Action, Action<CancellationToken>> functor)
         {
             var tsc = new TaskCompletionSource<bool>();
 
@@ -77,7 +77,7 @@ namespace Xenial.Delicious.Utils
             return tsc.Task;
         }
 
-        public static async Task Promise(Func<Action, Task> functor)
+        internal static async Task Promise(Func<Action, Task> functor)
         {
             var tsc = new TaskCompletionSource<bool>();
 
@@ -88,7 +88,7 @@ namespace Xenial.Delicious.Utils
             await tsc.Task;
         }
 
-        public static Task Promise(Action<Action> functor)
+        internal static Task Promise(Action<Action> functor)
         {
             var tsc = new TaskCompletionSource<bool>();
 
@@ -99,7 +99,7 @@ namespace Xenial.Delicious.Utils
             return tsc.Task;
         }
 
-        public static Task Promise(Action<Action, Action<Exception>> functor)
+        internal static Task Promise(Action<Action, Action<Exception>> functor)
         {
             var tsc = new TaskCompletionSource<bool>();
 

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
-using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Visitors;
 
 namespace Xenial.Delicious.Commands

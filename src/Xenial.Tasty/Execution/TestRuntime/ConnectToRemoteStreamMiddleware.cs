@@ -10,8 +10,8 @@ namespace Xenial.Delicious.Execution.TestRuntime
             {
                 try
                 {
-                    if (context.IsInteractive 
-                        && context.RemoteStream == null 
+                    if (context.IsInteractive
+                        && context.RemoteStream == null
                         && context.Remote == null
                     )
                     {

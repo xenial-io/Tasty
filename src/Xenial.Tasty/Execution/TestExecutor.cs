@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Execution.TestGroupMiddleware;
 using Xenial.Delicious.Execution.TestMiddleware;
-using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Execution.TestRuntime;
 using Xenial.Delicious.Scopes;
-using Xenial.Delicious.Visitors;
 
 namespace Xenial.Delicious.Execution
 {
@@ -16,11 +14,29 @@ namespace Xenial.Delicious.Execution
     {
         private IList<Func<TestDelegate, TestDelegate>> TestMiddlewares = new List<Func<TestDelegate, TestDelegate>>();
         private IList<Func<TestGroupDelegate, TestGroupDelegate>> TestGroupMiddlewares = new List<Func<TestGroupDelegate, TestGroupDelegate>>();
+        private IList<Func<RuntimeDelegate, RuntimeDelegate>> RuntimeMiddlewares = new List<Func<RuntimeDelegate, RuntimeDelegate>>();
         internal TastyScope Scope { get; }
 
         public TestExecutor(TastyScope scope)
         {
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
+
+            this
+                .UseEndTestPipeline()
+                .UseTestPipelineCompleted()
+                .UseResetConsoleColor()
+                .UseRemoteDisposal()
+                .UseExitCodeReporter()
+                .UseSummaryReporters()
+                .UseInteractiveRunDetection()
+                .UseRemote()
+                .UseRegisterCommands()
+                .UseSelectCommand()
+                .UseClearConsole()
+                .UseRemoteClearConsole()
+                .UseResetRemoteConsoleColor()
+                .UseRunCommands()
+                ;
 
             this
                 .UseTestGroupReporters()
@@ -55,69 +71,41 @@ namespace Xenial.Delicious.Execution
             return this;
         }
 
-        public async Task Execute()
+        public TestExecutor Use(Func<RuntimeDelegate, RuntimeDelegate> middleware)
         {
-            var groupQueue = new Queue<TestGroup>(Scope.Descendants().OfType<TestGroup>());
-            var testQueue = new Queue<TestCase>();
-
-            while (groupQueue.Count > 0)
-            {
-                var currentGroup = groupQueue.Dequeue();
-                await Execute(groupQueue, testQueue, currentGroup);
-            }
-
-            testQueue = VisitForcedTestCases(testQueue);
-
-            while (testQueue.Count > 0)
-            {
-                var currentTest = testQueue.Dequeue();
-                await Execute(currentTest);
-            }
+            RuntimeMiddlewares.Add(middleware);
+            return this;
         }
 
-        private static Queue<TestCase> VisitForcedTestCases(Queue<TestCase> testQueue)
+        public async Task<int> Execute()
         {
-            if (testQueue.Count(t => t.IsForced != null) > 0)
+            using var context = new RuntimeContext(this);
+
+            var endPipeline = context.EndPipeLine;
+            while (!endPipeline)
             {
-                var forcedTestQueue = new Queue<TestCase>();
-                while (testQueue.Count > 0)
-                {
-                    var currentTest = testQueue.Dequeue();
-                    if (currentTest.IsForced != null)
-                    {
-                        try
-                        {
-                            var result = currentTest.IsForced();
-                            if (result)
-                            {
-                                forcedTestQueue.Enqueue(currentTest);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            currentTest.Exception = ex;
-                            currentTest.TestOutcome = TestOutcome.Failed;
-                        }
-                    }
-                }
-                return forcedTestQueue;
+                var app = BuildRuntimeMiddleware();
+
+                await app(context);
+                endPipeline = context.EndPipeLine;
             }
 
-            return testQueue;
+            return context.ExitCode;
         }
 
-        internal async Task Execute(Queue<TestGroup> groupQueue, Queue<TestCase> testQueue, TestGroup testGroup)
+        internal RuntimeDelegate BuildRuntimeMiddleware()
         {
-            var app = BuildTestGroupMiddleware();
-            var context = new TestGroupContext(testGroup, Scope, groupQueue, testQueue);
-            await app(context);
-        }
+            RuntimeDelegate app = context =>
+            {
+                return Task.CompletedTask;
+            };
 
-        internal async Task Execute(TestCase testCase)
-        {
-            var app = BuildTestMiddleware();
-            var context = new TestExecutionContext(testCase, Scope, testCase.Group);
-            await app(context);
+            foreach (var middleware in RuntimeMiddlewares.Reverse())
+            {
+                app = middleware(app);
+            }
+
+            return app;
         }
 
         internal TestDelegate BuildTestMiddleware()

@@ -61,9 +61,15 @@ namespace Tasty.Build
                 await Task.WhenAll(tests);
             });
 
-            Target("pack", DependsOn("test"),
-                () => RunAsync("dotnet", $"pack src/Xenial.Tasty/Xenial.Tasty.csproj --no-restore --no-build -c {Configuration} {logOptions("pack")} {properties()}")
+            Target("pack.nuget", DependsOn("test"),
+                () => RunAsync("dotnet", $"pack src/Xenial.Tasty/Xenial.Tasty.csproj --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {properties()}")
             );
+
+            Target("pack.tools", DependsOn("test"),
+                () => RunAsync("dotnet", $"pack src/Xenial.Tasty.Cli/Xenial.Tasty.Cli.csproj --no-restore --no-build -c {Configuration} {logOptions("pack.tools")} {properties()}")
+            );
+
+            Target("pack", DependsOn("pack.nuget", "pack.tools"));
 
             Target("docs",
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")

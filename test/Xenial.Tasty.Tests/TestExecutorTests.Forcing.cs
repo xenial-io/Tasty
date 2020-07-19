@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using FakeItEasy;
 
@@ -23,7 +24,8 @@ namespace Xenial.Delicious.Tests
                 {
                     var scope = new TastyScope
                     {
-                        ClearBeforeRun = false
+                        ClearBeforeRun = false,
+                        IsInteractiveRunHook = () => Task.FromResult(false)
                     };
                     var action = A.Fake<T>();
                     return (scope, action);

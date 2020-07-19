@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Xenial.Delicious.Execution.TestGroupMiddleware
 {

@@ -3,10 +3,7 @@ using System.Threading.Tasks;
 
 using FakeItEasy;
 
-using Shouldly;
-
 using Xenial.Delicious.Execution;
-using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
 
 using static Xenial.Tasty;
@@ -26,7 +23,8 @@ namespace Xenial.Delicious.Tests
                 {
                     var scope = new TastyScope
                     {
-                        ClearBeforeRun = false
+                        ClearBeforeRun = false,
+                        IsInteractiveRunHook = () => Task.FromResult(false)
                     };
                     var action = A.Fake<T>();
                     return (scope, action);

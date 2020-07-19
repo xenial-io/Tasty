@@ -2,7 +2,6 @@
 using System.Linq;
 
 using Xenial.Delicious.Metadata;
-using Xenial.Delicious.Visitors;
 
 namespace Xenial.Delicious.Execution.TestGroupMiddleware
 {

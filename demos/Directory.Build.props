@@ -8,6 +8,7 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <TargetFrameworks>$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
     <Nullable>disable</Nullable>
+    <NoWarn>VSTHRD110</NoWarn>
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">

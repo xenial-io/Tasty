@@ -1,5 +1,6 @@
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -53,7 +54,15 @@ namespace Xenial.Delicious.Tests
                         ? "--no-build --no-restore"
                         : "--no-restore";
 
-                    NotThrow(async () => await ReadAsync("dotnet", $"run {args} --framework {targetFramework} -c {configuration}", workingDirectory, noEcho: true));
+                    NotThrow(async () => await ReadAsync("dotnet",
+                        $"run {args} --framework {targetFramework} -c {configuration}",
+                        workingDirectory,
+                        noEcho: true,
+                        configureEnvironment: (env) =>
+                        {
+                            env.Add("TASTY_INTERACTIVE", "false");
+                        })
+                    );
                 });
             }
         });

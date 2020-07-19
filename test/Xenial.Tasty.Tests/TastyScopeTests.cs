@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 
 using Shouldly;
 
@@ -21,7 +22,8 @@ namespace Xenial.Delicious.Tests
                 {
                     var scope = new TastyScope
                     {
-                        ClearBeforeRun = false
+                        ClearBeforeRun = false,
+                        IsInteractiveRunHook = () => Task.FromResult(false)
                     };
                     var group = scope.Describe(description, () => { });
                     return (scope, group);

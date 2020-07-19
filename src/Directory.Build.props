@@ -10,6 +10,8 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
+    <IsPackable>true</IsPackable>
+    <NoWarn>VSTHRD200</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>

@@ -40,14 +40,14 @@ namespace Xenial.Delicious.Reporters
             var totalTests = tests.Count();
             var failedTests = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Count();
             var ignoredTests = tests.Where(m => m.TestOutcome == TestOutcome.Ignored).Count();
-            var inconclusiveTests = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Count();
+            var notRunTests = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Count();
             var successTests = tests.Where(m => m.TestOutcome == TestOutcome.Success).Count();
-            var outcome = tests.Where(t => t.TestOutcome > TestOutcome.Ignored).Min(t => t.TestOutcome);
+            var outcome = tests.Where(t => t.TestOutcome > TestOutcome.Ignored).MinOrDefault(t => t.TestOutcome);
 
             var totalTime = tests.Sum(m => m.Duration);
             var failedTime = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Sum(m => m.Duration);
             var ignoredTime = tests.Where(m => m.TestOutcome == TestOutcome.Ignored).Sum(m => m.Duration);
-            var inconclusiveTime = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Sum(m => m.Duration);
+            var notRunTime = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Sum(m => m.Duration);
             var successTime = tests.Where(m => m.TestOutcome == TestOutcome.Success).Sum(m => m.Duration);
 
             var totalTimeString = totalTime.AsDuration();
@@ -60,7 +60,7 @@ namespace Xenial.Delicious.Reporters
             Write(Scheme.DefaultColor, $" | ");
             Write(ignoredTests > 0 ? Scheme.WarningColor : Scheme.DefaultColor, $"I{ignoredTests}".PadLeft(totalTimeString.Length));
             Write(Scheme.DefaultColor, $" | ");
-            Write(inconclusiveTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, $"NR{inconclusiveTests}".PadLeft(totalTimeString.Length));
+            Write(notRunTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, $"NR{notRunTests}".PadLeft(totalTimeString.Length));
             Write(Scheme.DefaultColor, $" | ");
             Write(successTests > 0 ? Scheme.SuccessColor : Scheme.DefaultColor, $"S{successTests}".PadLeft(totalTimeString.Length));
             Write(Scheme.DefaultColor, $" | ");
@@ -72,7 +72,7 @@ namespace Xenial.Delicious.Reporters
             Write(Scheme.DefaultColor, $" | ");
             Write(ignoredTests > 0 ? Scheme.WarningColor : Scheme.DefaultColor, ignoredTime.AsDuration());
             Write(Scheme.DefaultColor, $" | ");
-            Write(inconclusiveTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, inconclusiveTime.AsDuration());
+            Write(notRunTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, notRunTime.AsDuration());
             Write(Scheme.DefaultColor, $" | ");
             Write(successTests > 0 ? Scheme.SuccessColor : Scheme.DefaultColor, successTime.AsDuration());
             Write(Scheme.DefaultColor, $" | ");
@@ -85,7 +85,7 @@ namespace Xenial.Delicious.Reporters
                     ? Scheme.ErrorColor
                     : ignoredTests > 0
                         ? Scheme.WarningColor
-                        : inconclusiveTests > 0
+                        : notRunTests > 0
                         ? Scheme.NotifyColor
                         : Scheme.SuccessColor
                         , outcome.ToString().PadLeft(totalTimeString.Length));
@@ -160,21 +160,7 @@ namespace Xenial.Delicious.Reporters
                 Console.WriteLine(formattableString);
             }, ResetColor);
 
-        private static void WriteLine(ConsoleColor color, FormattableString formattableString)
-            => Finally(() =>
-            {
-                Console.ForegroundColor = color;
-                Console.WriteLine(formattableString);
-            }, ResetColor);
-
         private static void Write(ConsoleColor color, string formattableString)
-            => Finally(() =>
-            {
-                Console.ForegroundColor = color;
-                Console.Write(formattableString);
-            }, ResetColor);
-
-        private static void Write(ConsoleColor color, FormattableString formattableString)
             => Finally(() =>
             {
                 Console.ForegroundColor = color;

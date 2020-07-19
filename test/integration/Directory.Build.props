@@ -1,5 +1,9 @@
 <Project>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <NoWarn>VSTHRD110</NoWarn>
+  </PropertyGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />

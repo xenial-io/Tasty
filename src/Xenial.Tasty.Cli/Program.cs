@@ -80,9 +80,11 @@ namespace Xenial.Delicious.Cli
                                     var cts = new CancellationTokenSource();
                                     cts.CancelAfter(10000);
                                     cts.Token.Register(() => reject(cts.Token));
+
                                     tastyServer.CommandsRegistered = (c) =>
                                     {
                                         cts.Dispose();
+                                        tastyServer.CommandsRegistered = null;
                                         resolve(c);
                                     };
                                 });

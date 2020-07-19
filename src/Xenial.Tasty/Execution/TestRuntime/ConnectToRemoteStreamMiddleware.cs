@@ -10,7 +10,10 @@ namespace Xenial.Delicious.Execution.TestRuntime
             {
                 try
                 {
-                    if (context.IsInteractive)
+                    if (context.IsInteractive 
+                        && context.RemoteStream == null 
+                        && context.Remote == null
+                    )
                     {
                         foreach (var remoteStreamFactoryFunctor in context.Scope.TransportStreamFactories)
                         {

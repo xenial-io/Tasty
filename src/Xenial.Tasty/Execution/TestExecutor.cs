@@ -81,11 +81,13 @@ namespace Xenial.Delicious.Execution
         {
             using var context = new RuntimeContext(this);
 
-            while (!context.EndPipeLine)
+            var endPipeline = context.EndPipeLine;
+            while (!endPipeline)
             {
                 var app = BuildRuntimeMiddleware();
 
                 await app(context);
+                endPipeline = context.EndPipeLine;
             }
 
             return context.ExitCode;

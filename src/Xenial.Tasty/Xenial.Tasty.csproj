@@ -11,5 +11,13 @@
   <ItemGroup>
     <PackageReference Include="StreamJsonRpc" Version="2.4.48" />
   </ItemGroup>
-    
+
+  <ItemGroup>
+    <None Include="THIRD-PARTY-NOTICES.TXT">
+      <Pack>true</Pack>
+      <PackagePath></PackagePath>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+  
 </Project>

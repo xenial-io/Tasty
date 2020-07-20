@@ -20,7 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
+    <None Include="THIRD-PARTY-NOTICES.TXT">
+      <Pack>true</Pack>
+      <PackagePath></PackagePath>
+      <Visible>false</Visible>
+    </None>
   </ItemGroup>
 
 </Project>

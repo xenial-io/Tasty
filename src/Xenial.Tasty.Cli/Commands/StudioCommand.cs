@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 using Terminal.Gui;
 
@@ -10,15 +11,17 @@ namespace Xenial.Delicious.Cli.Commands
 {
     public static class StudioCommand
     {
+        private static MenuBar? _menu;
         private static FrameView? _leftPane;
         private static Toplevel? _top;
+        private static StatusBar? _statusBar;
         public static Task<int> Studio(CancellationToken cancellationToken)
         {
             Application.Init();
             _top = Application.Top;
 
             // Creates a menubar, the item "New" has a help menu.
-            var menu = new MenuBar(new MenuBarItem[] {
+            _menu = new MenuBar(new MenuBarItem[] {
                 new MenuBarItem ("_File", new MenuItem [] {
                     new MenuItem ("_Quit", "", () => Application.RequestStop() )
                 }),
@@ -35,7 +38,26 @@ namespace Xenial.Delicious.Cli.Commands
                 CanFocus = false,
             };
 
-            _top.Add(_leftPane, menu);
+            _statusBar = new StatusBar(new [] 
+            {
+                new StatusItem(Key.ControlQ, "~CTRL-Q~ Quit", () => 
+                {
+                    Application.RequestStop();
+                }),
+                new StatusItem(Key.ControlD, "~CTRL-D~ Debug", () =>
+                {
+                    if(!Debugger.IsAttached)
+                    {
+                        Debugger.Launch();
+                    }
+                }),
+                new StatusItem(Key.F9, "~F9~ Open Menu", () =>
+                {
+                    _menu.OpenMenu();
+                }),
+            });
+
+            _top.Add(_menu, _leftPane, _statusBar);
 
             SetColorScheme();
 

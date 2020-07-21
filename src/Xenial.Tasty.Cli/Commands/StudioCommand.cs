@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
-
 using Terminal.Gui;
 
 namespace Xenial.Delicious.Cli.Commands
@@ -38,9 +37,9 @@ namespace Xenial.Delicious.Cli.Commands
                 CanFocus = false,
             };
 
-            _statusBar = new StatusBar(new [] 
+            _statusBar = new StatusBar(new[]
             {
-                new StatusItem(Key.ControlQ, "~CTRL-Q~ Quit", () => 
+                new StatusItem(Key.ControlQ, "~CTRL-Q~ Quit", () =>
                 {
                     Application.RequestStop();
                 }),

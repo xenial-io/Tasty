@@ -7,41 +7,22 @@ using System.Threading.Tasks;
 
 using Terminal.Gui;
 
+using Xenial.Delicious.Cli.Internal;
+
 namespace Xenial.Delicious.Cli.Commands
 {
     public static class StudioCommand
     {
         private static MenuBar? _menu;
         private static FrameView? _leftPane;
+        private static FrameView? _rightPane;
         private static Toplevel? _top;
         private static StatusBar? _statusBar;
         public static Task<int> Studio(CancellationToken cancellationToken)
         {
             Application.Init();
             _top = Application.Top;
-
-            // Creates a menubar, the item "New" has a help menu.
-            _menu = new MenuBar(new MenuBarItem[]
-            {
-                new MenuBarItem ("_File", new []
-                {
-                    new MenuItem ("_Open", "", () =>
-                    {
-                        var dialog = new OpenDialog
-                        {
-                            AllowedFileTypes = new [] { "csproj", "exe", "dll"},
-                            CanChooseDirectories = false,
-                            AllowsMultipleSelection = false
-                        };
-                        Application.Run(dialog);
-                        var filePaths = dialog.FilePaths;
-                    }
-                    ),
-                    new MenuItem ("_Quit", "", () => Application.RequestStop() )
-                }),
-                new MenuBarItem ("_Color Scheme", CreateColorSchemeMenuItems()),
-                new MenuBarItem ("_About...", "About Tasty.Cli", () =>  MessageBox.Query ("About Tasty.Cli", aboutMessage.ToString(), "_Ok")),
-            });
+            var cancellationTokenSource = new CancellationTokenSource();
 
             _leftPane = new FrameView("Commands")
             {
@@ -52,6 +33,68 @@ namespace Xenial.Delicious.Cli.Commands
                 CanFocus = false,
             };
 
+            _rightPane = new FrameView("Output")
+            {
+                X = 25,
+                Y = 1, // for menu
+                Width = Dim.Fill(),
+                Height = Dim.Fill(1),
+                CanFocus = true,
+            };
+
+            // Creates a menubar, the item "New" has a help menu.
+            _menu = new MenuBar(new MenuBarItem[]
+            {
+                new MenuBarItem ("_File", new []
+                {
+                    new MenuItem ("_Open", "", async () =>
+                    {
+                        var dialog = new OpenDialog
+                        {
+                            AllowedFileTypes = new [] { "csproj", "exe", "dll"},
+                            CanChooseDirectories = false,
+                            AllowsMultipleSelection = false
+                        };
+                        Application.Run(dialog);
+                        var filePath = dialog.FilePath;
+                        if(filePath != null)
+                        {
+                            var path = filePath.ToString();
+                            if(!string.IsNullOrEmpty(path) &&  System.IO.File.Exists(path))
+                            {
+                                var commander = new TastyCommander();
+
+                                var logView = new TextView () {
+                                    X = 0,
+                                    Y = 0,
+                                    Width = Dim.Fill(),
+                                    Height = Dim.Fill(),
+                                    ReadOnly = true
+                                };
+
+                                _rightPane.Add(logView);
+                                var log = string.Empty;
+                                var progress = new Progress<(string line, bool isRunning, int exitCode)>(p =>
+                                {
+                                    log += $"{p.line.Trim()}{Environment.NewLine}";
+                                    logView.Text = log;
+                                });
+
+                                var sw = Stopwatch.StartNew();
+                                var exitCode = await commander.BuildProject(path, progress, cancellationTokenSource.Token);
+                                ((IProgress<(string line, bool isRunning, int exitCode)>)progress).Report(($"Finished in {sw.Elapsed}", true, exitCode));
+                            }
+                        }
+                    }
+                    ),
+                    new MenuItem ("_Quit", "", () => Application.RequestStop() )
+                }),
+                new MenuBarItem("_Color Scheme", CreateColorSchemeMenuItems()),
+                new MenuBarItem("_About...", "About Tasty.Cli", () => MessageBox.Query("About Tasty.Cli", aboutMessage.ToString(), "_Ok")),
+            });
+
+
+
             _statusBar = new StatusBar(new[]
             {
                 new StatusItem(Key.ControlQ, "~CTRL-Q~ Quit", () =>
@@ -60,10 +103,14 @@ namespace Xenial.Delicious.Cli.Commands
                 }),
                 new StatusItem(Key.ControlD, "~CTRL-D~ Debug", () =>
                 {
-                    if(!Debugger.IsAttached)
+                    if (!Debugger.IsAttached)
                     {
                         Debugger.Launch();
                     }
+                }),
+                new StatusItem(Key.ControlC, "~CTRL-C~ Cancel", () =>
+                {
+                    cancellationTokenSource.Cancel();
                 }),
                 new StatusItem(Key.F9, "~F9~ Open Menu", () =>
                 {
@@ -71,7 +118,7 @@ namespace Xenial.Delicious.Cli.Commands
                 }),
             });
 
-            _top.Add(_menu, _leftPane, _statusBar);
+            _top.Add(_menu, _leftPane, _rightPane, _statusBar);
 
             SetColorScheme();
 

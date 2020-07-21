@@ -6,7 +6,8 @@
     },
     "Cli Studio": {
       "commandName": "Project",
-      "commandLineArgs": "s"
+      "commandLineArgs": "s",
+      "workingDirectory": "../../test/Xenial.Tasty.Tests"
     }
   }
 }

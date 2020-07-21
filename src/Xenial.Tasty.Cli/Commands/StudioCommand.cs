@@ -27,11 +27,13 @@ namespace Xenial.Delicious.Cli.Commands
                 {
                     new MenuItem ("_Open", "", () =>
                     {
-                        var dialog = new OpenDialog()
+                        var dialog = new OpenDialog
                         {
-                            AllowedFileTypes = new []{ "csproj", "exe", "dll"}
+                            AllowedFileTypes = new [] { "csproj", "exe", "dll"},
+                            CanChooseDirectories = false,
+                            AllowsMultipleSelection = false
                         };
-                        Application.Run (dialog);
+                        Application.Run(dialog);
                         var filePaths = dialog.FilePaths;
                     }
                     ),

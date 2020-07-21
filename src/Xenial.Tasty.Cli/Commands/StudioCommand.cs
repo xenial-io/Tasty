@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Terminal.Gui;
 
 namespace Xenial.Delicious.Cli.Commands
@@ -20,8 +21,20 @@ namespace Xenial.Delicious.Cli.Commands
             _top = Application.Top;
 
             // Creates a menubar, the item "New" has a help menu.
-            _menu = new MenuBar(new MenuBarItem[] {
-                new MenuBarItem ("_File", new MenuItem [] {
+            _menu = new MenuBar(new MenuBarItem[]
+            {
+                new MenuBarItem ("_File", new []
+                {
+                    new MenuItem ("_Open", "", () =>
+                    {
+                        var dialog = new OpenDialog()
+                        {
+                            AllowedFileTypes = new []{ "csproj", "exe", "dll"}
+                        };
+                        Application.Run (dialog);
+                        var filePaths = dialog.FilePaths;
+                    }
+                    ),
                     new MenuItem ("_Quit", "", () => Application.RequestStop() )
                 }),
                 new MenuBarItem ("_Color Scheme", CreateColorSchemeMenuItems()),

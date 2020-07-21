@@ -56,23 +56,32 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFirstTastyTests", "demos\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGroupTests", "demos\TestGroupTests\TestGroupTests.csproj", "{849D72DB-8A7F-4504-A447-742BD40825F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeSetupTests", "demos\NativeSetupTests\NativeSetupTests.csproj", "{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NativeSetupTests", "demos\NativeSetupTests\NativeSetupTests.csproj", "{CFBA56A1-2B77-4E33-AFBA-54DD9B1BA98B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupTests", "demos\SetupTests\SetupTests.csproj", "{316CF6A7-A0BB-479D-A656-71F5EE22C7C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetupTests", "demos\SetupTests\SetupTests.csproj", "{316CF6A7-A0BB-479D-A656-71F5EE22C7C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupScopeTests", "demos\SetupScopeTests\SetupScopeTests.csproj", "{C638F06C-C489-42B4-8F8C-54B864F11F0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetupScopeTests", "demos\SetupScopeTests\SetupScopeTests.csproj", "{C638F06C-C489-42B4-8F8C-54B864F11F0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FocusedTests", "demos\FocusedTests\FocusedTests.csproj", "{11728621-44B4-4FAA-985B-147F12CA5E48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FocusedTests", "demos\FocusedTests\FocusedTests.csproj", "{11728621-44B4-4FAA-985B-147F12CA5E48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReturnCodes", "demos\ReturnCodes\ReturnCodes.csproj", "{6C847135-CA1C-4973-B791-4F51DA4B88BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReturnCodes", "demos\ReturnCodes\ReturnCodes.csproj", "{6C847135-CA1C-4973-B791-4F51DA4B88BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataDrivenTests", "demos\DataDrivenTests\DataDrivenTests.csproj", "{38A00997-F6C6-4D98-B842-3FC19E999B13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataDrivenTests", "demos\DataDrivenTests\DataDrivenTests.csproj", "{38A00997-F6C6-4D98-B842-3FC19E999B13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizingTests", "demos\OrganizingTests\OrganizingTests.csproj", "{E480FD02-8D84-4950-BBCC-5E20893B4037}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrganizingTests", "demos\OrganizingTests\OrganizingTests.csproj", "{E480FD02-8D84-4950-BBCC-5E20893B4037}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrganizingWithReflectionTests", "demos\OrganizingWithReflectionTests\OrganizingWithReflectionTests.csproj", "{AC77FD21-B4F1-4BCC-8524-217CC96D2C7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrganizingWithReflectionTests", "demos\OrganizingWithReflectionTests\OrganizingWithReflectionTests.csproj", "{AC77FD21-B4F1-4BCC-8524-217CC96D2C7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.Cli", "src\Xenial.Tasty.Cli\Xenial.Tasty.Cli.csproj", "{F9A31E0C-1C93-4464-969B-3052E0686EAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.Cli", "src\Xenial.Tasty.Cli\Xenial.Tasty.Cli.csproj", "{F9A31E0C-1C93-4464-969B-3052E0686EAA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ext", "ext", "{55AA44C1-3863-4DA9-A6C5-F20C126E7428}"
+	ProjectSection(SolutionItems) = preProject
+		ext\Directory.Build.props = ext\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gui.cs", "gui.cs", "{B7A10ABF-1935-438D-B7C9-5E298FC727B8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Terminal.Gui", "ext\gui.cs\Terminal.Gui\Terminal.Gui.csproj", "{C9812129-852C-4A84-95CC-73EF4C2A7A3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -360,6 +369,18 @@ Global
 		{F9A31E0C-1C93-4464-969B-3052E0686EAA}.Release|x64.Build.0 = Release|Any CPU
 		{F9A31E0C-1C93-4464-969B-3052E0686EAA}.Release|x86.ActiveCfg = Release|Any CPU
 		{F9A31E0C-1C93-4464-969B-3052E0686EAA}.Release|x86.Build.0 = Release|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Debug|x64.Build.0 = Debug|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Debug|x86.Build.0 = Debug|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Release|x64.ActiveCfg = Release|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Release|x64.Build.0 = Release|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Release|x86.ActiveCfg = Release|Any CPU
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -389,6 +410,8 @@ Global
 		{E480FD02-8D84-4950-BBCC-5E20893B4037} = {9CAF2D6C-1E62-4F98-844F-07EFAAEEC5F4}
 		{AC77FD21-B4F1-4BCC-8524-217CC96D2C7B} = {9CAF2D6C-1E62-4F98-844F-07EFAAEEC5F4}
 		{F9A31E0C-1C93-4464-969B-3052E0686EAA} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
+		{B7A10ABF-1935-438D-B7C9-5E298FC727B8} = {55AA44C1-3863-4DA9-A6C5-F20C126E7428}
+		{C9812129-852C-4A84-95CC-73EF4C2A7A3B} = {B7A10ABF-1935-438D-B7C9-5E298FC727B8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D25470F-FCE8-4F98-A5B0-BE1C68CFEE7D}

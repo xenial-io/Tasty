@@ -10,77 +10,96 @@ namespace Xenial.Delicious.Cli.Commands
 {
     public static class StudioCommand
     {
+        private static FrameView? _leftPane;
+        private static Toplevel? _top;
         public static Task<int> Studio(CancellationToken cancellationToken)
         {
             Application.Init();
-            var top = Application.Top;
-
-            // Creates the top-level window to show
-            var win = new Window("MyApp")
-            {
-                X = 0,
-                Y = 1, // Leave one row for the toplevel menu
-
-                // By using Dim.Fill(), it will automatically resize without manual intervention
-                Width = Dim.Fill(),
-                Height = Dim.Fill()
-            };
-            top.Add(win);
+            _top = Application.Top;
 
             // Creates a menubar, the item "New" has a help menu.
-            var menu = new MenuBar(new[]
-            {
-                new MenuBarItem ("_File", new []
-                {
-                    new MenuItem ("_New", "Creates new file", () => {}),
-                    new MenuItem ("_Close", "", () => { }),
-                    new MenuItem ("_Quit", "", () => { top.Running = false; })
+            var menu = new MenuBar(new MenuBarItem[] {
+                new MenuBarItem ("_File", new MenuItem [] {
+                    new MenuItem ("_Quit", "", () => Application.RequestStop() )
                 }),
-                new MenuBarItem ("_Edit", new []
-                {
-                    new MenuItem ("_Copy", "", null),
-                    new MenuItem ("C_ut", "", null),
-                    new MenuItem ("_Paste", "", null)
-                })
+                new MenuBarItem ("_Color Scheme", CreateColorSchemeMenuItems()),
+                new MenuBarItem ("_About...", "About Tasty.Cli", () =>  MessageBox.Query ("About Tasty.Cli", aboutMessage.ToString(), "_Ok")),
             });
 
-            top.Add(menu);
-
-            var login = new Label("Login: ") { X = 3, Y = 2 };
-            var password = new Label("Password: ")
+            _leftPane = new FrameView("Commands")
             {
-                X = Pos.Left(login),
-                Y = Pos.Top(login) + 1
-            };
-            var loginText = new TextField("")
-            {
-                X = Pos.Right(password),
-                Y = Pos.Top(login),
-                Width = 40
-            };
-            var passText = new TextField("")
-            {
-                Secret = true,
-                X = Pos.Left(loginText),
-                Y = Pos.Top(password),
-                Width = Dim.Width(loginText)
+                X = 0,
+                Y = 1, // for menu
+                Width = 25,
+                Height = Dim.Fill(1),
+                CanFocus = false,
             };
 
-            // Add some controls, 
-            win.Add
-            (
-                // The ones with my favorite layout system
-                login, password, loginText, passText,
-                // The ones laid out like an australopithecus, with absolute positions:
-                new CheckBox(3, 6, "Remember me"),
-                new RadioGroup(3, 8, new[] { "_Personal", "_Company" }),
-                new Button(3, 14, "Ok"),
-                new Button(10, 14, "Cancel"),
-                new Label(3, 18, "Press F9 or ESC plus 9 to activate the menubar")
-            );
+            _top.Add(_leftPane, menu);
+
+            SetColorScheme();
 
             Application.Run();
             return Task.FromResult(1);
         }
+
+        static void SetColorScheme()
+        {
+#pragma warning disable CS8601 // Possible null reference assignment.
+            _leftPane!.ColorScheme = _baseColorScheme;
+#pragma warning restore CS8601 // Possible null reference assignment.
+                              // _rightPane.ColorScheme = _baseColorScheme;
+            _top?.SetNeedsDisplay();
+        }
+
+        static ColorScheme? _baseColorScheme;
+        static MenuItem[] CreateColorSchemeMenuItems()
+        {
+            List<MenuItem> menuItems = new List<MenuItem>();
+            foreach (var sc in Colors.ColorSchemes)
+            {
+                var item = new MenuItem();
+                item.Title = sc.Key;
+                item.CheckType |= MenuItemCheckStyle.Radio;
+
+#pragma warning disable CS8604 // Possible null reference argument.
+                item.Checked = sc.Value == _baseColorScheme;
+#pragma warning restore CS8604 // Possible null reference argument.
+
+                item.Action += () =>
+                {
+                    _baseColorScheme = sc.Value;
+                    SetColorScheme();
+                    foreach (var menuItem in menuItems)
+                    {
+                        menuItem.Checked = menuItem.Title.Equals(sc.Key) && sc.Value == _baseColorScheme;
+                    }
+                };
+                menuItems.Add(item);
+            }
+            return menuItems.ToArray();
+        }
+
+        private const string aboutMessage = @"
+     Tasty
+    delicious dotnet testing
+
+                 .@@@@@@@@              
+               @@@@%********%@@/        
+             %@,     &@(/&@/,,,,(@@     
+           @&******/%@@#.  %@%*,,,*&*   
+        %@/.,*#&(,#*,,,,*(@@(//@(,,,(@, 
+       .@(..........,%@/,,,,#@@%&@%*,*@#
+       @(......(@#......(@/,,,%#  ,@/,#@
+      @%......**.*........(@*,,#@.*@*,*@
+     @%..........*@@&.......&#,,(%  &(,@
+    @@............/#..*@@....%(,*@* (@@#
+   %&//..............,*......*@/*&&@@   
+  @@/////,....................@#%@#     
+ (@(///////*................,%@/        
+ @*..*////////,......,%@@@/             
+@(......///////&@@@#                    
+@@*....,%@@@&                           
+";
     }
 }

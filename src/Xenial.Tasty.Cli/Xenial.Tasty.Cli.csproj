@@ -8,7 +8,6 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>tasty</ToolCommandName>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -48,7 +48,7 @@ namespace Xenial.Delicious.Cli.Commands
 #pragma warning disable CS8601 // Possible null reference assignment.
             _leftPane!.ColorScheme = _baseColorScheme;
 #pragma warning restore CS8601 // Possible null reference assignment.
-                              // _rightPane.ColorScheme = _baseColorScheme;
+            // _rightPane.ColorScheme = _baseColorScheme;
             _top?.SetNeedsDisplay();
         }
 

@@ -30,11 +30,11 @@ namespace Tasty.Build
             );
 
             Target("lint", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", $"format --check --verbosity detailed")
+                () => RunAsync("dotnet", $"format --exclude ext --check --verbosity detailed")
             );
 
             Target("format", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", $"format")
+                () => RunAsync("dotnet", $"format --exclude ext")
             );
 
             Target("restore", DependsOn("lint"),

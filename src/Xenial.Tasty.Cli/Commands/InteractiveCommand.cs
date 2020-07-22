@@ -151,11 +151,9 @@ namespace Xenial.Delicious.Cli.Commands
 
                 Func<ConsoleKeyInfo, SerializableTastyCommand?> findCommand = (info) =>
                 {
-                    var key = info.Key.ToString().ToLower();
-
                     var command = info.Key == ConsoleKey.Enter
                         ? commands.FirstOrDefault(c => c.IsDefault)
-                        : commands.FirstOrDefault(c => c.Name.ToLowerInvariant() == key);
+                        : commands.FirstOrDefault(c => string.Equals(c.Name, info.Key.ToString(), StringComparison.OrdinalIgnoreCase));
 
                     return command;
                 };

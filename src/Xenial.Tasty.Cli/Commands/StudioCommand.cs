@@ -18,11 +18,11 @@ namespace Xenial.Delicious.Cli.Commands
         private static FrameView? _rightPane;
         private static Toplevel? _top;
         private static StatusBar? _statusBar;
-        public static Task<int> Studio(CancellationToken cancellationToken)
+        public static Task<int> Studio()
         {
             Application.Init();
             _top = Application.Top;
-            var cancellationTokenSource = new CancellationTokenSource();
+            using var cancellationTokenSource = new CancellationTokenSource();
 
             _leftPane = new FrameView("Commands")
             {

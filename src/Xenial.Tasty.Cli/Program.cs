@@ -39,7 +39,7 @@ namespace Xenial.Delicious.Cli
 
             var studioCommand = new Command("studio")
             {
-                Handler = CommandHandler.Create<CancellationToken>(StudioCommand.Studio)
+                Handler = CommandHandler.Create(StudioCommand.Studio)
             };
             studioCommand.AddAlias("s");
             rootCommand.Add(studioCommand);

@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Usage", "VSTHRD101:Avoid unsupported async delegates", Justification = "<Pending>", Scope = "member", Target = "~M:Xenial.Delicious.Cli.Commands.StudioCommand.Studio(System.Threading.CancellationToken)~System.Threading.Tasks.Task{System.Int32}")]
+[assembly: SuppressMessage("Usage", "VSTHRD101:Avoid unsupported async delegates", Justification = "<Pending>", Scope = "member", Target = "~M:Xenial.Delicious.Cli.Commands.StudioCommand.Studio~System.Threading.Tasks.Task{System.Int32}")]

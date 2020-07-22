@@ -21,10 +21,10 @@ namespace Xenial.Delicious.Cli.Internal
             {
                 var buildTask = BuildAsync(csProjFileName, cancellationToken);
 
-                await foreach (var (line, isRunning, exitCode) in buildTask)
+                await foreach (var (line, hasStopped, exitCode) in buildTask)
                 {
-                    progress.Report((line, isRunning, exitCode));
-                    if (!isRunning)
+                    progress.Report((line, hasStopped, exitCode));
+                    if (hasStopped)
                     {
                         return exitCode;
                     }
@@ -33,7 +33,7 @@ namespace Xenial.Delicious.Cli.Internal
             });
         }
 
-        public static async IAsyncEnumerable<(string, bool, int)> BuildAsync(string csProjFileName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<(string line, bool hasStopped, int exitCode)> BuildAsync(string csProjFileName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             using var proc = new Process
             {
@@ -58,7 +58,7 @@ namespace Xenial.Delicious.Cli.Internal
                     yield break;
                 }
                 var line = await reader.ReadLineAsync() ?? string.Empty;
-                yield return (line, true, 0);
+                yield return (line, false, 0);
             }
 
             var exitCode = await proc.WaitForExitAsync(cancellationToken);

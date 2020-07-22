@@ -60,7 +60,7 @@ namespace Xenial.Delicious.Cli.Commands
                         if(filePath != null)
                         {
                             var path = filePath.ToString();
-                            if(!string.IsNullOrEmpty(path) &&  System.IO.File.Exists(path))
+                            if(!string.IsNullOrEmpty(path) && System.IO.File.Exists(path))
                             {
                                 var commander = new TastyCommander();
 
@@ -92,8 +92,6 @@ namespace Xenial.Delicious.Cli.Commands
                 new MenuBarItem("_Color Scheme", CreateColorSchemeMenuItems()),
                 new MenuBarItem("_About...", "About Tasty.Cli", () => MessageBox.Query("About Tasty.Cli", aboutMessage.ToString(), "_Ok")),
             });
-
-
 
             _statusBar = new StatusBar(new[]
             {
@@ -130,8 +128,8 @@ namespace Xenial.Delicious.Cli.Commands
         {
 #pragma warning disable CS8601 // Possible null reference assignment.
             _leftPane!.ColorScheme = _baseColorScheme;
+            _rightPane!.ColorScheme = _baseColorScheme;
 #pragma warning restore CS8601 // Possible null reference assignment.
-            // _rightPane.ColorScheme = _baseColorScheme;
             _top?.SetNeedsDisplay();
         }
 

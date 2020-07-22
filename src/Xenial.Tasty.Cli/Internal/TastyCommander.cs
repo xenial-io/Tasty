@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Threading;
-
-using static SimpleExec.Command;
 
 namespace Xenial.Delicious.Cli.Internal
 {
@@ -43,7 +43,12 @@ namespace Xenial.Delicious.Cli.Internal
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Hidden
+
+                    //On windows dotnet core seams to set the codepage to 850
+                    //see: https://github.com/dotnet/runtime/issues/17849#issuecomment-353612399
+                    StandardOutputEncoding = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
+                        ? Encoding.GetEncoding(850) //DOS-Latin-1
+                        : Encoding.Default,
                 }
             };
 

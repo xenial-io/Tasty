@@ -2,6 +2,8 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +15,16 @@ namespace Xenial.Delicious.Cli
     {
         static async Task<int> Main(string[] args)
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                //Register additional code pages for windows
+                //cause we deal directly with process streams
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            }
+
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8;
+
             var rootCommand = new RootCommand();
 
             var interactiveCommand = new Command("interactive")

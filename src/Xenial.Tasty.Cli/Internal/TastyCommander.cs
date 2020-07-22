@@ -46,7 +46,7 @@ namespace Xenial.Delicious.Cli.Internal
 
                     //On windows dotnet core seams to set the codepage to 850
                     //see: https://github.com/dotnet/runtime/issues/17849#issuecomment-353612399
-                    StandardOutputEncoding = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
+                    StandardOutputEncoding = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                         ? Encoding.GetEncoding(850) //DOS-Latin-1
                         : Encoding.Default,
                 }

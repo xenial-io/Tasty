@@ -136,7 +136,7 @@ namespace Xenial.Delicious.Cli.Commands
         static ColorScheme? _baseColorScheme;
         static MenuItem[] CreateColorSchemeMenuItems()
         {
-            List<MenuItem> menuItems = new List<MenuItem>();
+            List<MenuItem> menuItems = new List<MenuItem>(Colors.ColorSchemes.Count);
             foreach (var sc in Colors.ColorSchemes)
             {
                 var item = new MenuItem();

@@ -36,9 +36,9 @@ namespace Xenial.Delicious.FeatureDetection
                 }
                 return false;
             }
-            while(proc != null)
+            while (proc != null)
             {
-                if(IsCmdProc(proc))
+                if (IsCmdProc(proc))
                 {
                     return true;
                 }
@@ -59,12 +59,12 @@ namespace Xenial.Delicious.FeatureDetection
 
         internal static bool SupportsRichContent()
         {
-            if(!IsWindows())
+            if (!IsWindows())
             {
                 return true;
             }
 
-            if(IsWindowsTerminal())
+            if (IsWindowsTerminal())
             {
                 return true;
             }

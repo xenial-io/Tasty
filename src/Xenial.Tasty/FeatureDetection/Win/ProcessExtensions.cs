@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System;
+using System.Runtime.InteropServices;
 
 namespace Xenial.Delicious.FeatureDetection.Win
 {

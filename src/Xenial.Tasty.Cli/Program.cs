@@ -15,15 +15,7 @@ namespace Xenial.Delicious.Cli
     {
         static async Task<int> Main(string[] args)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                //Register additional code pages for windows
-                //cause we deal directly with process streams
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            }
-
-            Console.OutputEncoding = Encoding.UTF8;
-            Console.InputEncoding = Encoding.UTF8;
+            SetupConsoleEncoding();
 
             var rootCommand = new RootCommand();
 
@@ -45,6 +37,19 @@ namespace Xenial.Delicious.Cli
             rootCommand.Add(studioCommand);
 
             return await rootCommand.InvokeAsync(args);
+        }
+
+        private static void SetupConsoleEncoding()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                //Register additional code pages for windows
+                //cause we deal directly with process streams
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            }
+
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8;
         }
     }
 }

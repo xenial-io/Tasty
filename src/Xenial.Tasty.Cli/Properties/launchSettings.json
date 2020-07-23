@@ -1,8 +1,13 @@
 {
   "profiles": {
-    "Xenial.Tasty.Cli": {
+    "Interactive": {
       "commandName": "Project",
       "commandLineArgs": "i -p ../../../../../test/Xenial.Tasty.Tests"
+    },
+    "Cli Studio": {
+      "commandName": "Project",
+      "commandLineArgs": "s",
+      "workingDirectory": "../../test/Xenial.Tasty.Tests"
     }
   }
 }

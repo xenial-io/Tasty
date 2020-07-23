@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 node_modules
+src/**/THIRD-PARTY-NOTICES.TXT
 
 # User-specific files
 *.rsuser

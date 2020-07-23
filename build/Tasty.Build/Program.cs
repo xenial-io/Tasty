@@ -30,11 +30,11 @@ namespace Tasty.Build
             );
 
             Target("lint", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", $"format --check --verbosity detailed")
+                () => RunAsync("dotnet", $"format --exclude ext --check --verbosity diagnostic")
             );
 
             Target("format", DependsOn("ensure-tools"),
-                () => RunAsync("dotnet", $"format")
+                () => RunAsync("dotnet", $"format --exclude ext")
             );
 
             Target("restore", DependsOn("lint"),
@@ -61,15 +61,25 @@ namespace Tasty.Build
                 await Task.WhenAll(tests);
             });
 
-            Target("pack.nuget", DependsOn("test"),
+            Target("lic.nuget", DependsOn("test"),
+                () => RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty/Xenial.Tasty.csproj --output src/Xenial.Tasty/THIRD-PARTY-NOTICES.TXT")
+            );
+
+            Target("lic.tools", DependsOn("test"),
+                () => RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty.Cli/Xenial.Tasty.Cli.csproj --output src/Xenial.Tasty.Cli/THIRD-PARTY-NOTICES.TXT")
+            );
+
+            Target("pack.nuget", DependsOn("lic.nuget"),
                 () => RunAsync("dotnet", $"pack src/Xenial.Tasty/Xenial.Tasty.csproj --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {properties()}")
             );
 
-            Target("pack.tools", DependsOn("test"),
+            Target("lic", DependsOn("lic.nuget", "lic.tools"));
+
+            Target("pack.tools", DependsOn("lic.tools"),
                 () => RunAsync("dotnet", $"pack src/Xenial.Tasty.Cli/Xenial.Tasty.Cli.csproj --no-restore --no-build -c {Configuration} {logOptions("pack.tools")} {properties()}")
             );
 
-            Target("pack", DependsOn("pack.nuget", "pack.tools"));
+            Target("pack", DependsOn("lic", "pack.nuget", "pack.tools"));
 
             Target("docs",
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")

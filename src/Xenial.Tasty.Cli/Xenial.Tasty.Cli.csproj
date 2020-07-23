@@ -13,14 +13,20 @@
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20303.1" />
     <PackageReference Include="SimpleExec" Version="6.2.0" />
+    <PackageReference Include="Terminal" Version="0.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ext\gui.cs\Terminal.Gui\Terminal.Gui.csproj" />
     <ProjectReference Include="..\Xenial.Tasty\Xenial.Tasty.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
+    <None Include="THIRD-PARTY-NOTICES.TXT">
+      <Pack>true</Pack>
+      <PackagePath></PackagePath>
+      <Visible>false</Visible>
+    </None>
   </ItemGroup>
 
 </Project>

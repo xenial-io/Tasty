@@ -1,5 +1,7 @@
 ﻿using System;
 
+using static Xenial.Delicious.FeatureDetection.FeatureDetector;
+
 namespace Xenial.Delicious.Reporters
 {
     public class ColorScheme
@@ -15,6 +17,21 @@ namespace Xenial.Delicious.Reporters
         public string NotRunIcon = "🙈";
         public string IgnoredIcon = "🙄";
 
-        public static ColorScheme Default = new ColorScheme();
+        public static ColorScheme Default = SupportsRichContent() 
+            ? new ColorScheme()
+            : new ColorSchemeLegacy();
+    }
+
+    public class ColorSchemeLegacy : ColorScheme
+    {
+        public ColorSchemeLegacy()
+        {
+            SuccessIcon = "☺";
+            ErrorIcon = "▼";
+            NotRunIcon = "?";
+            IgnoredIcon = "‼";
+        }
+
+        public static new ColorScheme Default = new ColorSchemeLegacy();
     }
 }

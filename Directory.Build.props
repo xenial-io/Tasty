@@ -31,6 +31,10 @@
     <TargetFrameworks>$(NetStandardVersion)</TargetFrameworks>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
+    <DefineConstants>$(DefineConstants);FULL_FRAMEWORK</DefineConstants>
+  </PropertyGroup>
+  
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>

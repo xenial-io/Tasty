@@ -16,7 +16,7 @@ namespace Xenial.Delicious.Reporters
     public static class ConsoleReporter
     {
         public static ColorScheme Scheme = ColorScheme.Default;
-        
+
         static ConsoleReporter()
             => SetupConsoleEncoding();
 

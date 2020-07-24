@@ -171,14 +171,14 @@ git submodule init && git submodule update
 Afterwards you should be able to build the project by using the build scripts:
 
 ```cmd
-//Windows
+#Windows
 build.bat
-//Or for short
+#Or for short
 b.bat
-//Or for powershell
+#Or for powershell
 ./build.ps1
 
-//Linux & MacOS
+#Linux & MacOS
 . build.sh
 ```
 

@@ -138,6 +138,38 @@ To name a few:
 
 Feel free to send a pull request to add your repo or organisation to this list!
 
+## Contribute
+
+### Prerequisites
+
+You need to have [node v12](https://nodejs.org/en/download/) and [dotnet sdk 3.1](https://dotnet.microsoft.com/download) installed on your local machine.
+
+### Commitizen
+
+We use node only for linting commit messages and pushes so make sure to install the proper hooks by running:
+
+```cmd
+npm install
+```
+
+Afterwards you are able to commit code either by hand using the [commitizen](https://www.npmjs.com/package/commitizen) rules or by running:
+
+```cmd
+git cz
+//OR
+npm run c
+```  
+
+### Building
+
+To build the project locally your need to make sure to checkout the sub repositories:
+
+```cmd
+git submodule init && git submodule update
+```
+
+
+
 ---
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>

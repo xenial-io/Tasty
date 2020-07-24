@@ -15,7 +15,7 @@ namespace Xenial.Delicious.Reporters
         private static int colorIndex;
         private static int numberOfLines;
         private static Color[] rainbowColors;
-        private static int scoreboardWidth;
+        //private static int scoreboardWidth;
         private static bool tick;
         private static List<StringBuilder> trajectories;
         private static int trajectoryWidthMax;
@@ -31,7 +31,7 @@ namespace Xenial.Delicious.Reporters
             numberOfLines = 4;
 
             rainbowColors = GenerateColors();
-            scoreboardWidth = 5;
+            //scoreboardWidth = 5;
             tick = false;
 
             trajectories = new List<StringBuilder>();

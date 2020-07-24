@@ -168,7 +168,25 @@ To build the project locally your need to make sure to checkout the sub reposito
 git submodule init && git submodule update
 ```
 
+Afterwards you should be able to build the project by using the build scripts:
 
+```cmd
+//Windows
+build.bat
+//Or for short
+b.bat
+//Or for powershell
+./build.ps1
+
+//Linux & MacOS
+. build.sh
+```
+
+The project uses [bullseye](https://github.com/adamralph/bullseye) to list individual targets use `build -l`.
+
+### Linting and Formatting
+
+This project uses `dotnet format` to keep the code base consistent. If the build fails, you can use `build format` to automatically format code against the rules defined.
 
 ---
 

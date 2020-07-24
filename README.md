@@ -188,6 +188,10 @@ The project uses [bullseye](https://github.com/adamralph/bullseye) to list indiv
 
 This project uses `dotnet format` to keep the code base consistent. If the build fails, you can use `build format` to automatically format code against the rules defined.
 
+### Bypass checks
+
+By default when you commit the message is linted and before you push changes a default integration build is started. To bypass this behavior you can add `--no-verify` to the `git commit` or `git push` commands.
+
 ---
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>

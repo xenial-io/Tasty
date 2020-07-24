@@ -164,7 +164,7 @@ npm run c
 
 To build the project locally your need to make sure to checkout the sub repositories:
 
-```cmd
+```bash
 git submodule init && git submodule update
 ```
 

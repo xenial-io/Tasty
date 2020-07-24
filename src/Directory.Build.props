@@ -3,7 +3,6 @@
 
   <PropertyGroup>
     <MinVerTagPrefix>v</MinVerTagPrefix>
-
     <PackageProjectUrl>https://tasty.xenial.io</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xenial-io/Tasty</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -12,6 +11,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <IsPackable>true</IsPackable>
     <NoWarn>VSTHRD200</NoWarn>
+    <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
   </PropertyGroup>
   
   <ItemGroup>

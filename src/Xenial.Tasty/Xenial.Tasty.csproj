@@ -5,7 +5,6 @@
     <RootNamespace>Xenial.Delicious</RootNamespace>
     <PackageId>Xenial.Tasty</PackageId>
     <PackageDescription>Tasty - Delicious dotnet testing</PackageDescription>
-    <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

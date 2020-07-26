@@ -1,6 +1,4 @@
-﻿using StreamJsonRpc;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Pipes;
@@ -8,12 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using StreamJsonRpc;
 using Terminal.Gui;
-
 using Xenial.Delicious.Cli.Internal;
 using Xenial.Delicious.Protocols;
-
 using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.PromiseHelper;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -11,10 +12,16 @@ using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Threading;
 
+using StreamJsonRpc;
+
+using static SimpleExec.Command;
+
 namespace Xenial.Delicious.Cli.Internal
 {
     internal class TastyCommander
     {
+        IList<IDisposable> Disposables = new List<IDisposable>();
+
         public async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)> progress, CancellationToken cancellationToken = default)
         {
             return await Task.Run(async () =>
@@ -33,7 +40,7 @@ namespace Xenial.Delicious.Cli.Internal
             });
         }
 
-        public static async IAsyncEnumerable<(string line, bool hasStopped, int exitCode)> BuildAsync(string csProjFileName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        static async IAsyncEnumerable<(string line, bool hasStopped, int exitCode)> BuildAsync(string csProjFileName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             using var proc = new Process
             {
@@ -68,6 +75,38 @@ namespace Xenial.Delicious.Cli.Internal
 
             var exitCode = await proc.WaitForExitAsync(cancellationToken);
             yield return (string.Empty, true, exitCode);
+        }
+
+        public async Task ConnectToRemote(string csProjFileName, CancellationToken token = default)
+        {
+            var connectionId = $"TASTY_{Guid.NewGuid()}";
+
+            var stream = new NamedPipeServerStream(
+                connectionId,
+                PipeDirection.InOut,
+                NamedPipeServerStream.MaxAllowedServerInstances,
+                PipeTransmissionMode.Byte,
+                PipeOptions.Asynchronous
+            );
+
+            Disposables.Add(stream);
+            var connectionTask = stream.WaitForConnectionAsync(token);
+
+            var remoteTask = ReadAsync("dotnet",
+                $"run -p \"{csProjFileName}\" -f netcoreapp3.1 --no-restore --no-build",
+                noEcho: true,
+                configureEnvironment: (env) =>
+                {
+                    env.Add("TASTY_INTERACTIVE", "true");
+                    env.Add("TASTY_INTERACTIVE_CON_TYPE", "NamedPipes");
+                    env.Add("TASTY_INTERACTIVE_CON_ID", connectionId);
+                }
+            );
+
+            await connectionTask;
+            var server = new TastyServer();
+            var tastyServer = JsonRpc.Attach(stream, server);
+            Disposables.Add(tastyServer);
         }
     }
 }

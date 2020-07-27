@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 using StreamJsonRpc;
 using Terminal.Gui;
 using Xenial.Delicious.Cli.Internal;
-using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Cli.Views;
-
+using Xenial.Delicious.Protocols;
 using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.PromiseHelper;
 

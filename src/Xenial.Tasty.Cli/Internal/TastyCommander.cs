@@ -114,13 +114,13 @@ namespace Xenial.Delicious.Cli.Internal
 
         public void Dispose()
         {
-            foreach(var disposable in Disposables)
+            foreach (var disposable in Disposables)
             {
                 try
                 {
                     disposable.Dispose();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }

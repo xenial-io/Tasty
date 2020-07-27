@@ -10,6 +10,8 @@ using StreamJsonRpc;
 using Terminal.Gui;
 using Xenial.Delicious.Cli.Internal;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Cli.Views;
+
 using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.PromiseHelper;
 
@@ -102,44 +104,32 @@ namespace Xenial.Delicious.Cli.Commands
 
         private static async Task ShowOpenProjectAndBuildDialog(CancellationTokenSource cancellationTokenSource)
         {
-            var dialog = new OpenDialog
+            var path = await SelectProjectDialog.ShowDialogAsync(_baseColorScheme!);
+            if (path != null)
             {
-                AllowedFileTypes = new[] { "csproj", "exe", "dll" },
-                CanChooseDirectories = false,
-                AllowsMultipleSelection = false,
-                ColorScheme = _baseColorScheme
-            };
-            Application.Run(dialog);
-            var filePath = dialog.FilePath;
-            if (filePath != null)
-            {
-                var path = filePath.ToString();
-                if (!string.IsNullOrEmpty(path) && System.IO.File.Exists(path))
+                var commander = new TastyCommander();
+
+                var logView = new TextView
                 {
-                    var commander = new TastyCommander();
+                    X = 0,
+                    Y = 0,
+                    Width = Dim.Fill(),
+                    Height = Dim.Fill(),
+                    ReadOnly = true
+                };
+                _rightPane?.Clear();
+                _rightPane?.Add(logView);
+                var log = string.Empty;
+                var progress = new Progress<(string line, bool isRunning, int exitCode)>(p =>
+                {
+                    log += $"{p.line.Trim()}{Environment.NewLine}";
+                    logView.Text = log;
+                });
 
-                    var logView = new TextView
-                    {
-                        X = 0,
-                        Y = 0,
-                        Width = Dim.Fill(),
-                        Height = Dim.Fill(),
-                        ReadOnly = true
-                    };
-                    _rightPane?.Clear();
-                    _rightPane?.Add(logView);
-                    var log = string.Empty;
-                    var progress = new Progress<(string line, bool isRunning, int exitCode)>(p =>
-                    {
-                        log += $"{p.line.Trim()}{Environment.NewLine}";
-                        logView.Text = log;
-                    });
-
-                    var sw = Stopwatch.StartNew();
-                    var exitCode = await commander.BuildProject(path, progress, cancellationTokenSource.Token);
-                    ((IProgress<(string line, bool isRunning, int exitCode)>)progress).Report(($"Finished in {sw.Elapsed}", true, exitCode));
-                    await CreateCommandsListView(path, logView, cancellationTokenSource);
-                }
+                var sw = Stopwatch.StartNew();
+                var exitCode = await commander.BuildProject(path, progress, cancellationTokenSource.Token);
+                ((IProgress<(string line, bool isRunning, int exitCode)>)progress).Report(($"Finished in {sw.Elapsed}", true, exitCode));
+                await CreateCommandsListView(path, logView, cancellationTokenSource);
             }
         }
 

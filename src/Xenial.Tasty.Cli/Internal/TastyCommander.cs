@@ -18,9 +18,12 @@ using static SimpleExec.Command;
 
 namespace Xenial.Delicious.Cli.Internal
 {
-    internal class TastyCommander
+    internal class TastyCommander : IDisposable
     {
         IList<IDisposable> Disposables = new List<IDisposable>();
+
+        TastyServer? _TastyServer;
+        JsonRpc? _JsonRpc;
 
         public async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)> progress, CancellationToken cancellationToken = default)
         {
@@ -104,9 +107,26 @@ namespace Xenial.Delicious.Cli.Internal
             );
 
             await connectionTask;
-            var server = new TastyServer();
-            var tastyServer = JsonRpc.Attach(stream, server);
-            Disposables.Add(tastyServer);
+            _TastyServer = new TastyServer();
+            _JsonRpc = JsonRpc.Attach(stream, _TastyServer);
+            Disposables.Add(_JsonRpc);
+        }
+
+        public void Dispose()
+        {
+            foreach(var disposable in Disposables)
+            {
+                try
+                {
+                    disposable.Dispose();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+            _JsonRpc = null;
+            _TastyServer = null;
         }
     }
 }

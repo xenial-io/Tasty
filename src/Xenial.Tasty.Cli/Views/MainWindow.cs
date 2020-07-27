@@ -12,6 +12,7 @@ namespace Xenial.Delicious.Cli.Views
         internal Toplevel Top { get; }
 
         FrameView _LeftPane;
+        ListView _CommandsListView;
         FrameView _RightPane;
         TextView _LogView;
         MenuBar _Menu;
@@ -22,6 +23,7 @@ namespace Xenial.Delicious.Cli.Views
         public MainWindow(MainWindowViewModel viewModel, Toplevel top)
         {
             _ViewModel = viewModel;
+            _ViewModel.Commands.CollectionChanged += Commands_CollectionChanged;
             Top = top;
             _LeftPane = new FrameView("Commands")
             {
@@ -31,6 +33,27 @@ namespace Xenial.Delicious.Cli.Views
                 Height = Dim.Fill(1),
                 CanFocus = false,
             };
+
+            _CommandsListView = new ListView(Array.Empty<CommandItem>())
+            {
+                X = 0,
+                Y = 0,
+                Width = Dim.Fill(0),
+                Height = Dim.Fill(0),
+                AllowsMarking = false,
+                CanFocus = true,
+            };
+
+            _CommandsListView.OpenSelectedItem += async (a) =>
+            {
+                var commandItem = (CommandItem)a.Value;
+
+                Top.SetFocus(_RightPane);
+
+                await _ViewModel.ExecuteCommand(commandItem);
+            };
+
+            _LeftPane.Add(_CommandsListView);
 
             _RightPane = new FrameView("Output")
             {
@@ -101,6 +124,11 @@ namespace Xenial.Delicious.Cli.Views
 
             viewModel.LogProgress.ProgressChanged += LogProgress_ProgressChanged;
             Top.Initialized += Top_Initialized;
+        }
+
+        private async void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            await _CommandsListView.SetSourceAsync(_ViewModel.Commands.ToList());
         }
 
         public MainWindow(MainWindowViewModel viewModel) : this(viewModel, Application.Top) { }

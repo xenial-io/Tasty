@@ -14,7 +14,10 @@ using Microsoft.VisualStudio.Threading;
 
 using StreamJsonRpc;
 
+using Xenial.Delicious.Protocols;
+
 using static SimpleExec.Command;
+using static Xenial.Delicious.Utils.PromiseHelper;
 
 namespace Xenial.Delicious.Cli.Internal
 {
@@ -25,7 +28,7 @@ namespace Xenial.Delicious.Cli.Internal
         TastyServer? _TastyServer;
         JsonRpc? _JsonRpc;
 
-        public async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)> progress, CancellationToken cancellationToken = default)
+        internal async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)> progress, CancellationToken cancellationToken = default)
         {
             return await Task.Run(async () =>
             {
@@ -80,7 +83,7 @@ namespace Xenial.Delicious.Cli.Internal
             yield return (string.Empty, true, exitCode);
         }
 
-        public async Task ConnectToRemote(string csProjFileName, CancellationToken token = default)
+        internal async Task ConnectToRemote(string csProjFileName, CancellationToken token = default)
         {
             var connectionId = $"TASTY_{Guid.NewGuid()}";
 
@@ -111,6 +114,36 @@ namespace Xenial.Delicious.Cli.Internal
             _JsonRpc = JsonRpc.Attach(stream, _TastyServer);
             Disposables.Add(_JsonRpc);
         }
+
+        internal Task<IList<SerializableTastyCommand>> ListCommands(CancellationToken token = default)
+            => Promise<IList<SerializableTastyCommand>>((resolve, reject) =>
+            {
+                //TODO: Make a guard method
+                if (_TastyServer != null)
+                {
+                    var cts = new CancellationTokenSource();
+
+                    //TODO: this may cause a memory leak...
+                    Disposables.Add(cts);
+
+                    //TODO: Make this configurable
+                    cts.CancelAfter(10000);
+
+                    cts.Token.CombineWith(token)
+                        .Token.Register(() => reject(cts.Token));
+
+                    _TastyServer.CommandsRegistered = (c) =>
+                    {
+                        cts.Dispose();
+                        _TastyServer.CommandsRegistered = null;
+                        resolve(c);
+                    };
+                }
+                else
+                {
+                    reject(token);
+                }
+            });
 
         public void Dispose()
         {

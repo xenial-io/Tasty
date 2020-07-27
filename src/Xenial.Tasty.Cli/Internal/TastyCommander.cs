@@ -161,5 +161,14 @@ namespace Xenial.Delicious.Cli.Internal
             _JsonRpc = null;
             _TastyServer = null;
         }
+
+        public async Task DoExecuteCommand(ExecuteCommandEventArgs executeCommandEventArgs)
+        {
+            //TODO: Make a guard method
+            if (_TastyServer != null)
+            {
+                await _TastyServer.DoExecuteCommand(executeCommandEventArgs);
+            }
+        }
     }
 }

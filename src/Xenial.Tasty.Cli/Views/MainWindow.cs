@@ -23,7 +23,6 @@ namespace Xenial.Delicious.Cli.Views
         public MainWindow(MainWindowViewModel viewModel, Toplevel top)
         {
             _ViewModel = viewModel;
-            _ViewModel.Commands.CollectionChanged += Commands_CollectionChanged;
             Top = top;
             _LeftPane = new FrameView("Commands")
             {
@@ -34,23 +33,14 @@ namespace Xenial.Delicious.Cli.Views
                 CanFocus = false,
             };
 
-            _CommandsListView = new ListView(Array.Empty<CommandItem>())
+            _CommandsListView = new ListView()
             {
                 X = 0,
                 Y = 0,
                 Width = Dim.Fill(0),
                 Height = Dim.Fill(0),
                 AllowsMarking = false,
-                CanFocus = true,
-            };
-
-            _CommandsListView.OpenSelectedItem += async (a) =>
-            {
-                var commandItem = (CommandItem)a.Value;
-
-                Top.SetFocus(_RightPane);
-
-                await _ViewModel.ExecuteCommand(commandItem);
+                CanFocus = false,
             };
 
             _LeftPane.Add(_CommandsListView);
@@ -70,7 +60,8 @@ namespace Xenial.Delicious.Cli.Views
                 Y = 0,
                 Width = Dim.Fill(),
                 Height = Dim.Fill(),
-                ReadOnly = true
+                ReadOnly = true,
+                CanFocus = true
             };
 
             _RightPane.Add(_LogView);
@@ -122,13 +113,21 @@ namespace Xenial.Delicious.Cli.Views
 
             SetColor(_ViewModel.ColorSchemeName, _ViewModel.ColorScheme);
 
-            viewModel.LogProgress.ProgressChanged += LogProgress_ProgressChanged;
+            _CommandsListView.OpenSelectedItem += CommandsListView_OpenSelectedItem;
+            _ViewModel.LogProgress.ProgressChanged += LogProgress_ProgressChanged;
+            _ViewModel.Commands.CollectionChanged += Commands_CollectionChanged;
             Top.Initialized += Top_Initialized;
+            Top.SetFocus(_LogView);
         }
 
         private async void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             await _CommandsListView.SetSourceAsync(_ViewModel.Commands.ToList());
+            _CommandsListView.CanFocus = _ViewModel.Commands.Count > 0;
+            if (_CommandsListView.CanFocus)
+            {
+                Top.SetFocus(_CommandsListView);
+            }
         }
 
         public MainWindow(MainWindowViewModel viewModel) : this(viewModel, Application.Top) { }
@@ -175,7 +174,23 @@ namespace Xenial.Delicious.Cli.Views
         private void LogProgress_ProgressChanged(object? sender, (string line, bool isRunning, int exitCode) e)
             => _LogView.Text = _ViewModel.LogText;
 
+        private async void CommandsListView_OpenSelectedItem(ListViewItemEventArgs e)
+        {
+            var commandItem = (CommandItem)e.Value;
+
+            Top.SetFocus(_RightPane);
+
+            await _ViewModel.ExecuteCommand(commandItem);
+        }
+
         public void Dispose()
-            => _ViewModel.Dispose();
+        {
+            _CommandsListView.OpenSelectedItem -= CommandsListView_OpenSelectedItem;
+            _ViewModel.LogProgress.ProgressChanged -= LogProgress_ProgressChanged;
+            _ViewModel.Commands.CollectionChanged -= Commands_CollectionChanged;
+            Top.Initialized -= Top_Initialized;
+
+            _ViewModel.Dispose();
+        }
     }
 }

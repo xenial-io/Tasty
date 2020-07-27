@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Terminal.Gui;
 
 using Xenial.Delicious.Cli.Internal;
+using Xenial.Delicious.Protocols;
 
 namespace Xenial.Delicious.Cli.Views
 {
@@ -85,9 +86,12 @@ namespace Xenial.Delicious.Cli.Views
             return Task.CompletedTask;
         }
 
-        public Task ExecuteCommand(CommandItem commandItem)
+        public async Task ExecuteCommand(CommandItem commandItem)
         {
-            return Task.CompletedTask;
+            await Commander.DoExecuteCommand(new ExecuteCommandEventArgs
+            {
+                CommandName = commandItem.Command.Name
+            });
         }
 
         public void Dispose()

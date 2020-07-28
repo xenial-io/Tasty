@@ -47,10 +47,10 @@ namespace Xenial.Delicious.Cli.Commands
 
                         Console.WriteLine("Connecting. NamedPipeServerStream...");
                         await connectionTask;
-                        var server = new TastyServer();
 
-                        server.RegisterReporter(TastyServer.ConsoleReporter.Report);
-                        server.RegisterReporter(TastyServer.ConsoleReporter.ReportSummary);
+                        var server = new TastyServer()
+                            .RegisterReporter(TastyServer.ConsoleReporter.Report)
+                            .RegisterReporter(TastyServer.ConsoleReporter.ReportSummary);
 
                         using var tastyServer = JsonRpc.Attach(stream, server);
 

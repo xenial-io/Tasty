@@ -11,15 +11,14 @@ namespace Xenial.Delicious.Reporters
     public static class NyanCatReporter
     {
         private const int ColorCount = 6 * 7;
-        private static int nyanCatWidth;
-        private static int width;
+        private static readonly int nyanCatWidth;
+        private static readonly int width;
         private static int colorIndex;
-        private static int numberOfLines;
-        private static Color[] rainbowColors;
-        //private static int scoreboardWidth;
+        private static readonly int numberOfLines;
+        private static readonly Color[]? rainbowColors;
         private static bool tick;
-        private static List<List<string>> trajectories;
-        private static int trajectoryWidthMax;
+        private static readonly List<List<string>>? trajectories;
+        private static readonly int trajectoryWidthMax;
 
         static NyanCatReporter()
         {
@@ -35,7 +34,6 @@ namespace Xenial.Delicious.Reporters
             numberOfLines = 4;
 
             rainbowColors = GenerateColors();
-            //scoreboardWidth = 5;
             tick = false;
 
             trajectories = new List<List<string>>();
@@ -115,21 +113,15 @@ namespace Xenial.Delicious.Reporters
             int ascending = (int)((div % 1) * 255);
             int descending = 255 - ascending;
 
-            switch ((int)div)
+            return ((int)div) switch
             {
-                case 0:
-                    return Color.FromArgb(255, 255, ascending, 0);
-                case 1:
-                    return Color.FromArgb(255, descending, 255, 0);
-                case 2:
-                    return Color.FromArgb(255, 0, 255, ascending);
-                case 3:
-                    return Color.FromArgb(255, 0, descending, 255);
-                case 4:
-                    return Color.FromArgb(255, ascending, 0, 255);
-                default:
-                    return Color.FromArgb(255, 255, 0, descending);
-            }
+                0 => Color.FromArgb(255, 255, ascending, 0),
+                1 => Color.FromArgb(255, descending, 255, 0),
+                2 => Color.FromArgb(255, 0, 255, ascending),
+                3 => Color.FromArgb(255, 0, descending, 255),
+                4 => Color.FromArgb(255, ascending, 0, 255),
+                _ => Color.FromArgb(255, 255, 0, descending),
+            };
         }
 
         private static void Draw(TestCase testCase)
@@ -141,7 +133,7 @@ namespace Xenial.Delicious.Reporters
 
             for (int i = 0; i < numberOfLines; i++)
             {
-                if (trajectories[i].Count > trajectoryWidthMax)
+                if (trajectories![i].Count > trajectoryWidthMax)
                 {
                     foreach (var traj in trajectories)
                     {
@@ -156,7 +148,7 @@ namespace Xenial.Delicious.Reporters
             var catIndex = 0;
             var cat = GetNyanCat(testCase).ToList();
 
-            foreach (var traj in trajectories)
+            foreach (var traj in trajectories!)
             {
                 Console.WriteLine(string.Join("", traj) + cat[catIndex]);
                 catIndex++;
@@ -170,7 +162,7 @@ namespace Xenial.Delicious.Reporters
 
         private static string Rainbowify(string input)
         {
-            var color = rainbowColors[colorIndex % rainbowColors.Length];
+            var color = rainbowColors![colorIndex % rainbowColors.Length];
 
             var result = Pastel.ConsoleExtensions.Pastel(input, color);
 
@@ -189,19 +181,14 @@ namespace Xenial.Delicious.Reporters
 
         private static string Face(TestCase testCase)
         {
-            switch (testCase.TestOutcome)
+            return testCase.TestOutcome switch
             {
-                case TestOutcome.NotRun:
-                    return "( o .o)";
-                case TestOutcome.Ignored:
-                    return "( - .-)";
-                case TestOutcome.Failed:
-                    return "( x .x)";
-                case TestOutcome.Success:
-                    return "( ^ .^)";
-            }
-
-            return "( - .-)";
+                TestOutcome.NotRun => "( o .o)",
+                TestOutcome.Ignored => "( - .-)",
+                TestOutcome.Failed => "( x .x)",
+                TestOutcome.Success => "( ^ .^)",
+                _ => "( - .-)",
+            };
         }
     }
 }

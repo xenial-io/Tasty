@@ -43,6 +43,9 @@ namespace Xenial.Delicious.Reporters
             }
 
             trajectoryWidthMax = width - nyanCatWidth;
+
+            if (trajectoryWidthMax < 0)
+                trajectoryWidthMax = 0;
         }
 
         public static void Register()

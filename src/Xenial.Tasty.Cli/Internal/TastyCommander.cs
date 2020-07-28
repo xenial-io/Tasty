@@ -100,7 +100,7 @@ namespace Xenial.Delicious.Cli.Internal
 
         async Task Report(SerializableTestCase @case)
         {
-            foreach(var reporter in Reporters)
+            foreach (var reporter in Reporters)
             {
                 await reporter.Invoke(@case);
             }

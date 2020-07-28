@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,20 +37,30 @@ namespace Xenial.Delicious.Remote
 
         public static Task<TastyRemote> AttachToStream(TastyScope scope, Stream remoteStream)
         {
+            static SerializableTestCase MapToSerializableTestCase(Metadata.TestCase test)
+            {
+                return new SerializableTestCase
+                {
+                    FullName = test.FullName,
+                    Name = test.Name,
+                    AdditionalMessage = test.AdditionalMessage,
+                    Duration = test.Duration,
+                    Exception = test.Exception,
+                    IgnoredReason = test.IgnoredReason,
+                    IsForced = test.IsForced?.Invoke(),
+                    IsIgnored = test.IsIgnored?.Invoke(),
+                    TestOutcome = test.TestOutcome
+                };
+            }
+
             var remote = JsonRpc.Attach<TastyRemote>(remoteStream);
 
-            scope.RegisterReporter(test => remote.Report(new SerializableTestCase
-            {
-                FullName = test.FullName,
-                Name = test.Name,
-                AdditionalMessage = test.AdditionalMessage,
-                Duration = test.Duration,
-                Exception = test.Exception,
-                IgnoredReason = test.IgnoredReason,
-                IsForced = test.IsForced?.Invoke(),
-                IsIgnored = test.IsIgnored?.Invoke(),
-                TestOutcome = test.TestOutcome
-            }));
+            scope.RegisterReporter(test => remote.Report(MapToSerializableTestCase(test)));
+
+            Task SummaryReporter(IEnumerable<Metadata.TestCase> @cases)
+                => remote.Report(@cases.Select(test => MapToSerializableTestCase(test)));
+
+            scope.RegisterReporter(SummaryReporter);
 
             return Task.FromResult(remote);
         }

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-using Xenial.Delicious.Commands;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;

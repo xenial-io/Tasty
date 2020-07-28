@@ -14,8 +14,26 @@ using static Xenial.Delicious.Utils.Actions;
 
 namespace Xenial.Delicious.Cli
 {
+    public delegate Task AsyncRemoteTestReporter(SerializableTestCase @case);
+    public delegate Task AsyncRemoteTestSummaryReporter(IEnumerable<SerializableTestCase> @cases);
+
     public class TastyServer
     {
+        private readonly List<AsyncRemoteTestReporter> Reporters = new List<AsyncRemoteTestReporter>();
+        private readonly List<AsyncRemoteTestSummaryReporter> SummaryReporters = new List<AsyncRemoteTestSummaryReporter>();
+
+        public TastyServer RegisterReporter(AsyncRemoteTestReporter reporter)
+        {
+            Reporters.Add(reporter);
+            return this;
+        }
+
+        public TastyServer RegisterReporter(AsyncRemoteTestSummaryReporter reporter)
+        {
+            SummaryReporters.Add(reporter);
+            return this;
+        }
+
         public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
         public event EventHandler? CancellationRequested;
 
@@ -31,11 +49,21 @@ namespace Xenial.Delicious.Cli
             await Task.CompletedTask;
         }
 
-        public Task Report(SerializableTestCase @case)
-            => ConsoleReporter.Report(@case);
+        public async Task Report(SerializableTestCase @case)
+        {
+            foreach (var reporter in Reporters)
+            {
+                await reporter.Invoke(@case);
+            }
+        }
 
-        public Task Report(IEnumerable<SerializableTestCase> @cases)
-           => ConsoleReporter.ReportSummary(@cases);
+        public async Task Report(IEnumerable<SerializableTestCase> @cases)
+        {
+            foreach (var reporter in SummaryReporters)
+            {
+                await reporter.Invoke(@cases);
+            }
+        }
 
         internal Action<IList<SerializableTastyCommand>>? CommandsRegistered;
         internal Action? EndTestPipelineSignaled;

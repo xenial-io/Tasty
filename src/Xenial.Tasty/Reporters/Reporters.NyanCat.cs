@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xenial.Delicious.Metadata;
@@ -17,7 +18,7 @@ namespace Xenial.Delicious.Reporters
         private static Color[] rainbowColors;
         //private static int scoreboardWidth;
         private static bool tick;
-        private static List<StringBuilder> trajectories;
+        private static List<List<string>> trajectories;
         private static int trajectoryWidthMax;
 
         static NyanCatReporter()
@@ -34,11 +35,11 @@ namespace Xenial.Delicious.Reporters
             //scoreboardWidth = 5;
             tick = false;
 
-            trajectories = new List<StringBuilder>();
+            trajectories = new List<List<string>>();
 
             for (int i = 0; i < numberOfLines; i++)
             {
-                trajectories.Add(new StringBuilder());
+                trajectories.Add(new List<string>());
             }
 
             trajectoryWidthMax = width - nyanCatWidth;
@@ -52,8 +53,8 @@ namespace Xenial.Delicious.Reporters
 
         private static Task ReportSummary(IEnumerable<TestCase> tests)
         {
-            foreach (var test in tests)
-                Draw(test);
+            //foreach (var test in tests)
+            //    Draw(test);
 
             return Task.CompletedTask;
         }
@@ -106,20 +107,32 @@ namespace Xenial.Delicious.Reporters
 
         private static void Draw(TestCase testCase)
         {
+            Console.CursorTop = 0;
+            Console.CursorLeft = 0;
+
+            tick = !tick;
+
             for (int i = 0; i < numberOfLines; i++)
             {
-                if (trajectories[i].Length < trajectoryWidthMax)
+                if (trajectories[i].Count >= trajectoryWidthMax)
                 {
-                    tick = !tick;
-                    trajectories[i].Append(AppendRainbow());
+                    foreach (var traj in trajectories)
+                    {
+                        traj.RemoveAt(0);
+                    }
                 }
+
+                trajectories[i].Add(AppendRainbow());
+
             }
 
-            AppendNyanCat(testCase);
+            var catIndex = 0;
+            var cat = GetNyanCat(testCase).ToList();
 
             foreach (var traj in trajectories)
             {
-                Console.WriteLine(traj.ToString());
+                Console.WriteLine(string.Join("", traj) + cat[catIndex]);
+                catIndex++;
             }
         }
 
@@ -139,12 +152,12 @@ namespace Xenial.Delicious.Reporters
             return result;
         }
 
-        private static void AppendNyanCat(TestCase testCase)
+        private static IEnumerable<string> GetNyanCat(TestCase testCase)
         {
-            trajectories[0].Append(" _,------,");
-            trajectories[1].Append(" _|   /\\_/\\");
-            trajectories[2].Append(" ^|__" + Face(testCase));
-            trajectories[3].Append("   \"\"  \"\" ");
+            yield return " _,------,";
+            yield return " _|   /\\_/\\";
+            yield return " ^|__" + Face(testCase);
+            yield return "   \"\"  \"\" ";
         }
 
         private static string Face(TestCase testCase)

@@ -62,6 +62,10 @@ namespace Xenial.Delicious.Cli.Commands
                         {
                             return e.ExitCode;
                         }
+                        finally
+                        {
+                            commander.Dispose();
+                        }
                     }
                 }
                 return 0;

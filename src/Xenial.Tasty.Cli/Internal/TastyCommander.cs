@@ -23,6 +23,21 @@ namespace Xenial.Delicious.Cli.Internal
 {
     internal class TastyCommander : IDisposable
     {
+        private readonly List<AsyncRemoteTestReporter> Reporters = new List<AsyncRemoteTestReporter>();
+        private readonly List<AsyncRemoteTestSummaryReporter> SummaryReporters = new List<AsyncRemoteTestSummaryReporter>();
+
+        public TastyCommander RegisterReporter(AsyncRemoteTestReporter reporter)
+        {
+            Reporters.Add(reporter);
+            return this;
+        }
+
+        public TastyCommander RegisterReporter(AsyncRemoteTestSummaryReporter reporter)
+        {
+            SummaryReporters.Add(reporter);
+            return this;
+        }
+
         IList<IDisposable> Disposables = new List<IDisposable>();
 
         TastyServer? _TastyServer;
@@ -83,6 +98,22 @@ namespace Xenial.Delicious.Cli.Internal
             yield return (string.Empty, true, exitCode);
         }
 
+        async Task Report(SerializableTestCase @case)
+        {
+            foreach(var reporter in Reporters)
+            {
+                await reporter.Invoke(@case);
+            }
+        }
+
+        async Task ReportSummary(IEnumerable<SerializableTestCase> @cases)
+        {
+            foreach (var reporter in SummaryReporters)
+            {
+                await reporter.Invoke(@cases);
+            }
+        }
+
         internal async Task ConnectToRemote(string csProjFileName, CancellationToken token = default)
         {
             var connectionId = $"TASTY_{Guid.NewGuid()}";
@@ -111,6 +142,10 @@ namespace Xenial.Delicious.Cli.Internal
 
             await connectionTask;
             _TastyServer = new TastyServer();
+
+            _TastyServer.RegisterReporter(Report);
+            _TastyServer.RegisterReporter(ReportSummary);
+
             _JsonRpc = JsonRpc.Attach(stream, _TastyServer);
             Disposables.Add(_JsonRpc);
         }

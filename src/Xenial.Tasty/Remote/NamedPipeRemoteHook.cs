@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,6 +51,24 @@ namespace Xenial.Delicious.Remote
                 IsIgnored = test.IsIgnored?.Invoke(),
                 TestOutcome = test.TestOutcome
             }));
+
+            Task SummaryReporter(IEnumerable<Metadata.TestCase> @cases)
+            {
+                return remote.Report(@cases.Select(test => new SerializableTestCase
+                {
+                    FullName = test.FullName,
+                    Name = test.Name,
+                    AdditionalMessage = test.AdditionalMessage,
+                    Duration = test.Duration,
+                    Exception = test.Exception,
+                    IgnoredReason = test.IgnoredReason,
+                    IsForced = test.IsForced?.Invoke(),
+                    IsIgnored = test.IsIgnored?.Invoke(),
+                    TestOutcome = test.TestOutcome
+                }));
+            }
+
+            scope.RegisterReporter(SummaryReporter);
 
             return Task.FromResult(remote);
         }

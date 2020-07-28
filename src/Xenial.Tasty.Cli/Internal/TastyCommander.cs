@@ -43,7 +43,7 @@ namespace Xenial.Delicious.Cli.Internal
         TastyServer? _TastyServer;
         JsonRpc? _JsonRpc;
 
-        internal async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)> progress, CancellationToken cancellationToken = default)
+        internal async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)>? progress = null, CancellationToken cancellationToken = default)
         {
             return await Task.Run(async () =>
             {
@@ -51,7 +51,7 @@ namespace Xenial.Delicious.Cli.Internal
 
                 await foreach (var (line, hasStopped, exitCode) in buildTask)
                 {
-                    progress.Report((line, hasStopped, exitCode));
+                    progress?.Report((line, hasStopped, exitCode));
                     if (hasStopped)
                     {
                         return exitCode;
@@ -114,7 +114,7 @@ namespace Xenial.Delicious.Cli.Internal
             }
         }
 
-        internal async Task ConnectToRemote(string csProjFileName, CancellationToken token = default)
+        internal async Task<Task> ConnectToRemote(string csProjFileName, CancellationToken cancellationToken = default)
         {
             var connectionId = $"TASTY_{Guid.NewGuid()}";
 
@@ -127,7 +127,7 @@ namespace Xenial.Delicious.Cli.Internal
             );
 
             Disposables.Add(stream);
-            var connectionTask = stream.WaitForConnectionAsync(token);
+            var connectionTask = stream.WaitForConnectionAsync(cancellationToken);
 
             var remoteTask = ReadAsync("dotnet",
                 $"run -p \"{csProjFileName}\" -f netcoreapp3.1 --no-restore --no-build",
@@ -140,7 +140,10 @@ namespace Xenial.Delicious.Cli.Internal
                 }
             );
 
+            Disposables.Add(remoteTask);
+
             await connectionTask;
+
             _TastyServer = new TastyServer();
 
             _TastyServer.RegisterReporter(Report);
@@ -148,6 +151,7 @@ namespace Xenial.Delicious.Cli.Internal
 
             _JsonRpc = JsonRpc.Attach(stream, _TastyServer);
             Disposables.Add(_JsonRpc);
+            return remoteTask;
         }
 
         internal Task<IList<SerializableTastyCommand>> ListCommands(CancellationToken token = default)
@@ -179,6 +183,39 @@ namespace Xenial.Delicious.Cli.Internal
                     reject(token);
                 }
             });
+
+        public Action? EndTestPipelineSignaled
+        {
+            get => _TastyServer?.EndTestPipelineSignaled;
+            set
+            {
+                if (_TastyServer != null)
+                {
+                    _TastyServer.EndTestPipelineSignaled = value;
+                }
+            }
+        }
+
+        public Action? TestPipelineCompletedSignaled
+        {
+            get => _TastyServer?.TestPipelineCompletedSignaled;
+            set
+            {
+                if (_TastyServer != null)
+                {
+                    _TastyServer.TestPipelineCompletedSignaled = value;
+                }
+            }
+        }
+
+        public Task DoRequestCancellation()
+        {
+            if (_TastyServer != null)
+            {
+                _TastyServer?.DoRequestCancellation();
+            }
+            return Task.CompletedTask;
+        }
 
         public void Dispose()
         {

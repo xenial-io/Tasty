@@ -23,6 +23,9 @@ namespace Xenial.Delicious.Reporters
 
         static NyanCatReporter()
         {
+            if (!HasValidConsole)
+                return;
+
             Pastel.ConsoleExtensions.Enable();
 
             nyanCatWidth = 11;
@@ -54,16 +57,37 @@ namespace Xenial.Delicious.Reporters
                  .RegisterReporter(ReportSummary);
         }
 
+        static bool? _HasValidConsole;
+        private static bool HasValidConsole
+        {
+            get
+            {
+                if (!_HasValidConsole.HasValue)
+                {
+                    try
+                    {
+                        _HasValidConsole = Console.WindowWidth > 0;
+                    }
+                    catch
+                    {
+                        _HasValidConsole = false;
+                    }
+                }
+
+                return _HasValidConsole.Value;
+            }
+        }
+
         private static Task ReportSummary(IEnumerable<TestCase> tests)
         {
-            //foreach (var test in tests)
-            //    Draw(test);
-
             return Task.CompletedTask;
         }
 
         public static Task Report(TestCase test)
         {
+            if (!HasValidConsole)
+                return Task.CompletedTask;
+
             Draw(test);
 
             return Task.CompletedTask;

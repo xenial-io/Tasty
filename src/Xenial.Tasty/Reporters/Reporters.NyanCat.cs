@@ -114,7 +114,7 @@ namespace Xenial.Delicious.Reporters
 
             for (int i = 0; i < numberOfLines; i++)
             {
-                if (trajectories[i].Count >= trajectoryWidthMax)
+                if (trajectories[i].Count > trajectoryWidthMax)
                 {
                     foreach (var traj in trajectories)
                     {

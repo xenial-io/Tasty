@@ -54,7 +54,7 @@ namespace Xenial.Delicious.Cli.Views
             }
             await Commander.BuildProject(path, LogProgress);
             await Commander.ConnectToRemote(path, CancellationTokenSource.Token);
-            
+
             //TODO: ErrorDialog
             var commands = await Commander.ListCommands(CancellationTokenSource.Token);
             Commands.Clear();

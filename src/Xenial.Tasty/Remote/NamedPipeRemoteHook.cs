@@ -59,7 +59,7 @@ namespace Xenial.Delicious.Remote
 
             Task SummaryReporter(IEnumerable<Metadata.TestCase> @cases)
                 => remote.Report(@cases.Select(test => MapToSerializableTestCase(test)));
-            
+
             scope.RegisterReporter(SummaryReporter);
 
             return Task.FromResult(remote);

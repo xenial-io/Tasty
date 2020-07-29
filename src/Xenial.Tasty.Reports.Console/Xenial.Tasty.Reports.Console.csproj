@@ -4,21 +4,13 @@
     <RootNamespace>Xenial.Delicious.Reporters</RootNamespace>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <None Include="build\**" Pack="True" PackagePath="build\" />
-    <ItemGroup>
- <Compile Include="$(MSBuildThisFileDirectory)SharedAssemblyInfo.cs" Visible="false" />
-</ItemGroup>      <Compile Include="$(MSBuildThisFileDirectory)SharedAssemblyInfo.cs" Visible="false" />
-    
   </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Remove="build\PluginAssemblyInfo.cs" />
-  </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Tasty\Xenial.Tasty.csproj" />
   </ItemGroup>
-  
+
 </Project>

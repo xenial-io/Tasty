@@ -24,9 +24,10 @@ namespace Xenial.Delicious.Plugins
                 var @delegate = (Action<TastyScope>)Delegate.CreateDelegate(
                     typeof(Action<TastyScope>),
                     null,
-                    pluginAttribute.TastyPluginType.GetMethod(pluginAttribute.TastyPluginEntryPoint, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
+                    pluginAttribute.TastyPluginType.GetMethod(pluginAttribute.TastyPluginEntryPoint, BindingFlags.Static | BindingFlags.Public)
                 );
                 @delegate.Invoke(scope);
+
                 Console.WriteLine($"Loaded Plugin: {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}");
             }
 

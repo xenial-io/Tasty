@@ -132,7 +132,7 @@ namespace Xenial
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
-        /// Return true if the test is succeded otherwise falseS
+        /// Return true if the test is succeeded otherwise falseS
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="action">The action.</param>

@@ -14,7 +14,14 @@ namespace Xenial.Delicious.Execution.TestMiddleware
                 }
                 finally
                 {
-                    await context.CurrentScope.Report(context.CurrentCase);
+                    try
+                    {
+                        await context.CurrentScope.Report(context.CurrentCase);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Reporter failed: {ex}");
+                    }
                 }
             });
     }

@@ -1,0 +1,12 @@
+<Project>
+  
+  <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyConsoleReporterPlugin)">
+    <ItemGroup>
+      <AssemblyAttribute Include="Xenial.Delicious.Plugins.TastyPluginAttribute">
+        <_Parameter1>$(AssemblyName)</_Parameter1>
+        <_Parameter2>$(TastyConsoleReporterPlugin)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>    
+  </Target>
+  
+</Project>

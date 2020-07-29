@@ -15,14 +15,11 @@ namespace Xenial.Delicious.Plugins
         {
             var entryAssembly = Assembly.GetEntryAssembly();
 
-            Console.WriteLine(entryAssembly);
-
             var pluginAttributes = entryAssembly.GetCustomAttributes(typeof(TastyPluginAttribute), true).OfType<TastyPluginAttribute>();
-            Console.WriteLine($"Normal: {pluginAttributes}");
 
             foreach (var pluginAttribute in pluginAttributes)
             {
-                Console.WriteLine(pluginAttribute.TastyPluginType);
+                Console.WriteLine($"Loading Plugin: {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}");
             }
 
             Console.WriteLine("Plugins loaded");

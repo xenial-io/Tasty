@@ -14,10 +14,13 @@ namespace Xenial.Delicious.Plugins
         public Task LoadPlugins(TastyScope scope)
         {
             var entryAssembly = Assembly.GetEntryAssembly();
-            
+
             Console.WriteLine(entryAssembly);
 
             var pluginAttributes = entryAssembly.CustomAttributes.OfType<TastyPluginAttribute>();
+            var pluginAttributes2 = entryAssembly.GetCustomAttributes();
+            Console.WriteLine($"Normal: {pluginAttributes}");
+            Console.WriteLine($"Normal2: {pluginAttributes2}");
 
             foreach (var pluginAttribute in pluginAttributes)
             {

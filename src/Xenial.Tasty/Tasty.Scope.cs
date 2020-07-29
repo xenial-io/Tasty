@@ -14,6 +14,7 @@ namespace Xenial.Delicious.Scopes
     public class TastyScope : TestGroup
     {
         public bool ClearBeforeRun { get; set; } = true;
+        public bool LoadPlugins { get; set; } = false;
 
         private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
         internal readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();

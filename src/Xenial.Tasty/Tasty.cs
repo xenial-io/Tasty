@@ -28,13 +28,10 @@ namespace Xenial
     /// </example>
     public static class Tasty
     {
-        static Tasty()
+        private static readonly TastyScope DefaultScope = new TastyScope
         {
-            DefaultScope = new TastyScope();
-            DefaultScope.RegisterTransport(NamedPipeRemoteHook.CreateNamedPipeTransportStream);
-        }
-
-        private static readonly TastyScope DefaultScope;
+            LoadPlugins = true
+        }.RegisterTransport(NamedPipeRemoteHook.CreateNamedPipeTransportStream);
 
         /// <summary>
         /// Registers an async test reporter.

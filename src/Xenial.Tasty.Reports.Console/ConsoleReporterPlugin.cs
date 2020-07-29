@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Plugins
@@ -8,7 +9,7 @@ namespace Xenial.Delicious.Plugins
     {
         public static void UseConsoleReporter(this TastyScope scope)
         {
-
+            scope.RegisterConsoleReporter();
         }
     }
 }

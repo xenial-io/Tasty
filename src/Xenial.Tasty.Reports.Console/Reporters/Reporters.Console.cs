@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Utils;
 
 using static Xenial.Delicious.Utils.Actions;
@@ -32,9 +33,13 @@ namespace Xenial.Delicious.Reporters
             Console.OutputEncoding = Encoding.UTF8;
             Console.InputEncoding = Encoding.UTF8;
         }
-        public static void Register()
-            => Tasty.RegisterReporter(Report)
+
+        public static void RegisterConsoleReporter(this TastyScope scope)
+            => scope.RegisterReporter(Report)
                     .RegisterReporter(ReportSummary);
+
+        public static void Register()
+            => Tasty.TastyDefaultScope.RegisterConsoleReporter();
 
         static Lazy<int> SeparatorSize = new Lazy<int>(() =>
         {

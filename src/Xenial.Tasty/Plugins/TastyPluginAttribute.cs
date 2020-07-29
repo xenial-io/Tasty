@@ -9,7 +9,7 @@ namespace Xenial.Delicious.Plugins
     {
         public string TastyPluginAssembly { get; }
         public string TastyPluginType { get; }
-        public TastyPluginAttribute(string tastyPluginAssembly, string tastyPluginType) 
+        public TastyPluginAttribute(string tastyPluginAssembly, string tastyPluginType)
             => (TastyPluginAssembly, TastyPluginType) = (tastyPluginAssembly, tastyPluginType);
     }
 }

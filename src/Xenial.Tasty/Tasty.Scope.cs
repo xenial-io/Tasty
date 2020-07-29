@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xenial.Delicious.Commands;
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 
@@ -306,6 +307,8 @@ namespace Xenial.Delicious.Scopes
 
         public async Task<int> Run(string[] args)
         {
+            var pluginLoader = new PluginLoader();
+            await pluginLoader.LoadPlugins(this);
             var executor = new TestExecutor(this);
             return await executor.Execute();
         }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xenial.Delicious.Metadata;
 
@@ -31,7 +30,7 @@ namespace Xenial.Delicious.Reporters
             width = (int)(Console.WindowWidth * 0.75);
 
             colorIndex = 0;
-            numberOfLines = 4;
+            numberOfLines = Enum.GetValues(typeof(TestOutcome)).Length;
 
             rainbowColors = GenerateColors();
             tick = false;
@@ -76,6 +75,33 @@ namespace Xenial.Delicious.Reporters
 
         private static Task ReportSummary(IEnumerable<TestCase> tests)
         {
+            Console.WriteLine();
+            Console.ForegroundColor = ColorScheme.Default.DefaultColor;
+            Console.WriteLine($"\t{tests.Count()} total ({(int)Math.Round(TimeSpan.FromTicks(tests.Sum(t => t.Duration.Ticks)).TotalSeconds, 0, MidpointRounding.AwayFromZero)} s)");
+
+            Console.ForegroundColor = ColorScheme.Default.SuccessColor;
+            var successCount = tests.Count(t => t.TestOutcome == TestOutcome.Success);
+            if (successCount > 0) { Console.WriteLine($"\t{ColorScheme.Default.SuccessIcon} {successCount} passing"); }
+
+            Console.ForegroundColor = ColorScheme.Default.ErrorColor;
+            var failedCount = tests.Count(t => t.TestOutcome == TestOutcome.Failed);
+            if (failedCount > 0) { Console.WriteLine($"\t{ColorScheme.Default.ErrorIcon} {failedCount} failed"); }
+
+            Console.ForegroundColor = ColorScheme.Default.SuccessColor;
+            if (tests.Count() == successCount) { Console.WriteLine($"\t{ColorScheme.Default.SuccessIcon} All tests passed"); }
+
+            if (failedCount > 0)
+            {
+                Console.ForegroundColor = ColorScheme.Default.ErrorColor;
+                Console.WriteLine($"\t{ColorScheme.Default.ErrorIcon} Failed tests:");
+
+                foreach (var fail in tests.Where(t => t.TestOutcome == TestOutcome.Failed))
+                {
+                    Console.WriteLine($"\t\t{fail.FullName}");
+                    Console.WriteLine($"\t\t\t{fail.AdditionalMessage}");
+                }
+            }
+
             return Task.CompletedTask;
         }
 

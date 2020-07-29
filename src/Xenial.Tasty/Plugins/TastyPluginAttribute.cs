@@ -8,7 +8,7 @@ namespace Xenial.Delicious.Plugins
     public sealed class TastyPluginAttribute : Attribute
     {
         public Type TastyPluginType { get; }
-        public TastyPluginAttribute(Type tastyPluginType) 
+        public TastyPluginAttribute(Type tastyPluginType)
             => TastyPluginType = tastyPluginType;
     }
 }

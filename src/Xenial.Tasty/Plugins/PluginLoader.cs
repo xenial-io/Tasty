@@ -17,10 +17,8 @@ namespace Xenial.Delicious.Plugins
 
             Console.WriteLine(entryAssembly);
 
-            var pluginAttributes = entryAssembly.CustomAttributes.OfType<TastyPluginAttribute>();
-            var pluginAttributes2 = entryAssembly.GetCustomAttributes();
+            var pluginAttributes = entryAssembly.GetCustomAttributes(typeof(TastyPluginAttribute), true).OfType<TastyPluginAttribute>();
             Console.WriteLine($"Normal: {pluginAttributes}");
-            Console.WriteLine($"Normal2: {pluginAttributes2}");
 
             foreach (var pluginAttribute in pluginAttributes)
             {

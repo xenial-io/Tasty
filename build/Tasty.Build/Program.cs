@@ -61,25 +61,18 @@ namespace Tasty.Build
                 await Task.WhenAll(tests);
             });
 
-            Target("lic.nuget", DependsOn("test"),
-                () => RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty/Xenial.Tasty.csproj --output src/Xenial.Tasty/THIRD-PARTY-NOTICES.TXT")
+            Target("lic", DependsOn("test"),
+                async () => 
+                {
+                    await RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty/Xenial.Tasty.csproj --output src/Xenial.Tasty/THIRD-PARTY-NOTICES.TXT");
+                    await RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty.Cli/Xenial.Tasty.Cli.csproj --output src/Xenial.Tasty.Cli/THIRD-PARTY-NOTICES.TXT");
+                    await RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty.Reports.Console/Xenial.Tasty.Reports.Console.csproj --output src/Xenial.Tasty.Reports.Console/THIRD-PARTY-NOTICES.TXT");
+                }
             );
 
-            Target("lic.tools", DependsOn("test"),
-                () => RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty.Cli/Xenial.Tasty.Cli.csproj --output src/Xenial.Tasty.Cli/THIRD-PARTY-NOTICES.TXT")
+            Target("pack", DependsOn("lic"),
+                () => RunAsync("dotnet", $"pack Xenial.Tasty.sln --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {properties()}")
             );
-
-            Target("pack.nuget", DependsOn("lic.nuget"),
-                () => RunAsync("dotnet", $"pack src/Xenial.Tasty/Xenial.Tasty.csproj --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {properties()}")
-            );
-
-            Target("lic", DependsOn("lic.nuget", "lic.tools"));
-
-            Target("pack.tools", DependsOn("lic.tools"),
-                () => RunAsync("dotnet", $"pack src/Xenial.Tasty.Cli/Xenial.Tasty.Cli.csproj --no-restore --no-build -c {Configuration} {logOptions("pack.tools")} {properties()}")
-            );
-
-            Target("pack", DependsOn("lic", "pack.nuget", "pack.tools"));
 
             Target("docs",
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")

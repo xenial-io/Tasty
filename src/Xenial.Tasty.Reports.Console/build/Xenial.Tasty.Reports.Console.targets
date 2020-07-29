@@ -1,8 +1,8 @@
 <Project>
   
-  <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyConsoleReporterPlugin)">
+  <Target Name="AddUseTastyConsoleReporter" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyConsoleReporter)">
     <ItemGroup>
-      <Compile Include="$(MSBuildThisFileDirectory)PluginAssemblyInfo.cs" Visible="false" />
+      <Compile Include="$(MSBuildThisFileDirectory)ConsoleReporterPluginAssemblyInfo.cs" Visible="false" />
     </ItemGroup>  
   </Target>
   

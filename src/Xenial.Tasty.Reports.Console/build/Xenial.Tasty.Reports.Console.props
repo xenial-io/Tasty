@@ -1,7 +1,7 @@
 <Project>
   
   <PropertyGroup>
-    <UseTastyConsoleReporterPlugin>true</UseTastyConsoleReporterPlugin>
+    <UseTastyConsoleReporter>true</UseTastyConsoleReporter>
   </PropertyGroup>
   
 </Project>

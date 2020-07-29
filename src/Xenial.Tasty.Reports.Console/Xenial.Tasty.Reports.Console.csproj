@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>Xenial.Delicious.Reporters</RootNamespace>
+    <RootNamespace>Xenial.Delicious</RootNamespace>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 

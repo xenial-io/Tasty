@@ -50,10 +50,8 @@ namespace Xenial.Delicious.Reporters
         }
 
         public static void Register()
-        {
-            Tasty.RegisterReporter(Report)
-                 .RegisterReporter(ReportSummary);
-        }
+            => Tasty.RegisterReporter(Report)
+                    .RegisterReporter(ReportSummary);
 
         static bool? _HasValidConsole;
         private static bool HasValidConsole
@@ -84,7 +82,9 @@ namespace Xenial.Delicious.Reporters
         public static Task Report(TestCase test)
         {
             if (!HasValidConsole)
+            {
                 return Task.CompletedTask;
+            }
 
             Draw(test);
 
@@ -150,15 +150,12 @@ namespace Xenial.Delicious.Reporters
 
             foreach (var traj in trajectories!)
             {
-                Console.WriteLine(string.Join("", traj) + cat[catIndex]);
+                Console.WriteLine(string.Join(string.Empty, traj) + cat[catIndex]);
                 catIndex++;
             }
         }
 
-        private static string AppendRainbow()
-        {
-            return Rainbowify(tick ? "_" : "-");
-        }
+        private static string AppendRainbow() => Rainbowify(tick ? "_" : "-");
 
         private static string Rainbowify(string input)
         {
@@ -180,8 +177,7 @@ namespace Xenial.Delicious.Reporters
         }
 
         private static string Face(TestCase testCase)
-        {
-            return testCase.TestOutcome switch
+            => testCase.TestOutcome switch
             {
                 TestOutcome.NotRun => "( o .o)",
                 TestOutcome.Ignored => "( - .-)",
@@ -189,6 +185,5 @@ namespace Xenial.Delicious.Reporters
                 TestOutcome.Success => "( ^ .^)",
                 _ => "( - .-)",
             };
-        }
     }
 }

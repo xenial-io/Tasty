@@ -28,6 +28,8 @@ namespace Xenial
     /// </example>
     public static class Tasty
     {
+        public static TastyScope Default => DefaultScope;
+
         private static readonly TastyScope DefaultScope = new TastyScope
         {
             LoadPlugins = true

@@ -2,7 +2,6 @@
   
   <PropertyGroup>
     <UseTastyConsoleReporterPlugin>true</UseTastyConsoleReporterPlugin>
-    <TastyConsoleReporterPlugin>Xenial.Delicious.Plugins.ConsoleReporterPlugin</TastyConsoleReporterPlugin>
   </PropertyGroup>
   
 </Project>

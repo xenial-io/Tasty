@@ -20,6 +20,14 @@ namespace Xenial.Delicious.Plugins
             foreach (var pluginAttribute in pluginAttributes)
             {
                 Console.WriteLine($"Loading Plugin: {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}");
+
+                var @delegate = (Action<TastyScope>)Delegate.CreateDelegate(
+                    typeof(Action<TastyScope>),
+                    null,
+                    pluginAttribute.TastyPluginType.GetMethod(pluginAttribute.TastyPluginEntryPoint, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
+                );
+                @delegate.Invoke(scope);
+                Console.WriteLine($"Loaded Plugin: {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}");
             }
 
             Console.WriteLine("Plugins loaded");

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Reporters
 {
@@ -48,9 +49,12 @@ namespace Xenial.Delicious.Reporters
                 trajectoryWidthMax = 0;
         }
 
-        public static void Register()
-            => Tasty.RegisterReporter(Report)
-                    .RegisterReporter(ReportSummary);
+        public static TastyScope RegisterNyanReporter(this TastyScope scope)
+         => scope.RegisterReporter(Report)
+                 .RegisterReporter(ReportSummary);
+
+        public static TastyScope Register()
+            => Tasty.TastyDefaultScope.RegisterNyanReporter();
 
         static bool? _HasValidConsole;
         private static bool HasValidConsole

@@ -34,11 +34,11 @@ namespace Xenial.Delicious.Reporters
             Console.InputEncoding = Encoding.UTF8;
         }
 
-        public static void RegisterConsoleReporter(this TastyScope scope)
+        public static TastyScope RegisterConsoleReporter(this TastyScope scope)
             => scope.RegisterReporter(Report)
                     .RegisterReporter(ReportSummary);
 
-        public static void Register()
+        public static TastyScope Register()
             => Tasty.TastyDefaultScope.RegisterConsoleReporter();
 
         static Lazy<int> SeparatorSize = new Lazy<int>(() =>

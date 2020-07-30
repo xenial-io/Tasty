@@ -7,9 +7,7 @@ namespace Xenial.Delicious.Plugins
 {
     public static class ConsoleReporterPlugin
     {
-        public static void UseConsoleReporter(this TastyScope scope)
-        {
-            scope.RegisterConsoleReporter();
-        }
+        public static TastyScope UseConsoleReporter(this TastyScope scope)
+            => scope.RegisterConsoleReporter();
     }
 }

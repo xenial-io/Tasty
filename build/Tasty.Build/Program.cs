@@ -85,6 +85,10 @@ namespace Tasty.Build
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")
             );
 
+            Target("docs.serve", DependsOn("ensure-tools"),
+                () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs -w -p")
+            );
+
             Target("default", DependsOn("test"));
 
             await RunTargetsAndExitAsync(args);

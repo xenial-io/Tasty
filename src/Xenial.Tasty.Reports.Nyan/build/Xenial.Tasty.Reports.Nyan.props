@@ -1,7 +1,7 @@
 <Project>
   
   <PropertyGroup>
-    <UseTastyConsoleReporter>true</UseTastyConsoleReporter>
+    <UseTastyNyanReporter>true</UseTastyNyanReporter>
   </PropertyGroup>
   
 </Project>

@@ -1,0 +1,9 @@
+<Project>
+  
+  <Target Name="AddUseTastyConsoleReporter" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyConsoleReporter)">
+    <ItemGroup>
+      <Compile Include="$(MSBuildThisFileDirectory)ConsoleReporterPluginAssemblyInfo.cs" Visible="false" />
+    </ItemGroup>  
+  </Target>
+  
+</Project>

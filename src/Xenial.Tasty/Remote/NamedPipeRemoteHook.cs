@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using StreamJsonRpc;
 
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Remote
@@ -57,8 +58,8 @@ namespace Xenial.Delicious.Remote
 
             scope.RegisterReporter(test => remote.Report(MapToSerializableTestCase(test)));
 
-            Task SummaryReporter(IEnumerable<Metadata.TestCase> @cases)
-                => remote.Report(@cases.Select(test => MapToSerializableTestCase(test)));
+            Task SummaryReporter(TestSummary summary)
+                => remote.Report(summary.Select(test => MapToSerializableTestCase(test)));
 
             scope.RegisterReporter(SummaryReporter);
 

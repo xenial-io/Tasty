@@ -48,20 +48,20 @@ namespace Xenial.Delicious.Reporters
         });
 
 
-        public static Task ReportSummary(IEnumerable<TestCase> tests)
+        public static Task ReportSummary(TestSummary summary)
         {
-            var totalTests = tests.Count();
-            var failedTests = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Count();
-            var ignoredTests = tests.Where(m => m.TestOutcome == TestOutcome.Ignored).Count();
-            var notRunTests = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Count();
-            var successTests = tests.Where(m => m.TestOutcome == TestOutcome.Success).Count();
-            var outcome = tests.Where(t => t.TestOutcome > TestOutcome.Ignored).MinOrDefault(t => t.TestOutcome);
+            var totalTests = summary.Count;
+            var failedTests = summary[TestOutcome.Failed].Count;
+            var ignoredTests = summary[TestOutcome.Ignored].Count;
+            var notRunTests = summary[TestOutcome.NotRun].Count;
+            var successTests = summary[TestOutcome.Success].Count;
+            var outcome = summary.OutCome;
 
-            var totalTime = tests.Sum(m => m.Duration);
-            var failedTime = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Sum(m => m.Duration);
-            var ignoredTime = tests.Where(m => m.TestOutcome == TestOutcome.Ignored).Sum(m => m.Duration);
-            var notRunTime = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Sum(m => m.Duration);
-            var successTime = tests.Where(m => m.TestOutcome == TestOutcome.Success).Sum(m => m.Duration);
+            var totalTime = summary.Duration;
+            var failedTime = summary[TestOutcome.Failed].Duration;
+            var ignoredTime = summary[TestOutcome.Ignored].Duration;
+            var notRunTime = summary[TestOutcome.NotRun].Duration;
+            var successTime = summary[TestOutcome.Success].Duration;
 
             var totalTimeString = totalTime.AsDuration();
 

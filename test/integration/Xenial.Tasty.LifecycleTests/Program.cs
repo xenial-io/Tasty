@@ -11,7 +11,7 @@ namespace Xenial.Delicious.LifecycleTests
     {
         class Calculator
         {
-            private Action<int> Printer;
+            private readonly Action<int> Printer;
             internal Calculator(Action<int> printer)
                 => Printer = printer;
 

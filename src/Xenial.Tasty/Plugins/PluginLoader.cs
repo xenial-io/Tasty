@@ -36,7 +36,7 @@ namespace Xenial.Delicious.Plugins
                 {
                     throw new InvalidPluginException(@$"Unable to load plugin {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}.
 The plugin needs to be compatible with delegate {nameof(TastyPlugin)}.
-It must be a static extention method that accepts a {nameof(TastyScope)} and must return a {nameof(TastyScope)}",
+It must be a static extension method that accepts a {nameof(TastyScope)} and must return a {nameof(TastyScope)}",
                     pluginAttribute,
                     ex);
                 }

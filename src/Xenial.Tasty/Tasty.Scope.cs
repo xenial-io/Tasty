@@ -307,8 +307,11 @@ namespace Xenial.Delicious.Scopes
 
         public async Task<int> Run(string[] args)
         {
-            var pluginLoader = new PluginLoader();
-            await pluginLoader.LoadPlugins(this);
+            if (LoadPlugins)
+            {
+                var pluginLoader = new PluginLoader();
+                await pluginLoader.LoadPlugins(this);
+            }
             var executor = new TestExecutor(this);
             return await executor.Execute();
         }

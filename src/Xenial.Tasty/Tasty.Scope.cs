@@ -18,7 +18,7 @@ namespace Xenial.Delicious.Scopes
         private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
         internal readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
         internal readonly List<AsyncTestSummaryProvider> SummaryProviders = new List<AsyncTestSummaryProvider>();
-        
+
         internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
         internal ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
         internal List<TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new List<TransportStreamFactoryFunctor>();

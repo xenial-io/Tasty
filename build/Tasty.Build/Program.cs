@@ -6,6 +6,7 @@ using static SimpleExec.Command;
 using static Bullseye.Targets;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Tasty.Build
 {
@@ -64,9 +65,15 @@ namespace Tasty.Build
             Target("lic", DependsOn("test"),
                 async () => 
                 {
-                    await RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty/Xenial.Tasty.csproj --output src/Xenial.Tasty/THIRD-PARTY-NOTICES.TXT");
-                    await RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty.Cli/Xenial.Tasty.Cli.csproj --output src/Xenial.Tasty.Cli/THIRD-PARTY-NOTICES.TXT");
-                    await RunAsync("dotnet", "thirdlicense --project src/Xenial.Tasty.Reports.Console/Xenial.Tasty.Reports.Console.csproj --output src/Xenial.Tasty.Reports.Console/THIRD-PARTY-NOTICES.TXT");
+                    var files = Directory.EnumerateFiles(@"src", "*.csproj", SearchOption.AllDirectories).Select(file => new
+                    {
+                        ProjectName = $"src/{Path.GetFileNameWithoutExtension(file)}/{Path.GetFileName(file)}",
+                        ThirdPartyName = $"src/{Path.GetFileNameWithoutExtension(file)}/THIRD-PARTY-NOTICES.TXT"
+                    });
+
+                    var tasks = files.Select(proj => RunAsync("dotnet", $"thirdlicense --project {proj.ProjectName} --output {proj.ThirdPartyName}"));
+
+                    await Task.WhenAll(tasks);
                 }
             );
 

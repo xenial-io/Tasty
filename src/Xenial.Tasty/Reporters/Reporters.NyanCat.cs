@@ -73,29 +73,29 @@ namespace Xenial.Delicious.Reporters
             }
         }
 
-        private static Task ReportSummary(IEnumerable<TestCase> tests)
+        private static Task ReportSummary(TestSummary summary)
         {
             Console.WriteLine();
             Console.ForegroundColor = ColorScheme.Default.DefaultColor;
-            Console.WriteLine($"\t{tests.Count()} total ({(int)Math.Round(TimeSpan.FromTicks(tests.Sum(t => t.Duration.Ticks)).TotalSeconds, 0, MidpointRounding.AwayFromZero)} s)");
+            Console.WriteLine($"\t{summary.Count()} total ({(int)Math.Round(TimeSpan.FromTicks(summary.Sum(t => t.Duration.Ticks)).TotalSeconds, 0, MidpointRounding.AwayFromZero)} s)");
 
             Console.ForegroundColor = ColorScheme.Default.SuccessColor;
-            var successCount = tests.Count(t => t.TestOutcome == TestOutcome.Success);
+            var successCount = summary.Count(t => t.TestOutcome == TestOutcome.Success);
             if (successCount > 0) { Console.WriteLine($"\t{ColorScheme.Default.SuccessIcon} {successCount} passing"); }
 
             Console.ForegroundColor = ColorScheme.Default.ErrorColor;
-            var failedCount = tests.Count(t => t.TestOutcome == TestOutcome.Failed);
+            var failedCount = summary.Count(t => t.TestOutcome == TestOutcome.Failed);
             if (failedCount > 0) { Console.WriteLine($"\t{ColorScheme.Default.ErrorIcon} {failedCount} failed"); }
 
             Console.ForegroundColor = ColorScheme.Default.SuccessColor;
-            if (tests.Count() == successCount) { Console.WriteLine($"\t{ColorScheme.Default.SuccessIcon} All tests passed"); }
+            if (summary.Count() == successCount) { Console.WriteLine($"\t{ColorScheme.Default.SuccessIcon} All tests passed"); }
 
             if (failedCount > 0)
             {
                 Console.ForegroundColor = ColorScheme.Default.ErrorColor;
                 Console.WriteLine($"\t{ColorScheme.Default.ErrorIcon} Failed tests:");
 
-                foreach (var fail in tests.Where(t => t.TestOutcome == TestOutcome.Failed))
+                foreach (var fail in summary.Where(t => t.TestOutcome == TestOutcome.Failed))
                 {
                     Console.WriteLine($"\t\t{fail.FullName}");
                     Console.WriteLine($"\t\t\t{fail.AdditionalMessage}");

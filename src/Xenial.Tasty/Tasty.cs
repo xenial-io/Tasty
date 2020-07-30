@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Metadata;
@@ -31,6 +30,7 @@ namespace Xenial
         static Tasty()
         {
             DefaultScope = new TastyScope();
+            SummaryReporter.Register();
             ConsoleReporter.Register();
             DefaultScope.RegisterTransport(NamedPipeRemoteHook.CreateNamedPipeTransportStream);
         }
@@ -56,6 +56,16 @@ namespace Xenial
         /// <returns>TastyScope.</returns>
         public static TastyScope RegisterReporter(AsyncTestSummaryReporter summaryReporter)
             => DefaultScope.RegisterReporter(summaryReporter);
+
+        /// <summary>
+        /// Registers an async test summary provider.
+        /// Gets called after all tests are executed.
+        /// <see cref="AsyncTestSummaryProvider"/>
+        /// </summary>
+        /// <param name="provider">The provider.</param>
+        /// <returns>TastyScope.</returns>
+        public static TastyScope RegisterSummaryProvider(AsyncTestSummaryProvider summaryProvider)
+            => DefaultScope.RegisterSummaryProvider(summaryProvider);
 
         /// <summary>
         /// Reports the specified test to the configured test reporters.

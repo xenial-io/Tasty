@@ -1,8 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-
-using Xenial.Delicious.Metadata;
-using Xenial.Delicious.Visitors;
+using Xenial.Delicious.Reporters;
 
 namespace Xenial.Delicious.Execution.TestRuntime
 {
@@ -17,11 +16,25 @@ namespace Xenial.Delicious.Execution.TestRuntime
                 }
                 finally
                 {
-                    var cases = context.Scope.Descendants().OfType<TestCase>().ToList();
+                    async Task<IEnumerable<TestSummary>> Summaries()
+                    {
+                        var result = new List<TestSummary>();
+
+                        foreach (var provider in context.Scope.SummaryProviders)
+                        {
+                            result.Add(await provider.Invoke());
+                        }
+
+                        return result;
+                    }
+
                     await Task.WhenAll(context.Scope.SummaryReporters
                         .Select(async r =>
                         {
-                            await r.Invoke(cases);
+                            foreach (var summary in await Summaries())
+                            {
+                                await r.Invoke(summary);
+                            }
                         }).ToArray());
                 }
             });

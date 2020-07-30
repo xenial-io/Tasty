@@ -8,9 +8,9 @@ namespace Xenial.Delicious.Plugins
         public Type TastyPluginType { get; }
         public string TastyPluginEntryPoint { get; }
         public TastyPluginAttribute(Type tastyPluginType, string tastyPluginEntryPoint)
-            => (TastyPluginType, TastyPluginEntryPoint) 
+            => (TastyPluginType, TastyPluginEntryPoint)
             = (
-                tastyPluginType ?? throw new ArgumentNullException(nameof(tastyPluginType)), 
+                tastyPluginType ?? throw new ArgumentNullException(nameof(tastyPluginType)),
                 tastyPluginEntryPoint ?? throw new ArgumentNullException(tastyPluginEntryPoint)
             );
     }

@@ -10,19 +10,19 @@ namespace Xenial.Delicious.Plugins
         public string TastyPluginType { get; }
         public string TastyPluginEntryPoint { get; }
 
-        internal InvalidPluginException(string message, TastyPluginAttribute pluginAttribute, Exception innerException) 
+        internal InvalidPluginException(string message, TastyPluginAttribute pluginAttribute, Exception innerException)
             : base(message, innerException)
-            => (TastyPluginType, TastyPluginEntryPoint) 
+            => (TastyPluginType, TastyPluginEntryPoint)
             = (
-                pluginAttribute.TastyPluginType.FullName, 
+                pluginAttribute.TastyPluginType.FullName,
                 pluginAttribute.TastyPluginEntryPoint
             );
 
-        protected InvalidPluginException(SerializationInfo info, StreamingContext context) 
+        protected InvalidPluginException(SerializationInfo info, StreamingContext context)
             : base(info, context)
-            => (TastyPluginType, TastyPluginEntryPoint) 
+            => (TastyPluginType, TastyPluginEntryPoint)
             = (
-                info.GetString(nameof(TastyPluginType)), 
+                info.GetString(nameof(TastyPluginType)),
                 info.GetString(nameof(TastyPluginEntryPoint))
             );
 

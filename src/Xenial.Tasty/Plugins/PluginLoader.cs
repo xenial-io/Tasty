@@ -22,12 +22,20 @@ namespace Xenial.Delicious.Plugins
 #if DEBUG
                 Console.WriteLine($"Loading Plugin: {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}");
 #endif
-                var @delegate = (Action<TastyScope>)Delegate.CreateDelegate(
-                    typeof(Action<TastyScope>),
-                    null,
-                    pluginAttribute.TastyPluginType.GetMethod(pluginAttribute.TastyPluginEntryPoint, BindingFlags.Static | BindingFlags.Public)
-                );
-                @delegate.Invoke(scope);
+                try
+                {
+                    var @delegate = (TastyPlugin)Delegate.CreateDelegate(
+                        typeof(TastyPlugin),
+                        null,
+                        pluginAttribute.TastyPluginType.GetMethod(pluginAttribute.TastyPluginEntryPoint, BindingFlags.Static | BindingFlags.Public)
+                    );
+
+                    @delegate.Invoke(scope);
+                }
+                catch (System.ArgumentException ex)
+                {
+                    throw new InvalidPluginException($"Unable to load plugin {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}.{Environment.NewLine}The plugin needs to be compatible with delegate {TastyPlugin}.{Environment.NewLine}It must be a static extention method that accepts an {nameof(TastyScope)} and returns an {nameof(TastyScope)}", ex);
+                }
 #if DEBUG
                 Console.WriteLine($"Loaded Plugin: {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}");
 #endif         

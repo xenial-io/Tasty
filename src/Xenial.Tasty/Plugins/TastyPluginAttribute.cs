@@ -4,6 +4,8 @@ using System.Text;
 
 namespace Xenial.Delicious.Plugins
 {
+    public delegate TastyScope TastyPlugin(TastyScope scope);
+
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true, Inherited = false)]
     public sealed class TastyPluginAttribute : Attribute
     {

@@ -32,9 +32,9 @@ namespace Xenial.Delicious.Plugins
 
                     @delegate.Invoke(scope);
                 }
-                catch (System.ArgumentException ex)
+                catch (ArgumentException ex)
                 {
-                    throw new InvalidPluginException($"Unable to load plugin {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}.{Environment.NewLine}The plugin needs to be compatible with delegate {TastyPlugin}.{Environment.NewLine}It must be a static extention method that accepts an {nameof(TastyScope)} and returns an {nameof(TastyScope)}", ex);
+                    throw new InvalidPluginException($"Unable to load plugin {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}.{Environment.NewLine}The plugin needs to be compatible with delegate {nameof(TastyPlugin)}.{Environment.NewLine}It must be a static extention method that accepts an {nameof(TastyScope)} and returns an {nameof(TastyScope)}", pluginAttribute, ex);
                 }
 #if DEBUG
                 Console.WriteLine($"Loaded Plugin: {pluginAttribute.TastyPluginType} from {pluginAttribute.TastyPluginType.Assembly.Location}");

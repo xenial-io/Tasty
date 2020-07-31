@@ -12,11 +12,15 @@ namespace Xenial.Delicious.Plugins
 
         internal InvalidPluginException(string message, TastyPluginAttribute pluginAttribute, Exception innerException)
             : base(message, innerException)
-            => (TastyPluginType, TastyPluginEntryPoint)
-            = (
-                pluginAttribute.TastyPluginType.FullName,
-                pluginAttribute.TastyPluginEntryPoint
-            );
+        {
+            if(pluginAttribute == null)
+            {
+                throw new ArgumentNullException(nameof(pluginAttribute));
+            }
+
+            TastyPluginType = pluginAttribute.TastyPluginType.FullName;
+            TastyPluginEntryPoint = pluginAttribute.TastyPluginEntryPoint;
+        }
 
         protected InvalidPluginException(SerializationInfo info, StreamingContext context)
             : base(info, context)

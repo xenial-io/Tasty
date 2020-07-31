@@ -6,6 +6,8 @@ using Xenial.Delicious.Reporters;
 
 using static Xenial.Delicious.Tests.TastyScopeTests;
 using static Xenial.Delicious.Tests.TestExecutorTests;
+using static Xenial.Delicious.Tests.Plugins.InvalidPluginExceptionTests;
+
 using static Xenial.Tasty;
 
 namespace Xenial.Delicious.Tests
@@ -22,6 +24,7 @@ namespace Xenial.Delicious.Tests
                 DefaultRuntimeCases();
                 OverloadRuntimeCases();
                 ForcingTestCases();
+                InvalidPluginException();
                 IntegrationTests();
             });
 

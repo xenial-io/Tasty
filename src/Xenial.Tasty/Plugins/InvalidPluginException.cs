@@ -13,7 +13,7 @@ namespace Xenial.Delicious.Plugins
         internal InvalidPluginException(string message, TastyPluginAttribute pluginAttribute, Exception innerException)
             : base(message, innerException)
         {
-            if(pluginAttribute == null)
+            if (pluginAttribute == null)
             {
                 throw new ArgumentNullException(nameof(pluginAttribute));
             }

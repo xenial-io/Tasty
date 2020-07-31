@@ -53,6 +53,12 @@ ConsoleReporter.Scheme = new ColorScheme
 
 If you are in a more advanced scenario, you can manually add a console reporter to a scope:
 
+Import the namespace:
+
+```cs
+using Xenial.Delicious.Reporters;
+```
+
 Global:
 
 ```cs

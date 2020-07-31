@@ -1,11 +1,15 @@
 ﻿using System;
 
+using Xenial.Delicious.Reporters;
+
 using static Xenial.Tasty;
 
 namespace DataDrivenTests
 {
     class Program
     {
+        static Program() => ConsoleReporter.Register();
+
         static void Main(string[] args)
         {
             var cases = new[]

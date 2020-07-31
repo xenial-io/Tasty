@@ -1,0 +1,9 @@
+<Project>
+  
+  <Target Name="AddUseTastyNyanReporter" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyNyanReporter)">
+    <ItemGroup>
+      <Compile Include="$(MSBuildThisFileDirectory)NyanReporterPluginAssemblyInfo.cs" Visible="false" />
+    </ItemGroup>  
+  </Target>
+  
+</Project>

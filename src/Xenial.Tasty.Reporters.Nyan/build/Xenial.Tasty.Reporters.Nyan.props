@@ -1,0 +1,7 @@
+<Project>
+  
+  <PropertyGroup>
+    <UseTastyNyanReporter>true</UseTastyNyanReporter>
+  </PropertyGroup>
+  
+</Project>

@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Xenial.Delicious.Reporters;
+
 using static Xenial.Tasty;
 
 namespace SetupTests
@@ -15,6 +17,8 @@ namespace SetupTests
 
     class Program
     {
+        static Program() => ConsoleReporter.Register();
+
         static void Main(string[] args)
         {
             var calculator = new Calculator();

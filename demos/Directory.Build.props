@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
+    <ProjectReference Include="..\..\src\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
   </ItemGroup>
   
 </Project>

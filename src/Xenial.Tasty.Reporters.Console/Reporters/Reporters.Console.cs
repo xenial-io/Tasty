@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Utils;
 
 using static Xenial.Delicious.Utils.Actions;
@@ -17,24 +18,12 @@ namespace Xenial.Delicious.Reporters
     {
         public static ColorScheme Scheme = ColorScheme.Default;
 
-        static ConsoleReporter()
-            => SetupConsoleEncoding();
-
-        private static void SetupConsoleEncoding()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                //Register additional code pages for windows
-                //cause we deal directly with process streams
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            }
-
-            Console.OutputEncoding = Encoding.UTF8;
-            Console.InputEncoding = Encoding.UTF8;
-        }
-        public static void Register()
-            => Tasty.RegisterReporter(Report)
+        public static TastyScope RegisterConsoleReporter(this TastyScope scope)
+            => scope.RegisterReporter(Report)
                     .RegisterReporter(ReportSummary);
+
+        public static TastyScope Register()
+            => Tasty.TastyDefaultScope.RegisterConsoleReporter();
 
         static Lazy<int> SeparatorSize = new Lazy<int>(() =>
         {
@@ -46,7 +35,6 @@ namespace Xenial.Delicious.Reporters
             catch (IOException) { /* Handle is invalid */ }
             return fallBackSize;
         });
-
 
         public static Task ReportSummary(IEnumerable<TestCase> tests)
         {

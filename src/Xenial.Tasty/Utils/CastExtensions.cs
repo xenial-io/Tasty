@@ -9,9 +9,9 @@ using Xenial.Delicious.Metadata;
 namespace Xenial.Delicious.Utils
 {
     /// <summary>
-    /// CastExtentions for fluent casting
+    /// CastExtensions for fluent casting
     /// </summary>
-    internal static class CastExtentions
+    internal static class CastExtensions
     {
         /// <summary>
         /// Tries to cast the specified object to the type of T.<br/>

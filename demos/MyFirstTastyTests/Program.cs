@@ -1,11 +1,15 @@
 ﻿using System;
 
+using Xenial.Delicious.Reporters;
+
 using static Xenial.Tasty;
 
 namespace MyFirstTastyTests
 {
     class Program
     {
+        static Program() => ConsoleReporter.Register();
+
         static void Main(string[] args)
         {
             It("1 + 2 should be 3", () =>

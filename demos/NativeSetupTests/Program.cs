@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Xenial.Delicious.Reporters;
+
 using static Xenial.Tasty;
 
 namespace NativeSetupTests
@@ -24,6 +26,8 @@ namespace NativeSetupTests
 
     class Program
     {
+        static Program() => ConsoleReporter.Register();
+
         static void Main(string[] args)
         {
             Describe("Native setup", () =>

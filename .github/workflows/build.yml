@@ -83,7 +83,6 @@ jobs:
         with:
           dotnet-version: 3.1.x
       - name: Publish to nuget.org
-        run: dotnet nuget push *.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_AUTH_TOKEN
-        working-directory: artifacts/nuget
+        run: dotnet run --project build/Tasty.Build/Tasty.Build.csproj deploy.nuget
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}

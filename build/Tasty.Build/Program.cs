@@ -89,6 +89,16 @@ namespace Tasty.Build
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs -w -p")
             );
 
+            Target("deploy.nuget", DependsOn("ensure-tools"), async () =>
+            {
+                var files = Directory.EnumerateFiles(@"artifacts\nuget", "*.nupkg");
+
+                foreach(var file in files)
+                {
+                    await RunAsync("dotnet", $"nuget push {file} --skip-duplicate -s https://api.nuget.org/v3/index.json -k $NUGET_AUTH_TOKEN");
+                }
+            });
+
             Target("default", DependsOn("test"));
 
             await RunTargetsAndExitAsync(args);

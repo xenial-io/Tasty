@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xenial.Delicious.Commands;
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 
@@ -14,6 +15,7 @@ namespace Xenial.Delicious.Scopes
     public class TastyScope : TestGroup
     {
         public bool ClearBeforeRun { get; set; } = true;
+        public bool LoadPlugins { get; set; } = false;
 
         private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
         internal readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
@@ -305,6 +307,11 @@ namespace Xenial.Delicious.Scopes
 
         public async Task<int> Run(string[] args)
         {
+            if (LoadPlugins)
+            {
+                var pluginLoader = new PluginLoader();
+                await pluginLoader.LoadPlugins(this);
+            }
             var executor = new TestExecutor(this);
             return await executor.Execute();
         }

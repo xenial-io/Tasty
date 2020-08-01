@@ -1,8 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Xenial.Delicious.Commands;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
@@ -29,14 +29,11 @@ namespace Xenial
     /// </example>
     public static class Tasty
     {
-        static Tasty()
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static TastyScope TastyDefaultScope { get; } = new TastyScope
         {
-            DefaultScope = new TastyScope();
-            ConsoleReporter.Register();
-            DefaultScope.RegisterTransport(NamedPipeRemoteHook.CreateNamedPipeTransportStream);
-        }
-
-        private static readonly TastyScope DefaultScope;
+            LoadPlugins = true
+        }.RegisterTransport(NamedPipeRemoteHook.CreateNamedPipeTransportStream);
 
         /// <summary>
         /// Registers an async test reporter.
@@ -46,7 +43,7 @@ namespace Xenial
         /// <param name="reporter">The reporter.</param>
         /// <returns>TastyScope.</returns>
         public static TastyScope RegisterReporter(AsyncTestReporter reporter)
-            => DefaultScope.RegisterReporter(reporter);
+            => TastyDefaultScope.RegisterReporter(reporter);
 
         /// <summary>
         /// Registers an async test summary reporter.
@@ -56,7 +53,7 @@ namespace Xenial
         /// <param name="reporter">The reporter.</param>
         /// <returns>TastyScope.</returns>
         public static TastyScope RegisterReporter(AsyncTestSummaryReporter summaryReporter)
-            => DefaultScope.RegisterReporter(summaryReporter);
+            => TastyDefaultScope.RegisterReporter(summaryReporter);
 
         /// <summary>
         /// Reports the specified test to the configured test reporters.
@@ -64,7 +61,7 @@ namespace Xenial
         /// <param name="test">The test.</param>
         /// <returns>Task.</returns>
         public static Task Report(TestCase test)
-            => DefaultScope.Report(test);
+            => TastyDefaultScope.Report(test);
 
         /// <summary>
         /// Adds a describe block eg. <see cref="TestGroup"/> to the current scope
@@ -73,7 +70,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestGroup.</returns>
         public static TestGroup Describe(string name, Action action)
-            => DefaultScope.Describe(name, action);
+            => TastyDefaultScope.Describe(name, action);
 
         /// <summary>
         /// Adds a describe block eg. <see cref="TestGroup"/> to the current scope
@@ -82,7 +79,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestGroup.</returns>
         public static TestGroup Describe(string name, Func<Task> action)
-            => DefaultScope.Describe(name, action);
+            => TastyDefaultScope.Describe(name, action);
 
         /// <summary>
         /// Adds a describe block eg. <see cref="TestGroup"/> to the current scope
@@ -92,7 +89,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestGroup.</returns>
         public static TestGroup FDescribe(string name, Action action)
-            => DefaultScope.FDescribe(name, action);
+            => TastyDefaultScope.FDescribe(name, action);
 
         /// <summary>
         /// Adds a describe block eg. <see cref="TestGroup"/> to the current scope
@@ -102,7 +99,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestGroup.</returns>
         public static TestGroup FDescribe(string name, Func<Task> action)
-            => DefaultScope.FDescribe(name, action);
+            => TastyDefaultScope.FDescribe(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -111,7 +108,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase It(string name, Action action)
-            => DefaultScope.It(name, action);
+            => TastyDefaultScope.It(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -120,7 +117,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase It(string name, Func<bool> action)
-            => DefaultScope.It(name, action);
+            => TastyDefaultScope.It(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -129,17 +126,17 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase It(string name, Func<Task> action)
-            => DefaultScope.It(name, action);
+            => TastyDefaultScope.It(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
-        /// Return true if the test is succeded otherwise falseS
+        /// Return true if the test is succeeded otherwise falseS
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase It(string name, Func<Task<bool>> action)
-            => DefaultScope.It(name, action);
+            => TastyDefaultScope.It(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -150,7 +147,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase It(string name, Func<(bool success, string message)> action)
-            => DefaultScope.It(name, action);
+            => TastyDefaultScope.It(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -161,7 +158,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase It(string name, Func<Task<(bool success, string message)>> action)
-            => DefaultScope.It(name, action);
+            => TastyDefaultScope.It(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -171,7 +168,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase FIt(string name, Action action)
-            => DefaultScope.FIt(name, action);
+            => TastyDefaultScope.FIt(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -181,7 +178,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase FIt(string name, Func<Task> action)
-            => DefaultScope.FIt(name, action);
+            => TastyDefaultScope.FIt(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -192,7 +189,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase FIt(string name, Func<bool> action)
-            => DefaultScope.FIt(name, action);
+            => TastyDefaultScope.FIt(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -203,7 +200,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase FIt(string name, Func<Task<bool>> action)
-            => DefaultScope.FIt(name, action);
+            => TastyDefaultScope.FIt(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -215,7 +212,7 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase FIt(string name, Func<Task<(bool result, string message)>> action)
-            => DefaultScope.FIt(name, action);
+            => TastyDefaultScope.FIt(name, action);
 
         /// <summary>
         /// Adds a <see cref="TestCase"/> to the current scope
@@ -227,35 +224,35 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase FIt(string name, Func<(bool result, string message)> action)
-            => DefaultScope.FIt(name, action);
+            => TastyDefaultScope.FIt(name, action);
 
         /// <summary>
         /// Add a callback that runs before each <see cref="TestCase"/> and each <see cref="TestGroup"/> in this scope
         /// </summary>
         /// <param name="action">The action.</param>
         public static void BeforeEach(Func<Task> action)
-            => DefaultScope.BeforeEach(action);
+            => TastyDefaultScope.BeforeEach(action);
 
         /// <summary>
         /// Add a callback that runs before each <see cref="TestCase"/> and each <see cref="TestGroup"/> in this scope
         /// </summary>
         /// <param name="action">The action.</param>
         public static void BeforeEach(Action action)
-            => DefaultScope.BeforeEach(action);
+            => TastyDefaultScope.BeforeEach(action);
 
         /// <summary>
         /// Add a callback that runs after each <see cref="TestCase"/> and each <see cref="TestGroup"/> in this scope
         /// </summary>
         /// <param name="action">The action.</param>
         public static void AfterEach(Func<Task> action)
-            => DefaultScope.AfterEach(action);
+            => TastyDefaultScope.AfterEach(action);
 
         /// <summary>
         /// Add a callback that runs after each <see cref="TestCase"/> and each <see cref="TestGroup"/> in this scope
         /// </summary>
         /// <param name="action">The action.</param>
         public static void AfterEach(Action action)
-            => DefaultScope.AfterEach(action);
+            => TastyDefaultScope.AfterEach(action);
 
         /// <summary>
         /// Runs the tests in the global scope.
@@ -264,7 +261,7 @@ namespace Xenial
         /// <param name="args">The arguments.</param>
         /// <returns>Task&lt;System.Int32&gt;.</returns>
         public static Task<int> Run(string[] args)
-            => DefaultScope.Run(args);
+            => TastyDefaultScope.Run(args);
 
         /// <summary>
         /// Runs the tests in the global scope.
@@ -272,6 +269,6 @@ namespace Xenial
         /// </summary>
         /// <returns>Task&lt;System.Int32&gt;.</returns>
         public static Task<int> Run()
-            => DefaultScope.Run();
+            => TastyDefaultScope.Run();
     }
 }

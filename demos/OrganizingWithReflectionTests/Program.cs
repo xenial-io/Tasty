@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+using Xenial.Delicious.Reporters;
+
 using static Xenial.Tasty;
 
 namespace OrganizingWithReflectionTests
 {
     class Program
     {
+        static Program() => ConsoleReporter.Register();
+
         static void Main(string[] args)
         {
             var types = typeof(Program).Assembly.GetTypes();

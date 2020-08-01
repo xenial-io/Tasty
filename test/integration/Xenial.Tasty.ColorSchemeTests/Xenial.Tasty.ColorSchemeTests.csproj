@@ -4,4 +4,8 @@
     <RootNamespace>Xenial.Delicious.ColorSchemeTests</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
+  </ItemGroup>
+
 </Project>

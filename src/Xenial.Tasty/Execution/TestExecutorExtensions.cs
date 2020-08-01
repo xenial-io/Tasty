@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Xenial.Delicious.Execution
 {
-    public static class TestExecutorExtentions
+    public static class TestExecutorExtensions
     {
         public static TestExecutor Use(this TestExecutor app, Func<TestExecutionContext, Func<Task>, Task> middleware)
         {

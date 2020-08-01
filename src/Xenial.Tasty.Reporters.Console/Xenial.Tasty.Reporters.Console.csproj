@@ -3,6 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Xenial.Delicious</RootNamespace>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <PackageDescription>Tasty Console Reporter - Delicious dotnet testing</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>

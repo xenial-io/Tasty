@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <RootNamespace>Xenial.Delicious</RootNamespace>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>    
+    <PackageDescription>Tasty Nyan Reporter - Delicious dotnet testing</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>

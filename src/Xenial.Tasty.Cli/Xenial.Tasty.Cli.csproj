@@ -3,11 +3,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks></TargetFrameworks>
-    <RootNamespace>Xenial.Delicious.Cli</RootNamespace>
     <TargetFramework>$(NetCoreVersion)</TargetFramework>
+    <RootNamespace>Xenial.Delicious.Cli</RootNamespace>
+    <PackageId>tasty-tool</PackageId>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>tasty</ToolCommandName>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <PackageDescription>Tasty Cli Runner - Delicious dotnet testing</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>

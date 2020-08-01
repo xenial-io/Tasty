@@ -13,6 +13,7 @@ Platform support: [.NET Standard 2.0 and upwards, including net462](https://docs
 
 - [Quick start](#quick-start)
 - [Documentation](https://tasty.xenial.io)
+- [Nuget](https://www.nuget.org/packages/Xenial.Tasty/)
 
 ## Quick start
 

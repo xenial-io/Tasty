@@ -91,7 +91,7 @@ namespace Tasty.Build
 
             Target("deploy.nuget", DependsOn("ensure-tools"), async () =>
             {
-                var files = Directory.EnumerateFiles(@"artifacts\nuget", "*.nupkg");
+                var files = Directory.EnumerateFiles("artifacts/nuget", "*.nupkg");
 
                 foreach(var file in files)
                 {

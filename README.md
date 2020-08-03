@@ -193,6 +193,10 @@ This project uses `dotnet format` to keep the code base consistent. If the build
 
 By default when you commit the message is linted and before you push changes a default integration build is started. To bypass this behavior you can add `--no-verify` to the `git commit` or `git push` commands.
 
+### Writing docs
+
+We use [Wyam](https://wyam.io/) to write the documentation. To serve up docs simply call `b docs.serve` and open `http://localhost:5080/`. All documentation is in the `docs` directory.
+
 ---
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>

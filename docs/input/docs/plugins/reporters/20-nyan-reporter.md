@@ -19,7 +19,7 @@ dotnet add package Xenial.Tasty.Reporters.Nyan
 
 or do it by hand via the `csproj`
 
-```csproj
+```xml
 <ItemGroup>
     <PackageReference Include="Xenial.Tasty.Reporters.Nyan" Version="x.x.x" />
 </ItemGroup>
@@ -29,7 +29,7 @@ or do it by hand via the `csproj`
 
 You can disable and enable the reporter via a MSBuild property in the `csproj`
 
-```csproj
+```xml
 <PropertyGroup>
     <UseTastyNyanReporter>false</UseTastyNyanReporter>
 </PropertyGroup>

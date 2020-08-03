@@ -5,6 +5,7 @@
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <PackageProjectUrl>https://tasty.xenial.io</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xenial-io/Tasty</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

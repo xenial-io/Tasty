@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
@@ -135,7 +136,7 @@ namespace Xenial
         /// <param name="name">The name.</param>
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
-        public static TestCase It(string name, Func<Task<bool>> action)
+        public static TestCase It(string name, Executable action)
             => TastyDefaultScope.It(name, action);
 
         /// <summary>

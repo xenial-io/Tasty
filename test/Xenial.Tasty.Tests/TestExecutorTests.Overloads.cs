@@ -77,6 +77,38 @@ namespace Xenial.Delicious.Tests
                     await scope.Run();
                     A.CallTo(action).MustHaveHappenedOnceExactly();
                 });
+
+                It("It should allow Func<Task<false>>", async () =>
+                {
+                    var (scope, _) = CreateScope<Func<Task<bool>>>();
+
+                    var testCase = scope.It(TestName, async () =>
+                    {
+                        await Task.CompletedTask;
+
+                        return false;
+                    });
+
+                    await scope.Run();
+
+                    return testCase.TestOutcome == Metadata.TestOutcome.Failed;
+                });
+
+                It("It should allow Func<Task<true>>", async () =>
+                {
+                    var (scope, _) = CreateScope<Func<Task<bool>>>();
+
+                    var testCase = scope.It(TestName, async () =>
+                    {
+                        await Task.CompletedTask;
+
+                        return true;
+                    });
+
+                    await scope.Run();
+                    Console.WriteLine(testCase.TestOutcome);
+                    return testCase.TestOutcome == Metadata.TestOutcome.Success;
+                });
             });
         }
     }

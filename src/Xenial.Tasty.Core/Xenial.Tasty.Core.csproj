@@ -1,13 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>Xenial.Delicious</RootNamespace>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <PackageDescription>Tasty Console Reporter - Delicious dotnet testing</PackageDescription>
+    <RootNamespace>Xenial.Delicious</RootNamespace>
+    <PackageId>Xenial.Tasty.Core</PackageId>
+    <PackageDescription>Tasty Core - Delicious dotnet testing</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="build\**" Pack="True" PackagePath="build\" />
+    <PackageReference Include="StreamJsonRpc" Version="2.4.48" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,9 +19,5 @@
       <Visible>false</Visible>
     </None>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
-  </ItemGroup>
-
+  
 </Project>

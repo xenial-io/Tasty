@@ -9,8 +9,8 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
     <ProjectReference Include="..\..\src\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
-    <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
   </ItemGroup>
   
 </Project>

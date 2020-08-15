@@ -11,5 +11,13 @@
     <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
     <ProjectReference Include="..\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>	
+    <None Include="THIRD-PARTY-NOTICES.TXT">	
+      <Pack>true</Pack>	
+      <PackagePath></PackagePath>	
+      <Visible>false</Visible>	
+    </None>	
+  </ItemGroup>
 
 </Project>

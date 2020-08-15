@@ -83,9 +83,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gui.cs", "gui.cs", "{B7A10A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Terminal.Gui", "ext\gui.cs\Terminal.Gui\Terminal.Gui.csproj", "{C9812129-852C-4A84-95CC-73EF4C2A7A3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.Reporters.Console", "src\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj", "{669A2580-59C0-4596-8FDE-E1AA4F71AFDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.Reporters.Console", "src\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj", "{669A2580-59C0-4596-8FDE-E1AA4F71AFDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.Reporters.Nyan", "src\Xenial.Tasty.Reporters.Nyan\Xenial.Tasty.Reporters.Nyan.csproj", "{F167B74C-19D5-4439-B3B4-BA2054D416B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.Reporters.Nyan", "src\Xenial.Tasty.Reporters.Nyan\Xenial.Tasty.Reporters.Nyan.csproj", "{F167B74C-19D5-4439-B3B4-BA2054D416B7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.Core", "src\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj", "{6245C1AB-C89F-46D9-B36A-727FDB983347}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -409,6 +411,18 @@ Global
 		{F167B74C-19D5-4439-B3B4-BA2054D416B7}.Release|x64.Build.0 = Release|Any CPU
 		{F167B74C-19D5-4439-B3B4-BA2054D416B7}.Release|x86.ActiveCfg = Release|Any CPU
 		{F167B74C-19D5-4439-B3B4-BA2054D416B7}.Release|x86.Build.0 = Release|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Debug|x64.Build.0 = Debug|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Debug|x86.Build.0 = Debug|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Release|x64.ActiveCfg = Release|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Release|x64.Build.0 = Release|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Release|x86.ActiveCfg = Release|Any CPU
+		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -442,6 +456,7 @@ Global
 		{C9812129-852C-4A84-95CC-73EF4C2A7A3B} = {B7A10ABF-1935-438D-B7C9-5E298FC727B8}
 		{669A2580-59C0-4596-8FDE-E1AA4F71AFDB} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
 		{F167B74C-19D5-4439-B3B4-BA2054D416B7} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
+		{6245C1AB-C89F-46D9-B36A-727FDB983347} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D25470F-FCE8-4F98-A5B0-BE1C68CFEE7D}

@@ -20,7 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ext\gui.cs\Terminal.Gui\Terminal.Gui.csproj" />
-    <ProjectReference Include="..\Xenial.Tasty\Xenial.Tasty.csproj" />
+    <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
+    <ProjectReference Include="..\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
   </ItemGroup>
 
   <ItemGroup>

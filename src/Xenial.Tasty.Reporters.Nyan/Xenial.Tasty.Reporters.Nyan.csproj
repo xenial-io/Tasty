@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xenial.Tasty\Xenial.Tasty.csproj" />
+    <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,5 +25,5 @@
       <Visible>false</Visible>
     </None>
   </ItemGroup>
-  
+
 </Project>

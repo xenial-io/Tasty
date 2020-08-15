@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Pastel" Version="1.3.2" />
   </ItemGroup>
 
@@ -22,8 +26,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
-  </ItemGroup>
-  
 </Project>

@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <None Include="THIRD-PARTY-NOTICES.TXT">
       <Pack>true</Pack>
       <PackagePath></PackagePath>
@@ -18,8 +22,5 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
-  </ItemGroup>
 
 </Project>

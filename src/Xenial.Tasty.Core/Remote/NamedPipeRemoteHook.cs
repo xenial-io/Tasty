@@ -71,7 +71,7 @@ namespace Xenial.Delicious.Remote
         public static Task<TransportStreamFactory?> CreateNamedPipeTransportStream(CancellationToken token = default)
         {
             var connectionType = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_TYPE");
-            if (connectionType != null && connectionType.ToLowerInvariant() == "NamedPipes".ToLowerInvariant())
+            if (string.Equals(connectionType, "NamedPipes", StringComparison.InvariantCultureIgnoreCase))
             {
                 var connectionId = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_ID");
                 if (!string.IsNullOrEmpty(connectionId))

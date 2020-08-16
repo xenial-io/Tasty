@@ -8,7 +8,7 @@ namespace Xenial.Delicious.Metadata
 {
 
     [System.Diagnostics.DebuggerDisplay("Name: {Name} Outcome: {TestOutcome} Duration: {Duration}")]
-    public class TestCase : IExecutable, IForceAble
+    public class TestCase : IExecutable, IForceable
     {
         public string Name { get; internal set; } = string.Empty;
         public TestGroup? Group { get; internal set; }

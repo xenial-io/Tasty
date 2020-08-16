@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using SimpleExec;
+using Xenial.Delicious.Remote;
 using static System.IO.Path;
 using static Shouldly.Should;
 using static SimpleExec.Command;
@@ -60,7 +61,7 @@ namespace Xenial.Delicious.Tests
                         noEcho: true,
                         configureEnvironment: (env) =>
                         {
-                            env.Add("TASTY_INTERACTIVE", "false");
+                            env.Add(EnvironmentVariables.InteractiveMode, "false");
                         })
                     );
                 });

@@ -24,7 +24,7 @@ namespace Xenial.Delicious.Remote
     {
         public static Task<bool> IsInteractiveRun()
         {
-            var isInteractive = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE");
+            var isInteractive = Environment.GetEnvironmentVariable(EnvironmentVariables.InteractiveMode);
             if (!string.IsNullOrEmpty(isInteractive))
             {
                 if (bool.TryParse(isInteractive, out var result))
@@ -70,10 +70,10 @@ namespace Xenial.Delicious.Remote
     {
         public static Task<TransportStreamFactory?> CreateNamedPipeTransportStream(CancellationToken token = default)
         {
-            var connectionType = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_TYPE");
+            var connectionType = Environment.GetEnvironmentVariable(EnvironmentVariables.InteractiveConnectionType);
             if (string.Equals(connectionType, "NamedPipes", StringComparison.InvariantCultureIgnoreCase))
             {
-                var connectionId = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_ID");
+                var connectionId = Environment.GetEnvironmentVariable(EnvironmentVariables.InteractiveConnectionId);
                 if (!string.IsNullOrEmpty(connectionId))
                 {
                     TransportStreamFactory functor = () => CreateNamedPipeTransportStream(connectionId, token);

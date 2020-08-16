@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc;
 
 using Xenial.Delicious.Protocols;
-
+using Xenial.Delicious.Remote;
 using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.PromiseHelper;
 
@@ -134,9 +134,9 @@ namespace Xenial.Delicious.Cli.Internal
                 noEcho: true,
                 configureEnvironment: (env) =>
                 {
-                    env.Add("TASTY_INTERACTIVE", "true");
-                    env.Add("TASTY_INTERACTIVE_CON_TYPE", "NamedPipes");
-                    env.Add("TASTY_INTERACTIVE_CON_ID", connectionId);
+                    env.Add(EnvironmentVariables.InteractiveMode, "true");
+                    env.Add(EnvironmentVariables.InteractiveConnectionType, "NamedPipes");
+                    env.Add(EnvironmentVariables.InteractiveConnectionId, connectionId);
                 }
             );
 

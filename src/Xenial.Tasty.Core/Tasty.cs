@@ -51,7 +51,7 @@ namespace Xenial
         /// Gets called after all tests are executed.
         /// <see cref="AsyncTestSummaryReporter"/>
         /// </summary>
-        /// <param name="reporter">The reporter.</param>
+        /// <param name="summaryReporter">The reporter.</param>
         /// <returns>TastyScope.</returns>
         public static TastyScope RegisterReporter(AsyncTestSummaryReporter summaryReporter)
             => TastyDefaultScope.RegisterReporter(summaryReporter);

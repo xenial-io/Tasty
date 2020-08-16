@@ -178,7 +178,7 @@ namespace Xenial.Delicious.Cli.Commands
 
                     var cancel = cancelKeyPress();
                     var endTestPipeline = endTestPipelineSignaled();
-                    var completedTestPipleLine = testPipelineCompletedSignaled();
+                    var completedTestPipeLine = testPipelineCompletedSignaled();
 
                     try
                     {
@@ -188,7 +188,7 @@ namespace Xenial.Delicious.Cli.Commands
                             reject();
                             return;
                         }
-                        var result = await Task.WhenAny(cancel, endTestPipeline, completedTestPipleLine);
+                        var result = await Task.WhenAny(cancel, endTestPipeline, completedTestPipeLine);
                     }
                     catch (TaskCanceledException)
                     {

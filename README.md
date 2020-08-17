@@ -197,6 +197,10 @@ By default when you commit the message is linted and before you push changes a d
 
 We use [Wyam](https://wyam.io/) to write the documentation. To serve up docs simply call `b docs.serve` and open `http://localhost:5080/`. All documentation is in the `docs` directory.
 
+## Licensing
+
+Tasty is dual-licensed under the [License Zero Prosperity Public License](https://licensezero.com/licenses/prosperity) and the [License Zero Private License](https://licensezero.com/licenses/private). The Prosperity License limits commercial use to a 32 day trial period, after which a license fee must be paid to obtain a Private License.
+
 ---
 
 <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>

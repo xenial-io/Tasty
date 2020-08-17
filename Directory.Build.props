@@ -2,8 +2,7 @@
   
   <PropertyGroup>
     <Product>Xenial.Tasty</Product>
-    <XenialPackageVersion>0.0.1-*</XenialPackageVersion>
-    <XenialVersion>0.0.1-*</XenialVersion>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
     <LangVersion>preview</LangVersion>
     <Copyright>Copyright © Xenial, Manuel Grundner $([System.DateTime]::Today.ToString('yyyy'))</Copyright>
     <Authors>Xenial, Manuel Grundner</Authors>
@@ -17,7 +16,12 @@
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://tasty.xenial.io</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/xenial-io/Tasty</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageIcon>icon-64x64.png</PackageIcon>
     <PackageIconUrl>https://blog.delegate.at/img/favicon.ico</PackageIconUrl>
     <Publish>false</Publish>
@@ -37,6 +41,7 @@
   
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>

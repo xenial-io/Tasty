@@ -35,9 +35,9 @@ namespace Xenial.Delicious.Reporters
         public string NotRunIcon { get; set; } = "🙈";
         public string IgnoredIcon { get; set; } = "🙄";
 
-        public static ColorScheme Default = SupportsRichContent()
-            ? new ColorScheme()
-            : new ColorSchemeLegacy();
+        public static ColorScheme Default => SupportsRichContent()
+                                                         ? new ColorScheme()
+                                                         : new ColorSchemeLegacy();
     }
 
     public class ColorSchemeLegacy : ColorScheme
@@ -50,6 +50,6 @@ namespace Xenial.Delicious.Reporters
             IgnoredIcon = "‼";
         }
 
-        public static new ColorScheme Default = new ColorSchemeLegacy();
+        public new static ColorScheme Default => new ColorSchemeLegacy();
     }
 }

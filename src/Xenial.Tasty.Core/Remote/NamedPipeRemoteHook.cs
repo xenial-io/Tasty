@@ -18,7 +18,7 @@ namespace Xenial.Delicious.Remote
     public delegate Task<TransportStreamFactory?> TransportStreamFactoryFunctor(CancellationToken token = default);
     public delegate Task<Stream> TransportStreamFactory();
 
-    public delegate Task<TastyRemote> ConnectToRemote(TastyScope scope, Stream remoteStream);
+    public delegate Task<ITastyRemote> ConnectToRemote(TastyScope scope, Stream remoteStream);
 
     public static class TastyRemoteDefaults
     {
@@ -35,7 +35,7 @@ namespace Xenial.Delicious.Remote
             return Task.FromResult(false);
         }
 
-        public static Task<TastyRemote> AttachToStream(TastyScope scope, Stream remoteStream)
+        public static Task<ITastyRemote> AttachToStream(TastyScope scope, Stream remoteStream)
         {
             static SerializableTestCase MapToSerializableTestCase(Metadata.TestCase test)
             {
@@ -53,7 +53,7 @@ namespace Xenial.Delicious.Remote
                 };
             }
 
-            var remote = JsonRpc.Attach<TastyRemote>(remoteStream);
+            var remote = JsonRpc.Attach<ITastyRemote>(remoteStream);
 
             scope.RegisterReporter(test => remote.Report(MapToSerializableTestCase(test)));
 

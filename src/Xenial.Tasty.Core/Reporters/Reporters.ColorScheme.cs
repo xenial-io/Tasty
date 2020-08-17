@@ -24,20 +24,20 @@ namespace Xenial.Delicious.Reporters
             Console.InputEncoding = Encoding.UTF8;
         }
 
-        public ConsoleColor DefaultColor = ConsoleColor.White;
-        public ConsoleColor ErrorColor = ConsoleColor.Red;
-        public ConsoleColor WarningColor = ConsoleColor.Yellow;
-        public ConsoleColor NotifyColor = ConsoleColor.DarkGray;
-        public ConsoleColor SuccessColor = ConsoleColor.DarkGreen;
+        public ConsoleColor DefaultColor { get; set; } = ConsoleColor.White;
+        public ConsoleColor ErrorColor { get; set; } = ConsoleColor.Red;
+        public ConsoleColor WarningColor { get; set; } = ConsoleColor.Yellow;
+        public ConsoleColor NotifyColor { get; set; } = ConsoleColor.DarkGray;
+        public ConsoleColor SuccessColor { get; set; } = ConsoleColor.DarkGreen;
 
-        public string ErrorIcon = "👎";
-        public string SuccessIcon = "👍";
-        public string NotRunIcon = "🙈";
-        public string IgnoredIcon = "🙄";
+        public string ErrorIcon { get; set; } = "👎";
+        public string SuccessIcon { get; set; } = "👍";
+        public string NotRunIcon { get; set; } = "🙈";
+        public string IgnoredIcon { get; set; } = "🙄";
 
-        public static ColorScheme Default = SupportsRichContent()
-            ? new ColorScheme()
-            : new ColorSchemeLegacy();
+        public static ColorScheme Default { get; } = SupportsRichContent()
+                                                         ? new ColorScheme()
+                                                         : new ColorSchemeLegacy();
     }
 
     public class ColorSchemeLegacy : ColorScheme
@@ -50,6 +50,6 @@ namespace Xenial.Delicious.Reporters
             IgnoredIcon = "‼";
         }
 
-        public static new ColorScheme Default = new ColorSchemeLegacy();
+        public new static ColorScheme Default { get; } = new ColorSchemeLegacy();
     }
 }

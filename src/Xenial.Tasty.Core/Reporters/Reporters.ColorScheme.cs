@@ -30,12 +30,12 @@ namespace Xenial.Delicious.Reporters
         public ConsoleColor NotifyColor { get; set; } = ConsoleColor.DarkGray;
         public ConsoleColor SuccessColor { get; set; } = ConsoleColor.DarkGreen;
 
-        public string ErrorIcon { get; set; }= "👎";
+        public string ErrorIcon { get; set; } = "👎";
         public string SuccessIcon { get; set; } = "👍";
         public string NotRunIcon { get; set; } = "🙈";
         public string IgnoredIcon { get; set; } = "🙄";
 
-        public static ColorScheme Default => SupportsRichContent()
+        public static ColorScheme Default { get; } = SupportsRichContent()
                                                          ? new ColorScheme()
                                                          : new ColorSchemeLegacy();
     }
@@ -50,6 +50,6 @@ namespace Xenial.Delicious.Reporters
             IgnoredIcon = "‼";
         }
 
-        public new static ColorScheme Default => new ColorSchemeLegacy();
+        public new static ColorScheme Default { get; } = new ColorSchemeLegacy();
     }
 }

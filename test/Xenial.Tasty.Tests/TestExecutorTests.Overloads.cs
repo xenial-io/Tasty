@@ -106,7 +106,7 @@ namespace Xenial.Delicious.Tests
                     });
 
                     await scope.Run();
-                    
+
                     return testCase.TestOutcome == Metadata.TestOutcome.Success;
                 });
             });

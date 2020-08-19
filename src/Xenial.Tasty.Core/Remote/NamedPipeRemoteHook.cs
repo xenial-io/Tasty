@@ -18,13 +18,13 @@ namespace Xenial.Delicious.Remote
     public delegate Task<TransportStreamFactory?> TransportStreamFactoryFunctor(CancellationToken token = default);
     public delegate Task<Stream> TransportStreamFactory();
 
-    public delegate Task<TastyRemote> ConnectToRemote(TastyScope scope, Stream remoteStream);
+    public delegate Task<ITastyRemote> ConnectToRemote(TastyScope scope, Stream remoteStream);
 
     public static class TastyRemoteDefaults
     {
         public static Task<bool> IsInteractiveRun()
         {
-            var isInteractive = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE");
+            var isInteractive = Environment.GetEnvironmentVariable(EnvironmentVariables.InteractiveMode);
             if (!string.IsNullOrEmpty(isInteractive))
             {
                 if (bool.TryParse(isInteractive, out var result))
@@ -35,7 +35,7 @@ namespace Xenial.Delicious.Remote
             return Task.FromResult(false);
         }
 
-        public static Task<TastyRemote> AttachToStream(TastyScope scope, Stream remoteStream)
+        public static Task<ITastyRemote> AttachToStream(TastyScope scope, Stream remoteStream)
         {
             static SerializableTestCase MapToSerializableTestCase(Metadata.TestCase test)
             {
@@ -53,7 +53,7 @@ namespace Xenial.Delicious.Remote
                 };
             }
 
-            var remote = JsonRpc.Attach<TastyRemote>(remoteStream);
+            var remote = JsonRpc.Attach<ITastyRemote>(remoteStream);
 
             scope.RegisterReporter(test => remote.Report(MapToSerializableTestCase(test)));
 
@@ -70,10 +70,10 @@ namespace Xenial.Delicious.Remote
     {
         public static Task<TransportStreamFactory?> CreateNamedPipeTransportStream(CancellationToken token = default)
         {
-            var connectionType = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_TYPE");
-            if (connectionType != null && connectionType.ToLowerInvariant() == "NamedPipes".ToLowerInvariant())
+            var connectionType = Environment.GetEnvironmentVariable(EnvironmentVariables.InteractiveConnectionType);
+            if (string.Equals(connectionType, "NamedPipes", StringComparison.InvariantCultureIgnoreCase))
             {
-                var connectionId = Environment.GetEnvironmentVariable("TASTY_INTERACTIVE_CON_ID");
+                var connectionId = Environment.GetEnvironmentVariable(EnvironmentVariables.InteractiveConnectionId);
                 if (!string.IsNullOrEmpty(connectionId))
                 {
                     TransportStreamFactory functor = () => CreateNamedPipeTransportStream(connectionId, token);

@@ -6,7 +6,7 @@ using Xenial.Delicious.Protocols;
 
 namespace Xenial.Delicious.Scopes
 {
-    public interface TastyRemote : IDisposable
+    public interface ITastyRemote : IDisposable
     {
         public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
         public event EventHandler? CancellationRequested;

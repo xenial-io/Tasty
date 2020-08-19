@@ -17,7 +17,7 @@ namespace Xenial.Delicious.Execution.TestGroupMiddleware
                    {
                        var result = context.CurrentGroup.IsForced();
 
-                       foreach (var child in context.CurrentGroup.Descendants().OfType<IForceAble>())
+                       foreach (var child in context.CurrentGroup.Descendants().OfType<IForceable>())
                        {
                            child.IsForced = () => result;
                        }

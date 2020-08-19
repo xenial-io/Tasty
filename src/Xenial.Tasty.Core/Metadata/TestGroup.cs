@@ -8,7 +8,7 @@ using Xenial.Delicious.Execution;
 namespace Xenial.Delicious.Metadata
 {
     [System.Diagnostics.DebuggerDisplay("Name: {Name} Count: {Executors.Count}")]
-    public class TestGroup : IExecutable, IForceAble
+    public class TestGroup : IExecutable, IForceable
     {
         public string Name { get; internal set; } = string.Empty;
         internal List<IExecutable> Executors { get; } = new List<IExecutable>();

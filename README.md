@@ -199,7 +199,7 @@ We use [Wyam](https://wyam.io/) to write the documentation. To serve up docs sim
 
 ## Licensing
 
-Tasty is dual-licensed under the [License Zero Prosperity Public License](https://licensezero.com/licenses/prosperity) and the [License Zero Private License](https://licensezero.com/licenses/private). The Prosperity License limits commercial use to a 32 day trial period, after which a license fee must be paid to obtain a Private License.
+Tasty is dual-licensed under the [License Zero Prosperity Public License](https://licensezero.com/licenses/prosperity) and the [License Zero Private License](https://licensezero.com/licenses/private). The Prosperity License limits commercial use to a thirty-day trial period, after which a license fee must be paid to obtain a Private License.
 
 ---
 

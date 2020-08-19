@@ -41,7 +41,7 @@
   
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
-    <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)\LICENSE.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,7 +5,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <IsPackable>true</IsPackable>
-    <NoWarn>VSTHRD200</NoWarn>
+    <NoWarn>VSTHRD200;$(NoWarn)</NoWarn>
     <PackageTags>Xenial, Tasty, Testing, Tasting, UnitTasting, IntegrationTasting, xUnit, NUnit, MSTest, UnitTest, IntegrationTest, BDD, TDD, Jest</PackageTags>
   </PropertyGroup>
   

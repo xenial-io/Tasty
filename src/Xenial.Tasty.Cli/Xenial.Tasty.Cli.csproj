@@ -10,6 +10,7 @@
     <ToolCommandName>tasty</ToolCommandName>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <PackageDescription>Tasty Cli Runner - Delicious dotnet testing</PackageDescription>
+    <NoWarn>VSTHRD100;VSTHRD101;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

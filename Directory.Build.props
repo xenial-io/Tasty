@@ -20,7 +20,7 @@
     <RepositoryUrl>https://github.com/xenial-io/Tasty</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageIcon>icon-64x64.png</PackageIcon>
     <PackageIconUrl>https://blog.delegate.at/img/favicon.ico</PackageIconUrl>

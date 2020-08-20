@@ -18,7 +18,7 @@ namespace Xenial.Delicious.DeclarativeTests
 
             group.It("with an test case", () => true);
 
-            return await scope.Run();
+            return await scope.Run(args);
         }
     }
 }

@@ -77,6 +77,7 @@ namespace Xenial.Delicious.Cli
         public void SignalTestPipelineCompleted()
             => TestPipelineCompletedSignaled?.Invoke();
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Need to be in sync with ITastyRemote")]
         public void ClearConsole()
         {
             try
@@ -86,10 +87,11 @@ namespace Xenial.Delicious.Cli
             catch (IOException) { /* Handle is invalid */}
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Need to be in sync with ITastyRemote")]
         public void ResetColor()
             => Console.ResetColor();
 
-        public static class ConsoleReporter
+        internal static class ConsoleReporter
         {
             public static ColorScheme Scheme = ColorScheme.Default;
 

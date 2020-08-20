@@ -72,34 +72,34 @@ namespace Xenial.Delicious.Cli.Views
                 {
                     new MenuItem ("_Open", "", async () =>
                     {
-                        await viewModel.ShowOpenProjectDialog();
+                        await viewModel.ShowOpenProjectDialog().ConfigureAwait(true);
                     }),
                     new MenuItem ("_Quit", "", async () =>
                     {
-                        await viewModel.StopApplication();
+                        await viewModel.StopApplication().ConfigureAwait(true);
                     })
                 }),
                 new MenuBarItem("_Color Scheme", _ColorSchemeMenuItems),
-                new MenuBarItem("_About...", "About Tasty.Cli", async () => await AboutTastyDialog.ShowDialogAsync()),
+                new MenuBarItem("_About...", "About Tasty.Cli", async () => await AboutTastyDialog.ShowDialogAsync().ConfigureAwait(true)),
             });
 
             _StatusBar = new StatusBar(new[]
             {
                 new StatusItem(Key.ControlQ, "~CTRL-Q~ Quit", async () =>
                 {
-                    await viewModel.StopApplication();
+                    await viewModel.StopApplication().ConfigureAwait(true);
                 }),
                 new StatusItem(Key.ControlD, "~CTRL-D~ Debug", async () =>
                 {
-                    await viewModel.LaunchDebugger();
+                    await viewModel.LaunchDebugger().ConfigureAwait(true);
                 }),
                 new StatusItem(Key.ControlC, "~CTRL-C~ Cancel", async () =>
                 {
-                    await viewModel.Cancel();
+                    await viewModel.Cancel().ConfigureAwait(true);
                 }),
                 new StatusItem(Key.F6, "~F6~ Clear Log", async () =>
                 {
-                    await _ViewModel.ClearLog();
+                    await _ViewModel.ClearLog().ConfigureAwait(true);
                 }),
                 new StatusItem(Key.F9, "~F9~ Open Menu", () =>
                 {
@@ -120,7 +120,7 @@ namespace Xenial.Delicious.Cli.Views
 
         private async void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            await _CommandsListView.SetSourceAsync(_ViewModel.Commands.ToList());
+            await _CommandsListView.SetSourceAsync(_ViewModel.Commands.ToList()).ConfigureAwait(true);
             _CommandsListView.CanFocus = _ViewModel.Commands.Count > 0;
             if (_CommandsListView.CanFocus)
             {
@@ -167,7 +167,7 @@ namespace Xenial.Delicious.Cli.Views
         }
 
         private async void Top_Initialized(object? sender, EventArgs e)
-            => await _ViewModel.ShowOpenProjectDialog();
+            => await _ViewModel.ShowOpenProjectDialog().ConfigureAwait(false);
 
         private void LogProgress_ProgressChanged(object? sender, (string line, bool isRunning, int exitCode) e)
             => _LogView.Text = _ViewModel.LogText;
@@ -178,7 +178,7 @@ namespace Xenial.Delicious.Cli.Views
 
             Top.SetFocus(_RightPane);
 
-            await _ViewModel.ExecuteCommand(commandItem);
+            await _ViewModel.ExecuteCommand(commandItem).ConfigureAwait(false);
         }
 
         public void Dispose()

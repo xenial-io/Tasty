@@ -47,22 +47,21 @@ namespace Xenial.Delicious.Cli.Views
 
         internal async Task ShowOpenProjectDialog()
         {
-            var path = await SelectProjectDialog.ShowDialogAsync(ColorScheme);
+            var path = await SelectProjectDialog.ShowDialogAsync(ColorScheme).ConfigureAwait(true);
             if (string.IsNullOrEmpty(path))
             {
                 return;
             }
-            await Commander.BuildProject(path, LogProgress);
-            await Commander.ConnectToRemote(path, CancellationTokenSource.Token);
+            await Commander.BuildProject(path, LogProgress).ConfigureAwait(true);
+            await Commander.ConnectToRemote(path, CancellationTokenSource.Token).ConfigureAwait(true);
 
             //TODO: ErrorDialog
-            var commands = await Commander.ListCommands(CancellationTokenSource.Token);
+            var commands = await Commander.ListCommands(CancellationTokenSource.Token).ConfigureAwait(true);
             Commands.Clear();
             foreach (var command in commands)
             {
                 Commands.Add(new CommandItem(command));
             }
-
         }
 
         internal Task Cancel()
@@ -73,6 +72,7 @@ namespace Xenial.Delicious.Cli.Views
 
         internal Task LaunchDebugger()
         {
+            _ = this;
             if (!Debugger.IsAttached)
             {
                 Debugger.Launch();
@@ -82,6 +82,7 @@ namespace Xenial.Delicious.Cli.Views
 
         internal Task StopApplication()
         {
+            _ = this;
             Application.RequestStop();
             return Task.CompletedTask;
         }
@@ -100,7 +101,7 @@ namespace Xenial.Delicious.Cli.Views
             await Commander.DoExecuteCommand(new ExecuteCommandEventArgs
             {
                 CommandName = commandItem.Command.Name
-            });
+            }).ConfigureAwait(false);
         }
         private void WriteLine(string line = "")
         {

@@ -50,13 +50,15 @@ namespace Xenial.Delicious.Reporters
         }
 
         public static TastyScope RegisterNyanReporter(this TastyScope scope)
-         => scope.RegisterReporter(Report)
+         => (scope ?? throw new ArgumentNullException(nameof(scope))).RegisterReporter(Report)
                  .RegisterReporter(ReportSummary);
 
         public static TastyScope Register()
             => Tasty.TastyDefaultScope.RegisterNyanReporter();
 
         static bool? _HasValidConsole;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We don't care about which exception is thrown")]
         private static bool HasValidConsole
         {
             get

@@ -36,7 +36,7 @@ namespace Xenial.Delicious.Cli
             studioCommand.AddAlias("s");
             rootCommand.Add(studioCommand);
 
-            return await rootCommand.InvokeAsync(args);
+            return await rootCommand.InvokeAsync(args).ConfigureAwait(false);
         }
 
         private static void SetupConsoleEncoding()

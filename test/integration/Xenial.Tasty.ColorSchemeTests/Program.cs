@@ -24,7 +24,7 @@ namespace Xenial.Delicious.ColorSchemeTests
                 It("can be whatever you want", () => false);
             });
 
-            Run();
+            Run(args);
         }
     }
 }

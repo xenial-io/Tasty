@@ -16,10 +16,10 @@ namespace Xenial.Delicious.Reporters
 {
     public static class ConsoleReporter
     {
-        public static ColorScheme Scheme = ColorScheme.Default;
-
+        private static ColorScheme scheme = ColorScheme.Default;
+        public static ColorScheme Scheme { get => scheme; set => scheme = value ?? throw new ArgumentNullException(nameof(Scheme)); }
         public static TastyScope RegisterConsoleReporter(this TastyScope scope)
-            => scope.RegisterReporter(Report)
+            => (scope ?? throw new ArgumentNullException(nameof(scope))).RegisterReporter(Report)
                     .RegisterReporter(ReportSummary);
 
         public static TastyScope Register()
@@ -99,7 +99,7 @@ namespace Xenial.Delicious.Reporters
         }
 
         public static Task Report(TestCase test)
-            => test.TestOutcome switch
+            => (test ?? throw new ArgumentNullException(nameof(test))).TestOutcome switch
             {
                 TestOutcome.Success => Success(test),
                 TestOutcome.NotRun => NotRun(test),

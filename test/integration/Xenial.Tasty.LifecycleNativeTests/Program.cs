@@ -59,7 +59,7 @@ namespace Xenial.Delicious.LifecycleNativeTests
                 });
             });
 
-            Run();
+            Run(args);
         }
     }
 }

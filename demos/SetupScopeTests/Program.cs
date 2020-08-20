@@ -34,7 +34,7 @@ namespace SetupScopeTests
                 });
             });
 
-            Run();
+            Run(args);
         }
     }
 }

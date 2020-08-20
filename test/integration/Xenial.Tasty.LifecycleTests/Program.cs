@@ -95,7 +95,7 @@ namespace Xenial.Delicious.LifecycleTests
                 });
             });
 
-            Run();
+            Run(args);
         }
     }
 }

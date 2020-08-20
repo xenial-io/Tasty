@@ -20,7 +20,7 @@ namespace Xenial.Delicious.DataDrivenTests
                     It($"can be as simple as a foreach #{number}", () => true);
                 }
 
-                numbers
+                _ = numbers
                     .Select((n) => It($"can be a linq expression #{n}", () => true))
                     .ToList();
 
@@ -36,7 +36,7 @@ namespace Xenial.Delicious.DataDrivenTests
                 }
             });
 
-            return await Run();
+            return await Run(args);
         }
     }
 }

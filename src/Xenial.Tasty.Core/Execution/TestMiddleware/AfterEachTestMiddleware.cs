@@ -7,16 +7,16 @@
             {
                 try
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
                 finally
                 {
-                    foreach (var hook in
-                        context.CurrentCase.Group?.AfterEachHooks
-                        ?? context.CurrentScope.AfterEachHooks
-                        )
+                    var hooks = context.CurrentCase.Group?.AfterEachHooks
+                        ?? context.CurrentScope.AfterEachHooks;
+
+                    foreach (var hook in hooks)
                     {
-                        var hookResult = await hook.Executor.Invoke();
+                        var hookResult = await hook.Executor.Invoke().ConfigureAwait(false);
                         if (!hookResult)
                         {
                             break;

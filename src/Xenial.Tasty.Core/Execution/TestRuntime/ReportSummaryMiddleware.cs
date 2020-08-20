@@ -13,7 +13,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
             {
                 try
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
                 finally
                 {
@@ -21,8 +21,8 @@ namespace Xenial.Delicious.Execution.TestRuntime
                     await Task.WhenAll(context.Scope.SummaryReporters
                         .Select(async r =>
                         {
-                            await r.Invoke(cases);
-                        }).ToArray());
+                            await r.Invoke(cases).ConfigureAwait(false);
+                        }).ToArray()).ConfigureAwait(false);
                 }
             });
     }

@@ -8,7 +8,7 @@ namespace Xenial.Delicious.Execution.TestGroupMiddleware
             => executor.UseGroup(async (context, next) =>
             {
                 context.CurrentScope.CurrentGroup = context.CurrentGroup;
-                await next();
+                await next().ConfigureAwait(false);
             });
     }
 }

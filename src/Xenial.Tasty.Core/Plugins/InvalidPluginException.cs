@@ -5,6 +5,7 @@ using System.Security.Permissions;
 namespace Xenial.Delicious.Plugins
 {
     [Serializable]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1032:Implement standard exception constructors", Justification = "By design")]
     public class InvalidPluginException : Exception
     {
         public string TastyPluginType { get; }

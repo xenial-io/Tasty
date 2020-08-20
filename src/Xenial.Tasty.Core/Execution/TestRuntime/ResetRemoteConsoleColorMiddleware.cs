@@ -7,13 +7,13 @@
             {
                 try
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
                 finally
                 {
                     if (context.Scope.ClearBeforeRun && context.Remote != null)
                     {
-                        await context.Remote.ResetColor();
+                        await context.Remote.ResetColor().ConfigureAwait(false);
                     }
                 }
             });

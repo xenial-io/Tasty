@@ -10,6 +10,8 @@ namespace Xenial.Delicious.Execution
 {
     public class RuntimeContext : IDisposable
     {
+        Queue<TestCase> testQueue = new Queue<TestCase>();
+
         public RuntimeContext(TestExecutor executor)
             => Executor = executor ?? throw new ArgumentNullException(nameof(executor));
 
@@ -21,7 +23,14 @@ namespace Xenial.Delicious.Execution
         public int ExitCode { get; internal set; }
         public bool IsInteractive { get; internal set; }
         public bool EndPipeLine { get; internal set; }
-        public Queue<TestCase> TestQueue { get; set; } = new Queue<TestCase>();
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "User pipelines should be able to replace the test queue")]
+        public Queue<TestCase> TestQueue
+        {
+            get => testQueue;
+            set => testQueue = value ?? throw new ArgumentNullException(nameof(TestQueue));
+        }
+
         internal TastyCommand? CurrentCommand { get; set; }
 
         private bool disposedValue;

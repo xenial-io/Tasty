@@ -20,12 +20,12 @@ namespace Xenial.Delicious.Execution.TestRuntime
                             IsDefault = c.IsDefault
                         }).ToList();
 
-                        await context.Remote.RegisterCommands(commands);
+                        await context.Remote.RegisterCommands(commands).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
             });
     }

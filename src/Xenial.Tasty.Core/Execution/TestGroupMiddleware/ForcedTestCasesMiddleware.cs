@@ -8,6 +8,7 @@ namespace Xenial.Delicious.Execution.TestGroupMiddleware
 {
     public static class ForcedTestCasesMiddleware
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "This grabs into user code")]
         public static TestExecutor UseTestGroupForceVisitor(this TestExecutor executor)
            => executor.UseGroup(async (context, next) =>
            {
@@ -22,7 +23,7 @@ namespace Xenial.Delicious.Execution.TestGroupMiddleware
                            child.IsForced = () => result;
                        }
                    }
-                   await next();
+                   await next().ConfigureAwait(false);
                }
                catch (Exception ex)
                {

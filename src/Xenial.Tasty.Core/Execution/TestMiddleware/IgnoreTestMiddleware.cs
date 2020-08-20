@@ -7,6 +7,7 @@ namespace Xenial.Delicious.Execution.TestMiddleware
 {
     public static class IgnoreTestMiddleware
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "This grabs into user code")]
         public static TestExecutor UseIgnoreTestExecutor(this TestExecutor executor)
             => executor.Use(async (context, next) =>
             {
@@ -23,13 +24,13 @@ namespace Xenial.Delicious.Execution.TestMiddleware
                             }
                             else
                             {
-                                await next();
+                                await next().ConfigureAwait(false);
                             }
                         }
                     }
                     else
                     {
-                        await next();
+                        await next().ConfigureAwait(false);
                     }
                 }
                 catch (Exception exception)

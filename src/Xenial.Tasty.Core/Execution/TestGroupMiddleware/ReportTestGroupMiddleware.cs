@@ -9,7 +9,7 @@ namespace Xenial.Delicious.Execution.TestGroupMiddleware
             {
                 try
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
                 finally
                 {

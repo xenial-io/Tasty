@@ -86,7 +86,7 @@ namespace Xenial.Delicious.Execution
             {
                 var app = BuildRuntimeMiddleware();
 
-                await app(context);
+                await app(context).ConfigureAwait(false);
                 endPipeline = context.EndPipeLine;
             }
 

@@ -18,7 +18,7 @@ namespace Xenial.Delicious.Execution.TestGroupMiddleware
                    }
                }
 
-               await next();
+               await next().ConfigureAwait(false);
            });
     }
 }

@@ -27,8 +27,9 @@ namespace Xenial.Delicious.Execution.TestRuntime
                             context.Remote.ExecuteCommand -= ExecuteCommand;
                             context.Remote.ExecuteCommand += ExecuteCommand;
                             context.Remote.CancellationRequested += (_, __) => reject();
-                            context.Remote.Exit += (_, __) => reject();
-                        });
+                            context.Remote.Quit += (_, __) => reject();
+                        }).ConfigureAwait(false);
+
                         context.CurrentCommand = command;
                     }
                     else
@@ -40,7 +41,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
                 }
                 finally
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
             });
     }

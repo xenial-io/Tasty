@@ -42,6 +42,7 @@ namespace Xenial.Delicious.Utils
 
     internal struct TryAction
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "This is by design")]
         internal TryAction(Action action, Action? @catch = null)
         {
             try
@@ -72,12 +73,6 @@ namespace Xenial.Delicious.Utils
 
     internal struct TryFinallyAction<T> where T : Exception
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FinallyAction" /> struct.
-        /// </summary>
-        /// <param name="action">The action.</param>
-        /// <param name="catch">The catch.</param>
-        /// <param name="finally">The finally.</param>
         internal TryFinallyAction(Action action, Action<T>? @catch = null, Action? @finally = null)
         {
             try
@@ -97,12 +92,7 @@ namespace Xenial.Delicious.Utils
 
     internal struct TryFinallyAction
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FinallyAction" /> struct.
-        /// </summary>
-        /// <param name="action">The action.</param>
-        /// <param name="catch">The catch.</param>
-        /// <param name="finally">The finally.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "This is by design")]
         internal TryFinallyAction(Action action, Action? @catch = null, Action? @finally = null)
         {
             try

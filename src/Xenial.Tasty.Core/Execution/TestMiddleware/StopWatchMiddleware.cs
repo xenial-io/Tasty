@@ -12,7 +12,7 @@ namespace Xenial.Delicious.Execution.TestMiddleware
                 var sw = Stopwatch.StartNew();
                 try
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
                 finally
                 {

@@ -40,28 +40,28 @@ namespace Xenial.Delicious.Cli
         internal async Task DoExecuteCommand(ExecuteCommandEventArgs args)
         {
             ExecuteCommand?.Invoke(this, args);
-            await Task.CompletedTask;
+            await Task.CompletedTask.ConfigureAwait(false);
         }
 
         internal async Task DoRequestCancellation()
         {
             CancellationRequested?.Invoke(this, EventArgs.Empty);
-            await Task.CompletedTask;
+            await Task.CompletedTask.ConfigureAwait(false);
         }
 
-        public async Task Report(SerializableTestCase @case)
+        public async Task Report(SerializableTestCase testCase)
         {
             foreach (var reporter in Reporters)
             {
-                await reporter.Invoke(@case);
+                await reporter.Invoke(testCase).ConfigureAwait(false);
             }
         }
 
-        public async Task Report(IEnumerable<SerializableTestCase> @cases)
+        public async Task Report(IEnumerable<SerializableTestCase> testCases)
         {
             foreach (var reporter in SummaryReporters)
             {
-                await reporter.Invoke(@cases);
+                await reporter.Invoke(testCases).ConfigureAwait(false);
             }
         }
 
@@ -171,7 +171,7 @@ namespace Xenial.Delicious.Cli
             }
 
             public static Task Report(SerializableTestCase test)
-                => test.TestOutcome switch
+                => (test ?? throw new ArgumentNullException(nameof(test))).TestOutcome switch
                 {
                     TestOutcome.Success => Success(test),
                     TestOutcome.NotRun => NotRun(test),

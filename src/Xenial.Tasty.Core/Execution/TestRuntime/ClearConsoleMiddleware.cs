@@ -21,7 +21,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
                 }
                 finally
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
             });
     }

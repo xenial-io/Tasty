@@ -7,7 +7,7 @@ Often while writing tests you have some setup work that needs to happen before t
 
 # 1. Using C# local functions to setup test cases
 
-If you are writing unit tests that don't have complex or very expensive initialization code you can just use local functions in combination with tuples to setup your test code. This is more a pattern than a feature in Tasty, but it's good to mention anyways, so let's look at an example:
+If you are writing unit tests that don't have complex or very expensive initialization code, you can just use local functions in combination with tuples to setup your test code. This is more a pattern than a feature in Tasty, but it's good to mention anyways, so let's look at an example:
 
 ```cs
 using System;
@@ -107,16 +107,16 @@ Outcome:         Success
 =================================================================================================
 ```
 
-> Those tests are a little bit constructed, cause there is no need to pass the check to the local function,
+> Those tests are a little bit constructed, because there is no need to pass the check to the local function,
 > but if you deal with mocks or stubs this is really a nice pattern.
-> And cause there is nothing special from Tasty, every developer that is familiar with local functions and tuples
+> And because there is nothing special from Tasty, every developer that is familiar with local functions and tuples
 > will understand whats going on.
 
 # 2. Repeating Setup For Many Tests
 
-Like in XUnit frameworks there is a functionality to run code before and after each test. You can use `BeforeEach` and `AfterEach` respectively.
+Like in XUnit frameworks, there is a functionality to run code before and after each test. You can use `BeforeEach` and `AfterEach` respectively.
 
-For example, let's say we have an calculator, that does some addition upfront and we need to reset the result after each test:
+For example, let's say we have a calculator, that does some addition upfront and we need to reset the result after each test:
 
 ```cs
 using System;

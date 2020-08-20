@@ -3,7 +3,7 @@ Title: Tasty Plugins
 Order: 10
 ---
 
-`Tasty` is very open and flexible from the ground up, because almost everything is based on plugins.
+Because almost everything is based on plugins, `Tasty` is very open and flexible from the ground up.
 You can use a lot of built in plugins or create your own.
 
 # Anatomy of a plugin
@@ -18,7 +18,7 @@ You can control which plugin you import via MSBuild properties with a simple sch
 
 ## Available plugins
 
-Here are the available plugins per categories:
+Here are the available plugins by category:
 
 ### Reporters
 

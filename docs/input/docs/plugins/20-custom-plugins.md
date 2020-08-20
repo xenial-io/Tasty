@@ -4,15 +4,15 @@ Order: 20
 
 ---
 
-To create your own plugin you have only to make sure to follow 3 simple principals:
+To create your own plugin you have only to make sure to follow 3 simple principles:
 
-1. Make sure you support `netstandard2.0` or if absolutely need to `netstandard2.1`
+1. Make sure you support `netstandard2.0` or if absolutely needed `netstandard2.1`
 1. Provide extension methods for custom configuration
-1. Provide an auto install mode that is configurable.
+1. Provide an auto install mode that is configurable
 
 # 1. Create a project
 
-Because there is nothing special for a custom plugin, we start with a simple `classlib` project:
+Because there is nothing special about a custom plugin, we start with a simple `classlib` project:
 
 ```cmd
 dotnet new classlib -o MyTastyPlugin
@@ -68,8 +68,8 @@ namespace Xenial.Delicious.Plugins
 
 # 3. Provide auto install mode
 
-Cause there is no plugin discovery, `Tasty` does only a lookup in the entry assembly for a `TastyPluginAttribute` that communicates the entry point.
-To make the lives for our plugin users easier we should provide some **MSBuild** _magic_.
+Because there is no plugin discovery, `Tasty` does only a lookup in the entry assembly for a `TastyPluginAttribute` that communicates the entry point.
+To make the lives for our plugin users easier, we should provide some **MSBuild** _magic_.
 
 We need to create a `build` folder:
 
@@ -136,7 +136,7 @@ Endusers will be able to prevent your plugin from be automatically registered by
 
 # 4. Pack the plugin
 
-There is nothing special about the nuget itself so use the normal way of packing and distributing your package:
+There is nothing special about the nuget itself, so use the normal way of packing and distributing your package:
 
 ```cmd
 dotnet pack

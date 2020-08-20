@@ -71,4 +71,4 @@ You can look into the [Api](/api/Xenial.Delicious.Reporters/NyanReporter) and th
 
 # 5. Congratulations
 
-You learned about *tasty* rainbow screaming nyan cat reporters!
+You learned about the *tasty* rainbow screaming nyan cat reporters!

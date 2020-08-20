@@ -2,11 +2,11 @@ Description: Async code
 Title: Async code
 Order: 20
 ---
-Cause Tasty is async all the way through testing async code is pretty easy:
+Because Tasty is async all the way through, testing async code is pretty easy:
 
 # 1. Write the async test code 
 
-There is nothing special about executing async code in Tasty. Just use `async` and `await` if you would expect with any C# application:
+There is nothing special about executing async code in Tasty. Just use `async` and `await` as you would expect with any C# application:
 
 ```cs
 using System;

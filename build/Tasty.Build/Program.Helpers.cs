@@ -9,10 +9,6 @@ namespace Tasty.Build
 {
     static partial class Program
     {
-
-    }
-    static partial class Program
-    {
         static (string fullFramework, string netcore) FindTfms()
         {
             var dirProps = XElement.Load("Directory.Build.props");

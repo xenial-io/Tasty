@@ -98,8 +98,7 @@ namespace Xenial.Delicious.Cli
             static ConsoleReporter()
                 => Console.OutputEncoding = Encoding.UTF8;
 
-
-            static Lazy<int> SeparatorSize = new Lazy<int>(() =>
+            private static readonly Lazy<int> SeparatorSize = new Lazy<int>(() =>
             {
                 const int fallBackSize = 100;
                 try
@@ -113,10 +112,10 @@ namespace Xenial.Delicious.Cli
             public static Task ReportSummary(IEnumerable<SerializableTestCase> tests)
             {
                 var totalTests = tests.Count();
-                var failedTests = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Count();
-                var ignoredTests = tests.Where(m => m.TestOutcome == TestOutcome.Ignored).Count();
-                var notRunTests = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Count();
-                var successTests = tests.Where(m => m.TestOutcome == TestOutcome.Success).Count();
+                var failedTests = tests.Count(m => m.TestOutcome == TestOutcome.Failed);
+                var ignoredTests = tests.Count(m => m.TestOutcome == TestOutcome.Ignored);
+                var notRunTests = tests.Count(m => m.TestOutcome == TestOutcome.NotRun);
+                var successTests = tests.Count(m => m.TestOutcome == TestOutcome.Success);
                 var outcome = tests.Where(t => t.TestOutcome > TestOutcome.Ignored).Min(t => t.TestOutcome);
 
                 var totalTime = tests.Sum(m => m.Duration);
@@ -130,31 +129,31 @@ namespace Xenial.Delicious.Cli
                 Console.WriteLine();
                 Console.WriteLine(new string('=', SeparatorSize.Value));
 
-                Write(Scheme.DefaultColor, $"Summary: ");
+                Write(Scheme.DefaultColor, "Summary: ");
                 Write(failedTests > 0 ? Scheme.ErrorColor : Scheme.DefaultColor, $"F{failedTests}".PadLeft(totalTimeString.Length));
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(ignoredTests > 0 ? Scheme.WarningColor : Scheme.DefaultColor, $"I{ignoredTests}".PadLeft(totalTimeString.Length));
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(notRunTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, $"NR{notRunTests}".PadLeft(totalTimeString.Length));
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(successTests > 0 ? Scheme.SuccessColor : Scheme.DefaultColor, $"S{successTests}".PadLeft(totalTimeString.Length));
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(Scheme.DefaultColor, $"T{totalTests}");
 
                 Console.WriteLine();
-                Write(Scheme.DefaultColor, $"Time:    ");
+                Write(Scheme.DefaultColor, "Time:    ");
                 Write(failedTests > 0 ? Scheme.ErrorColor : Scheme.DefaultColor, failedTime.AsDuration());
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(ignoredTests > 0 ? Scheme.WarningColor : Scheme.DefaultColor, ignoredTime.AsDuration());
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(notRunTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, notRunTime.AsDuration());
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(successTests > 0 ? Scheme.SuccessColor : Scheme.DefaultColor, successTime.AsDuration());
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(Scheme.DefaultColor, totalTimeString);
 
                 Console.WriteLine();
-                Write(Scheme.DefaultColor, $"Outcome: ");
+                Write(Scheme.DefaultColor, "Outcome: ");
                 Write(
                     failedTests > 0
                         ? Scheme.ErrorColor
@@ -179,10 +178,10 @@ namespace Xenial.Delicious.Cli
                     TestOutcome.NotRun => NotRun(test),
                     TestOutcome.Ignored => Ignored(test),
                     TestOutcome.Failed => Failed(test),
-                    _ => throw new NotImplementedException($"{nameof(ConsoleReporter)}.{nameof(Report)}.{nameof(TestOutcome)}={test.TestOutcome}")
+                    _ => throw new ArgumentOutOfRangeException($"{nameof(ConsoleReporter)}.{nameof(Report)}.{nameof(TestOutcome)}={test.TestOutcome}")
                 };
 
-            static string GetTestName(SerializableTestCase test)
+            private static string GetTestName(SerializableTestCase test)
                 => test.FullName;
 
             private static Task Success(SerializableTestCase test)

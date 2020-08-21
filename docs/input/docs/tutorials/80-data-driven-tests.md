@@ -6,7 +6,7 @@ In order to do data-driven tests in `Tasty` you don't have to learn anything new
 
 # 1. Use a standard foreach loop with tuples
 
-A test case is basically described by the name of the test in combination with an lambda expression, you just can use string interpolation and some loops (or `LINQ` statements if you are going the more functional way):
+A test case is basically described by the name of the test in combination with a lambda expression, you just can use string interpolation and some loops (or `LINQ` statements if you are going the more functional way):
 
 ```cs
 using System;

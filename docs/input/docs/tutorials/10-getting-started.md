@@ -3,7 +3,7 @@ Title: Getting started
 Order: 10
 ---
 
-This is a guide to get started with Tasty and to show you how Tasty works.
+This is a guide to get started with Tasty and to demonstrate how Tasty works.
 
 # 1. Create a normal console application
 
@@ -57,7 +57,7 @@ namespace MyFirstTastyTests
     {
         static void Main(string[] args)
         {
-            //This will tell Tasty that there is an test case named '1 + 2 should be 3'
+            //This will tell Tasty that there is a test case named '1 + 2 should be 3'
             It("1 + 2 should be 3", () =>
             {
                 var calculation = 1 + 2; // Act
@@ -101,7 +101,7 @@ namespace MyFirstTastyTests
 
 # 6. Run the project and see the results
 
-Cause it's a normal console application, we just can run it with the known dotnet commands you already know, so let's execute the project:
+Because it's a normal console application, we just can run it with the known dotnet commands you already know, so let's execute the project:
 
 ```cmd
 dotnet run

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Tasty.Build": {
+      "commandName": "Project",
+      "commandLineArgs": "release"
+    }
+  }
+}

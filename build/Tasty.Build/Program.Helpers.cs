@@ -30,5 +30,11 @@ namespace Tasty.Build
                 await RunAsync("dotnet", "tool restore");
             }
         }
+
+        static string Tabify(string s)
+            => string.Join(
+                Environment.NewLine, 
+                s.Split("\n").Select(s => $"\t{s}")
+            );
     }
 }

@@ -3,7 +3,7 @@ Title: Test Groups
 Order: 30
 ---
 
-In Tasty there are no test categories like in other XUnit test frameworks. Tasty uses test groups / describes as an abstraction. You can nest multiple groups and mix and match multiple groups and tests. Test groups can have the same name and will result in the *same* group.
+In Tasty there are no test categories like in other unit test frameworks. Tasty uses test groups / describes as an abstraction. You can nest multiple groups and mix and match multiple groups and tests. Test groups can have the same name and will result in the *same* group.
 
 # 1. Write the test groups
 
@@ -62,7 +62,7 @@ As you can see you can name the test groups the same, that helps to structure la
 
 # 2. Nested test groups
 
-You can nest multiple groups and tests together whatever way you want:
+You can nest multiple groups and tests together any way you want:
 
 ```cs
 using System;

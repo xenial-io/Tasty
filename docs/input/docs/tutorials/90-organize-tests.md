@@ -3,12 +3,12 @@ Title: Organize Tests
 Order: 90
 ---
 
-Until this point we always looked at very simple tests. This of course does not scale in larger test suites. So we need to organize out tests into multiple files and methods.
-`Tasty` does not care how those tests are added to the scopes, so basically you are free to do whatever you want. We want at least share some patterns for organizing your tests:
+We previously looked at very simple tests. This of course does not scale in larger test suites. So we need to organize our tests into multiple files and methods.
+`Tasty` does not care how those tests are added to the scopes, so basically you are free to do whatever you want. Here are some useful patterns for organizing your tests:
 
 # 1. Use static methods
 
-Cause everything is just function based, you only need to make sure to get methods invoked that contain test cases. We can do that with simple static (or not static, you decide) methods:
+Because everything is just function based, you only need to make sure to get methods invoked that contain test cases. We can do that with simple static (or non-static, you decide) methods:
 
 ```cs
 using System;
@@ -151,4 +151,4 @@ Outcome:         Success
 
 # 3. Congratulations
 
-You've organized your delicious tests into separate classes! That's for now the end of the road. You've learned everything about `Tasty` you need to know! You are now a **Delicious testing** *warrior*!
+You've organized your delicious tests into separate classes! That's the end of the road for now. You've learned everything you need to know about `Tasty`! You are now a **Delicious testing** *warrior*!

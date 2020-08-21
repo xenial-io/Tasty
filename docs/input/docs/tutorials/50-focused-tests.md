@@ -5,7 +5,7 @@ Order: 50
 
 In order to troubleshoot tests, or stay focused when working on only a portion of the code base, you can simply mark a test or group as **focused** eg. **forced**.
 
-# 1. Mark single test cases as focused 
+# 1. Mark specific test cases as focused 
 
 You can mark test cases with the `FIt` syntax. That will ensure only those tests will run:
 
@@ -53,7 +53,7 @@ Outcome:         Success
 =================================================================================================
 ```
 
-As you can see, only the tests that are in focused mode where run. It didn't even output anything from the other tests, to reduce visual clutter, cause you are in *focus*mode and don't care about the other tests at the moment.
+As you can see, only the tests that are in focused mode were run. It didn't even output anything from the other tests, to reduce visual clutter, because you are in *focus* mode and don't care about the other tests at the moment.
 
 # 2. Mark test groups as focused
 

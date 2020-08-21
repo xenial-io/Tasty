@@ -1,4 +1,4 @@
-# More info: https://kent-boogaart.com/blog/editorconfig-reference-for-c-developers
+﻿# More info: https://kent-boogaart.com/blog/editorconfig-reference-for-c-developers
 # More reference: https://github.com/RehanSaeed/EditorConfig/blob/master/.editorconfig
 
 # This file is the top-most EditorConfig file
@@ -6,7 +6,7 @@ root = true
 
 # All Files
 [*]
-charset = utf-8
+charset = utf-8-bom
 indent_style = space
 indent_size = 4
 insert_final_newline = true
@@ -66,16 +66,8 @@ indent_style = tab
 #Core editorconfig formatting - indentation
 
 #use hard tabs for indentation
-indent_style = tab
-
-#Formatting - new line options
-
-#place catch statements on the same line
-csharp_new_line_before_catch = false
-#place else statements on the same line
-csharp_new_line_before_else = false
-#require members of object intializers to be on separate lines
-csharp_new_line_before_members_in_object_initializers = true
+indent_style = space
+indent_size = 4
 
 #Formatting - organize using options
 
@@ -111,18 +103,25 @@ csharp_preserve_single_line_statements = true
 #Style - Code block preferences
 
 #prefer no curly braces if allowed
-csharp_prefer_braces = false:suggestion
+csharp_prefer_braces = true:suggestion
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
 
 #Style - expression bodied member options
 
 #prefer expression-bodied members for accessors
 csharp_style_expression_bodied_accessors = true:suggestion
 #prefer block bodies for constructors
-csharp_style_expression_bodied_constructors = false:suggestion
+csharp_style_expression_bodied_constructors = true:suggestion
 #prefer expression-bodied members for methods
 csharp_style_expression_bodied_methods = true:suggestion
 #prefer block bodies for operators
-csharp_style_expression_bodied_operators = false:suggestion
+csharp_style_expression_bodied_operators = true:suggestion
 #prefer expression-bodied members for properties
 csharp_style_expression_bodied_properties = true:suggestion
 
@@ -179,10 +178,10 @@ csharp_style_pattern_matching_over_as_with_null_check = false:suggestion
 #Style - qualification options
 
 #prefer events not to be prefaced with this. or Me. in Visual Basic
-dotnet_style_qualification_for_event = false:suggestion
+dotnet_style_qualification_for_event = false:warning
 #prefer fields not to be prefaced with this. or Me. in Visual Basic
-dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_field = false:warning
 #prefer methods not to be prefaced with this. or Me. in Visual Basic
-dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_method = false:warning
 #prefer properties not to be prefaced with this. or Me. in Visual Basic
-dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_property = false:warning

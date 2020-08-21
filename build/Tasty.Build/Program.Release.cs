@@ -25,6 +25,7 @@ namespace Tasty.Build
             var tags = await ListTags();
             var versions = await ParseTags(tags);
             var maxVersion = await MaxVersion(versions);
+            var nextVersion = await AskVersion(maxVersion);
         }
 
         static async Task<bool> ConfirmBranch()

@@ -245,13 +245,14 @@ namespace Xenial.Delicious.Cli.Internal
             tastyServer = null;
         }
 
-        public async Task DoExecuteCommand(ExecuteCommandEventArgs executeCommandEventArgs)
+        public Task DoExecuteCommand(ExecuteCommandEventArgs executeCommandEventArgs)
         {
-            //TODO: Make a guard method
-            if (tastyServer != null)
+            var server = tastyServer;
+            if (server != null)
             {
-                await tastyServer.DoExecuteCommand(executeCommandEventArgs).ConfigureAwait(false);
+                return server.DoExecuteCommand(executeCommandEventArgs);
             }
+            return Task.CompletedTask;
         }
     }
 }

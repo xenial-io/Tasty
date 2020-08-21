@@ -71,7 +71,7 @@ namespace Tasty.Build
 
         static async Task<bool> ConfirmBranch()
         {
-            var currentBranch = await ReadAsync("git", "branch --show-current");
+            var currentBranch = (await ReadAsync("git", "branch --show-current")).Trim();
             if (!currentBranch.Equals("master", StringComparison.InvariantCultureIgnoreCase))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;

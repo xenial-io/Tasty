@@ -20,6 +20,7 @@ namespace Tasty.Build
         {
             if (!await ConfirmBranch()) return;
 
+            await PullChanges();
             await FetchTags();
 
             var tags = await ListTags();
@@ -31,7 +32,7 @@ namespace Tasty.Build
                 var nextVersion = NextVersion(maxVersion, versionIncrement.Value);
                 var increment = ConfirmVersion(nextVersion);
 
-                if(increment)
+                if (increment)
                 {
                     await TagVersion(nextVersion);
                     await PushTags();
@@ -98,11 +99,16 @@ namespace Tasty.Build
             return true;
         }
 
+        private static async Task PullChanges()
+        {
+            Header("Fetching latest changes");
+            await RunAsync("git", "pull");
+        }
+
         private static async Task FetchTags()
         {
             Header("Fetching latest tags");
-            var fetchResult = await ReadAsync("git", "pull --tags");
-            LogVerbose(fetchResult);
+            await RunAsync("git", "pull --tags");
         }
 
         private static async Task<IEnumerable<string>> ListTags()
@@ -174,7 +180,7 @@ namespace Tasty.Build
                 ConsoleKey.P => VersionIncrement.Patch,
                 _ => null
             };
-        
+
             return Task.FromResult(result);
         }
 

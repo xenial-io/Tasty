@@ -25,7 +25,47 @@ namespace Tasty.Build
             var tags = await ListTags();
             var versions = await ParseTags(tags);
             var maxVersion = await MaxVersion(versions);
-            var nextVersion = await AskVersion(maxVersion);
+            var versionIncrement = await AskVersion(maxVersion);
+            if (versionIncrement.HasValue)
+            {
+                var nextVersion = NextVersion(maxVersion, versionIncrement.Value);
+                var increment = ConfirmVersion(nextVersion);
+
+                if(increment)
+                {
+                    await TagVersion(nextVersion);
+                    await PushTags();
+                }
+            }
+            else
+            {
+                Console.WriteLine("\tExiting...");
+            }
+        }
+
+        private static bool ConfirmVersion(Version nextVersion)
+        {
+            Header("Confirm version");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+            Console.Write($"\tThe next version will be ");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ToSemVer(nextVersion));
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("\tDo you want to continue? (y/N)");
+
+            if (Console.ReadKey().Key != ConsoleKey.Y)
+            {
+                Console.WriteLine("\tNo. Exiting...");
+                return false;
+            }
+
+            Console.WriteLine("\tYes. Continuing...");
+            Console.WriteLine();
+            return true;
         }
 
         static async Task<bool> ConfirmBranch()
@@ -105,6 +145,65 @@ namespace Tasty.Build
             LogVerbose(version?.ToString());
             return Task.FromResult(version);
         }
+
+        static Task<VersionIncrement?> AskVersion(Version maxVersion)
+        {
+            Header($"Current version is {maxVersion}");
+
+            Tabify("Which increment would you like to make?");
+
+            void WriteInfo(string shortCut, VersionIncrement increment)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write($"\t({shortCut}) ");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write($"{increment} - {ToSemVer(NextVersion(maxVersion, increment))}");
+                Console.WriteLine();
+            }
+
+            WriteInfo("m", VersionIncrement.Major);
+            WriteInfo("i", VersionIncrement.Minor);
+            WriteInfo("p", VersionIncrement.Patch);
+
+            var key = Console.ReadKey().Key;
+
+            VersionIncrement? result = key switch
+            {
+                ConsoleKey.M => VersionIncrement.Major,
+                ConsoleKey.I => VersionIncrement.Minor,
+                ConsoleKey.P => VersionIncrement.Patch,
+                _ => null
+            };
+        
+            return Task.FromResult(result);
+        }
+
+        static async Task TagVersion(Version nextVersion)
+        {
+            var tag = $"v{ToSemVer(nextVersion)}";
+            Header($"Tagging {tag}");
+
+            await RunAsync("git", $"tag {tag}");
+        }
+
+        static async Task PushTags()
+        {
+            Header($"Pushing tags");
+
+            await RunAsync("git", $"push --tags");
+        }
+
+        private static Version NextVersion(Version version, VersionIncrement increment)
+            => increment switch
+            {
+                VersionIncrement.Major => new Version(version.Major + 1, 0, 0, 0),
+                VersionIncrement.Minor => new Version(version.Major, version.Minor + 1, 0, 0),
+                VersionIncrement.Patch => new Version(version.Major, version.Minor, version.Build + 1, 0),
+                _ => version
+            };
+
+        private static string ToSemVer(Version version)
+            => $"{version.Major}.{version.Minor}.{version.Build}";
 
         private static void Header(string message)
         {

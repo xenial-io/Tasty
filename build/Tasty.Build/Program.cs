@@ -103,32 +103,7 @@ namespace Tasty.Build
 
             Target("release", async () => 
             {
-                var currentBranch = await ReadAsync("git", "branch --show-current");
-                if (!currentBranch.Equals("master", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-
-                    Console.Write($"\tThe current branch you are working on is not ");
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("master");
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write($" actually it is ");
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(currentBranch);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\tDo you want to continue? (y/N)");
-
-                    if(Console.ReadKey().Key != ConsoleKey.Y)
-                    {
-                        Console.WriteLine("\tNo. Exiting...");
-                        return;
-                    }
-
-                    Console.WriteLine("\tYes. Continuing...");
-                }
-                Console.WriteLine("Fetching latest tags...");
-                var fetchingTags = await ReadAsync("git", "pull --tags");
+                await Release();
             });
 
             Target("default", DependsOn("test"));

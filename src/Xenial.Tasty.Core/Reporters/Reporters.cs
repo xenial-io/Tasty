@@ -12,7 +12,7 @@ namespace Xenial.Delicious.Reporters
     /// </summary>
     /// <param name="test">The test.</param>
     /// <returns>Task.</returns>
-    public delegate Task AsyncTestReporter(TestCase test);
+    public delegate Task AsyncTestReporter(TestCaseResult test);
 
     /// <summary>
     /// Delegate AsyncTestSummaryReporter
@@ -21,5 +21,5 @@ namespace Xenial.Delicious.Reporters
     /// </summary>
     /// <param name="tests">The tests.</param>
     /// <returns>Task.</returns>
-    public delegate Task AsyncTestSummaryReporter(IEnumerable<TestCase> tests);
+    public delegate Task AsyncTestSummaryReporter(IEnumerable<TestCaseResult> tests);
 }

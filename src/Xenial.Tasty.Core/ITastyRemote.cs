@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Reporters;
 
 namespace Xenial.Delicious.Scopes
 {
@@ -12,8 +13,8 @@ namespace Xenial.Delicious.Scopes
         public event EventHandler? CancellationRequested;
         Task ClearConsole();
         Task ResetColor();
-        Task Report(SerializableTestCase testCase);
-        Task Report(IEnumerable<SerializableTestCase> testCases);
+        Task Report(TestCaseResult testCase);
+        Task Report(IEnumerable<TestCaseResult> testCases);
         Task RegisterCommands(IList<SerializableTastyCommand> commands);
         Task SignalEndTestPipeline();
         Task SignalTestPipelineCompleted();

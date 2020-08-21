@@ -10,6 +10,7 @@ using StreamJsonRpc;
 
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Remote
@@ -41,29 +42,15 @@ namespace Xenial.Delicious.Remote
             _ = scope ?? throw new ArgumentNullException(nameof(scope));
             _ = remoteStream ?? throw new ArgumentNullException(nameof(remoteStream));
 
-            static SerializableTestCase MapToSerializableTestCase(Metadata.TestCase test)
-            {
-                return new SerializableTestCase
-                {
-                    FullName = test.FullName,
-                    Name = test.Name,
-                    AdditionalMessage = test.AdditionalMessage,
-                    Duration = test.Duration,
-                    Exception = test.Exception,
-                    IgnoredReason = test.IgnoredReason,
-                    IsForced = test.IsForced?.Invoke(),
-                    IsIgnored = test.IsIgnored?.Invoke(),
-                    TestOutcome = test.TestOutcome
-                };
-            }
-
             var remote = JsonRpc.Attach<ITastyRemote>(remoteStream);
 
-            scope.RegisterReporter(test => remote.Report(MapToSerializableTestCase(test)));
+            Task TestReporter(TestCaseResult testCase)
+               => remote.Report(testCase);
 
-            Task SummaryReporter(IEnumerable<Metadata.TestCase> @cases)
-                => remote.Report(@cases.Select(test => MapToSerializableTestCase(test)));
+            Task SummaryReporter(IEnumerable<TestCaseResult> testCases)
+                => remote.Report(testCases);
 
+            scope.RegisterReporter(TestReporter);
             scope.RegisterReporter(SummaryReporter);
 
             return Task.FromResult(remote);
@@ -87,7 +74,7 @@ namespace Xenial.Delicious.Remote
             return Task.FromResult<TransportStreamFactory?>(null);
         }
 
-        static async Task<Stream> CreateNamedPipeTransportStream(string connectionId, CancellationToken token = default)
+        private static async Task<Stream> CreateNamedPipeTransportStream(string connectionId, CancellationToken token = default)
         {
             var stream = new NamedPipeClientStream(".", connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
             await stream.ConnectAsync(token).ConfigureAwait(false);

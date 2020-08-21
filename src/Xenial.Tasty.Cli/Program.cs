@@ -11,9 +11,9 @@ using Xenial.Delicious.Cli.Commands;
 
 namespace Xenial.Delicious.Cli
 {
-    class Program
+    internal static class Program
     {
-        static async Task<int> Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             SetupConsoleEncoding();
 

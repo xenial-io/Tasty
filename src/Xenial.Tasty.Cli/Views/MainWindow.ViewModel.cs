@@ -12,6 +12,7 @@ using Terminal.Gui;
 using Xenial.Delicious.Cli.Internal;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Utils;
 
 namespace Xenial.Delicious.Cli.Views
@@ -20,7 +21,7 @@ namespace Xenial.Delicious.Cli.Views
     {
         private readonly Xenial.Delicious.Reporters.ColorScheme scheme = Xenial.Delicious.Reporters.ColorScheme.Default;
         public int SeparatorSize { get; set; } = 100;
-        internal ColorScheme ColorScheme { get; private set; } = null!; //Trick the compiler for SetColor method
+        internal Terminal.Gui.ColorScheme ColorScheme { get; private set; } = null!; //Trick the compiler for SetColor method
         internal string ColorSchemeName { get; private set; } = null!; //Trick the compiler for SetColor method
         internal TastyCommander Commander { get; }
         internal string LogText { get; private set; } = string.Empty;
@@ -28,7 +29,7 @@ namespace Xenial.Delicious.Cli.Views
         internal ObservableCollection<CommandItem> Commands { get; } = new ObservableCollection<CommandItem>();
         private CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
 
-        public MainWindowViewModel(string colorSchemeName, ColorScheme colorScheme)
+        public MainWindowViewModel(string colorSchemeName, Terminal.Gui.ColorScheme colorScheme)
         {
             Commander = new TastyCommander()
                 .RegisterReporter(Report)
@@ -42,7 +43,7 @@ namespace Xenial.Delicious.Cli.Views
             SetColor(colorSchemeName, colorScheme);
         }
 
-        internal void SetColor(string colorSchemeName, ColorScheme colorScheme)
+        internal void SetColor(string colorSchemeName, Terminal.Gui.ColorScheme colorScheme)
             => (ColorSchemeName, ColorScheme) = (colorSchemeName, colorScheme);
 
         internal async Task ShowOpenProjectDialog()
@@ -106,7 +107,7 @@ namespace Xenial.Delicious.Cli.Views
         private void WriteLine(string line = "")
             => ((IProgress<(string line, bool isRunning, int exitCode)>)LogProgress).Report((line, true, 0));
 
-        public Task ReportSummary(IEnumerable<SerializableTestCase> tests)
+        public Task ReportSummary(IEnumerable<TestCaseResult> tests)
         {
             var totalTests = tests.Count();
             var failedTests = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Count();
@@ -163,7 +164,7 @@ namespace Xenial.Delicious.Cli.Views
             return Task.CompletedTask;
         }
 
-        public Task Report(SerializableTestCase test)
+        public Task Report(TestCaseResult test)
             => test.TestOutcome switch
             {
                 TestOutcome.Success => Success(test),
@@ -173,10 +174,10 @@ namespace Xenial.Delicious.Cli.Views
                 _ => throw new NotImplementedException($"{nameof(MainWindowViewModel)}.{nameof(Report)}.{nameof(TestOutcome)}={test.TestOutcome}")
             };
 
-        private static string GetTestName(SerializableTestCase test)
+        private static string GetTestName(TestCaseResult test)
             => test.FullName;
 
-        private Task Success(SerializableTestCase test)
+        private Task Success(TestCaseResult test)
         {
             WriteLine($"{scheme.SuccessIcon} {Duration(test)} {GetTestName(test)}");
             if (!string.IsNullOrEmpty(test.AdditionalMessage))
@@ -186,13 +187,13 @@ namespace Xenial.Delicious.Cli.Views
             return Task.CompletedTask;
         }
 
-        private Task NotRun(SerializableTestCase test)
+        private Task NotRun(TestCaseResult test)
         {
             WriteLine($"{scheme.NotRunIcon} {Duration(test)} {GetTestName(test)}");
             return Task.CompletedTask;
         }
 
-        private Task Ignored(SerializableTestCase test)
+        private Task Ignored(TestCaseResult test)
         {
             WriteLine($"{scheme.IgnoredIcon} {Duration(test)} {GetTestName(test)}");
             if (!string.IsNullOrEmpty(test.IgnoredReason))
@@ -202,7 +203,7 @@ namespace Xenial.Delicious.Cli.Views
             return Task.CompletedTask;
         }
 
-        private Task Failed(SerializableTestCase test)
+        private Task Failed(TestCaseResult test)
         {
             WriteLine($"{scheme.ErrorIcon} {Duration(test)} {GetTestName(test)}");
             if (test.Exception != null)
@@ -216,7 +217,7 @@ namespace Xenial.Delicious.Cli.Views
             return Task.CompletedTask;
         }
 
-        private static string Duration(SerializableTestCase test)
+        private static string Duration(TestCaseResult test)
             => test.Duration.AsDuration();
 
         public void Dispose()

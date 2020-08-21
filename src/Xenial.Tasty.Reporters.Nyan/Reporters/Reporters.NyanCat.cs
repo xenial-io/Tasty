@@ -83,7 +83,7 @@ namespace Xenial.Delicious.Reporters
             }
         }
 
-        private static Task ReportSummary(IEnumerable<TestCase> tests)
+        private static Task ReportSummary(IEnumerable<TestCaseResult> tests)
         {
             Console.WriteLine();
             Console.ForegroundColor = ColorScheme.Default.DefaultColor;
@@ -115,7 +115,7 @@ namespace Xenial.Delicious.Reporters
             return Task.CompletedTask;
         }
 
-        public static Task Report(TestCase test)
+        public static Task Report(TestCaseResult test)
         {
             if (!HasValidConsole)
             {
@@ -160,7 +160,7 @@ namespace Xenial.Delicious.Reporters
             };
         }
 
-        private static void Draw(TestCase testCase)
+        private static void Draw(TestCaseResult testCase)
         {
             Console.CursorTop = 0;
             Console.CursorLeft = 0;
@@ -204,7 +204,7 @@ namespace Xenial.Delicious.Reporters
             return result;
         }
 
-        private static IEnumerable<string> GetNyanCat(TestCase testCase)
+        private static IEnumerable<string> GetNyanCat(TestCaseResult testCase)
         {
             yield return " _,------,";
             yield return " _|   /\\_/\\";
@@ -212,7 +212,7 @@ namespace Xenial.Delicious.Reporters
             yield return "   \"\"  \"\" ";
         }
 
-        private static string Face(TestCase testCase)
+        private static string Face(TestCaseResult testCase)
             => testCase.TestOutcome switch
             {
                 TestOutcome.NotRun => "( o .o)",

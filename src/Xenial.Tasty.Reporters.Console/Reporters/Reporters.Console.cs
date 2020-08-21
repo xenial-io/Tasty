@@ -36,7 +36,7 @@ namespace Xenial.Delicious.Reporters
             return fallBackSize;
         });
 
-        public static Task ReportSummary(IEnumerable<TestCase> tests)
+        public static Task ReportSummary(IEnumerable<TestCaseResult> tests)
         {
             var totalTests = tests.Count();
             var failedTests = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Count();
@@ -98,7 +98,7 @@ namespace Xenial.Delicious.Reporters
             return Task.CompletedTask;
         }
 
-        public static Task Report(TestCase test)
+        public static Task Report(TestCaseResult test)
             => (test ?? throw new ArgumentNullException(nameof(test))).TestOutcome switch
             {
                 TestOutcome.Success => Success(test),
@@ -108,10 +108,10 @@ namespace Xenial.Delicious.Reporters
                 _ => throw new NotImplementedException($"{nameof(ConsoleReporter)}.{nameof(Report)}.{nameof(TestOutcome)}={test.TestOutcome}")
             };
 
-        private static string GetTestName(TestCase test)
+        private static string GetTestName(TestCaseResult test)
             => test.FullName;
 
-        private static Task Success(TestCase test)
+        private static Task Success(TestCaseResult test)
         {
             WriteLine(Scheme.SuccessColor, $"{Scheme.SuccessIcon} {Duration(test)} {GetTestName(test)}");
             if (!string.IsNullOrEmpty(test.AdditionalMessage))
@@ -121,13 +121,13 @@ namespace Xenial.Delicious.Reporters
             return Task.CompletedTask;
         }
 
-        private static Task NotRun(TestCase test)
+        private static Task NotRun(TestCaseResult test)
         {
             WriteLine(Scheme.NotifyColor, $"{Scheme.NotRunIcon} {Duration(test)} {GetTestName(test)}");
             return Task.CompletedTask;
         }
 
-        private static Task Ignored(TestCase test)
+        private static Task Ignored(TestCaseResult test)
         {
             WriteLine(Scheme.WarningColor, $"{Scheme.IgnoredIcon} {Duration(test)} {GetTestName(test)}");
             if (!string.IsNullOrEmpty(test.IgnoredReason))
@@ -137,7 +137,7 @@ namespace Xenial.Delicious.Reporters
             return Task.CompletedTask;
         }
 
-        private static Task Failed(TestCase test)
+        private static Task Failed(TestCaseResult test)
         {
             WriteLine(Scheme.ErrorColor, $"{Scheme.ErrorIcon} {Duration(test)} {GetTestName(test)}");
             if (test.Exception != null)
@@ -151,7 +151,7 @@ namespace Xenial.Delicious.Reporters
             return Task.CompletedTask;
         }
 
-        private static string Duration(TestCase test)
+        private static string Duration(TestCaseResult test)
             => test.Duration.AsDuration();
 
         private static void WriteLine(ConsoleColor color, string formattableString)

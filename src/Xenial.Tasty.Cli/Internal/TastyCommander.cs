@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.IO.Pipes;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,6 +14,8 @@ using StreamJsonRpc;
 
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Remote;
+using Xenial.Delicious.Reporters;
+
 using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.PromiseHelper;
 
@@ -23,19 +23,19 @@ namespace Xenial.Delicious.Cli.Internal
 {
     internal class TastyCommander : IDisposable
     {
-        private readonly List<AsyncRemoteTestReporter> reporters = new List<AsyncRemoteTestReporter>();
-        private readonly List<AsyncRemoteTestSummaryReporter> summaryReporters = new List<AsyncRemoteTestSummaryReporter>();
+        private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
+        private readonly List<AsyncTestSummaryReporter> summaryReporters = new List<AsyncTestSummaryReporter>();
         private readonly IList<IDisposable> disposables = new List<IDisposable>();
         private TastyServer? tastyServer;
         private JsonRpc? jsonRpc;
 
-        public TastyCommander RegisterReporter(AsyncRemoteTestReporter reporter)
+        public TastyCommander RegisterReporter(AsyncTestReporter reporter)
         {
             reporters.Add(reporter);
             return this;
         }
 
-        public TastyCommander RegisterReporter(AsyncRemoteTestSummaryReporter reporter)
+        public TastyCommander RegisterReporter(AsyncTestSummaryReporter reporter)
         {
             summaryReporters.Add(reporter);
             return this;
@@ -101,7 +101,7 @@ namespace Xenial.Delicious.Cli.Internal
             yield return (string.Empty, true, exitCode);
         }
 
-        private async Task Report(SerializableTestCase testCase)
+        private async Task Report(TestCaseResult testCase)
         {
             foreach (var reporter in reporters)
             {
@@ -109,7 +109,7 @@ namespace Xenial.Delicious.Cli.Internal
             }
         }
 
-        private async Task ReportSummary(IEnumerable<SerializableTestCase> testCases)
+        private async Task ReportSummary(IEnumerable<TestCaseResult> testCases)
         {
             foreach (var reporter in summaryReporters)
             {
@@ -172,7 +172,14 @@ namespace Xenial.Delicious.Cli.Internal
                     cts.CancelAfter(10000);
 
                     cts.Token.CombineWith(token)
-                        .Token.Register(() => reject(cts.Token));
+                        .Token.Register(() =>
+                        {
+                            try
+                            {
+                                reject(cts.Token);
+                            }
+                            catch (ObjectDisposedException) { }
+                        });
 
                     tastyServer.CommandsRegistered = (c) =>
                     {

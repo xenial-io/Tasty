@@ -101,6 +101,11 @@ namespace Tasty.Build
                 }
             });
 
+            Target("release", async () => 
+            {
+                await Release();
+            });
+
             Target("default", DependsOn("test"));
 
             await RunTargetsAndExitAsync(args);

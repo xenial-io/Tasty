@@ -10,6 +10,7 @@ using StreamJsonRpc;
 
 using Xenial.Delicious.Cli.Internal;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Reporters;
 
 using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.PromiseHelper;
@@ -31,8 +32,8 @@ namespace Xenial.Delicious.Cli.Commands
                     {
                         Console.WriteLine(csProjFileName);
                         var commander = new TastyCommander()
-                            .RegisterReporter(TastyServer.ConsoleReporter.Report)
-                            .RegisterReporter(TastyServer.ConsoleReporter.ReportSummary);
+                            .RegisterReporter(ConsoleReporter.Report)
+                            .RegisterReporter(ConsoleReporter.ReportSummary);
 
                         await commander.BuildProject(path, new Progress<(string line, bool isRunning, int exitCode)>(p =>
                         {
@@ -76,7 +77,7 @@ namespace Xenial.Delicious.Cli.Commands
             }
         }
 
-        static Task WaitForInput(IList<SerializableTastyCommand> commands, TastyCommander commander)
+        private static Task WaitForInput(IList<SerializableTastyCommand> commands, TastyCommander commander)
             => Promise(async (resolve) =>
             {
                 Func<Task> cancelKeyPress = () => Promise((resolve, reject) =>

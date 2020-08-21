@@ -25,7 +25,7 @@ namespace Xenial.Delicious.Reporters
         public static TastyScope Register()
             => Tasty.TastyDefaultScope.RegisterConsoleReporter();
 
-        static Lazy<int> SeparatorSize = new Lazy<int>(() =>
+        private static readonly Lazy<int> separatorSize = new Lazy<int>(() =>
         {
             const int fallBackSize = 100;
             try
@@ -54,7 +54,7 @@ namespace Xenial.Delicious.Reporters
             var totalTimeString = totalTime.AsDuration();
 
             Console.WriteLine();
-            Console.WriteLine(new string('=', SeparatorSize.Value));
+            Console.WriteLine(new string('=', separatorSize.Value));
 
             Write(Scheme.DefaultColor, $"Summary: ");
             Write(failedTests > 0 ? Scheme.ErrorColor : Scheme.DefaultColor, $"F{failedTests}".PadLeft(totalTimeString.Length));
@@ -92,7 +92,7 @@ namespace Xenial.Delicious.Reporters
                         , outcome.ToString().PadLeft(totalTimeString.Length));
 
             Console.WriteLine();
-            Console.WriteLine(new string('=', SeparatorSize.Value));
+            Console.WriteLine(new string('=', separatorSize.Value));
             Console.WriteLine();
 
             return Task.CompletedTask;
@@ -108,7 +108,7 @@ namespace Xenial.Delicious.Reporters
                 _ => throw new NotImplementedException($"{nameof(ConsoleReporter)}.{nameof(Report)}.{nameof(TestOutcome)}={test.TestOutcome}")
             };
 
-        static string GetTestName(TestCase test)
+        private static string GetTestName(TestCase test)
             => test.FullName;
 
         private static Task Success(TestCase test)

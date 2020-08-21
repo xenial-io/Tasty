@@ -19,18 +19,18 @@ namespace Xenial.Delicious.Cli
 
     public class TastyServer
     {
-        private readonly List<AsyncRemoteTestReporter> Reporters = new List<AsyncRemoteTestReporter>();
-        private readonly List<AsyncRemoteTestSummaryReporter> SummaryReporters = new List<AsyncRemoteTestSummaryReporter>();
+        private readonly List<AsyncRemoteTestReporter> reporters = new List<AsyncRemoteTestReporter>();
+        private readonly List<AsyncRemoteTestSummaryReporter> summaryReporters = new List<AsyncRemoteTestSummaryReporter>();
 
         public TastyServer RegisterReporter(AsyncRemoteTestReporter reporter)
         {
-            Reporters.Add(reporter);
+            reporters.Add(reporter);
             return this;
         }
 
         public TastyServer RegisterReporter(AsyncRemoteTestSummaryReporter reporter)
         {
-            SummaryReporters.Add(reporter);
+            summaryReporters.Add(reporter);
             return this;
         }
 
@@ -51,7 +51,7 @@ namespace Xenial.Delicious.Cli
 
         public async Task Report(SerializableTestCase testCase)
         {
-            foreach (var reporter in Reporters)
+            foreach (var reporter in reporters)
             {
                 await reporter.Invoke(testCase).ConfigureAwait(false);
             }
@@ -59,7 +59,7 @@ namespace Xenial.Delicious.Cli
 
         public async Task Report(IEnumerable<SerializableTestCase> testCases)
         {
-            foreach (var reporter in SummaryReporters)
+            foreach (var reporter in summaryReporters)
             {
                 await reporter.Invoke(testCases).ConfigureAwait(false);
             }
@@ -98,7 +98,7 @@ namespace Xenial.Delicious.Cli
             static ConsoleReporter()
                 => Console.OutputEncoding = Encoding.UTF8;
 
-            private static readonly Lazy<int> SeparatorSize = new Lazy<int>(() =>
+            private static readonly Lazy<int> separatorSize = new Lazy<int>(() =>
             {
                 const int fallBackSize = 100;
                 try
@@ -127,7 +127,7 @@ namespace Xenial.Delicious.Cli
                 var totalTimeString = totalTime.AsDuration();
 
                 Console.WriteLine();
-                Console.WriteLine(new string('=', SeparatorSize.Value));
+                Console.WriteLine(new string('=', separatorSize.Value));
 
                 Write(Scheme.DefaultColor, "Summary: ");
                 Write(failedTests > 0 ? Scheme.ErrorColor : Scheme.DefaultColor, $"F{failedTests}".PadLeft(totalTimeString.Length));
@@ -165,7 +165,7 @@ namespace Xenial.Delicious.Cli
                             , outcome.ToString().PadLeft(totalTimeString.Length));
 
                 Console.WriteLine();
-                Console.WriteLine(new string('=', SeparatorSize.Value));
+                Console.WriteLine(new string('=', separatorSize.Value));
                 Console.WriteLine();
 
                 return Task.CompletedTask;

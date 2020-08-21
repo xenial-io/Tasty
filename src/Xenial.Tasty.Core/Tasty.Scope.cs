@@ -17,7 +17,7 @@ namespace Xenial.Delicious.Scopes
         public bool ClearBeforeRun { get; set; } = true;
         public bool LoadPlugins { get; set; }
 
-        private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
+        private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
         internal readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
         internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
         internal ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
@@ -75,7 +75,7 @@ namespace Xenial.Delicious.Scopes
         public TastyScope RegisterReporter(AsyncTestReporter reporter)
         {
             _ = reporter ?? throw new ArgumentNullException(nameof(reporter));
-            Reporters.Add(reporter);
+            reporters.Add(reporter);
             return this;
         }
 
@@ -94,7 +94,7 @@ namespace Xenial.Delicious.Scopes
         }
 
         public Task Report(TestCase test)
-            => Task.WhenAll(Reporters.Select(async reporter => await reporter(test).ConfigureAwait(false)).ToArray());
+            => Task.WhenAll(reporters.Select(async reporter => await reporter(test).ConfigureAwait(false)).ToArray());
 
         public TestGroup Describe(string name, Action action)
         {
@@ -134,7 +134,7 @@ namespace Xenial.Delicious.Scopes
            => Describe(name, action)
                .Forced(() => true);
 
-        void AddToGroup(TestGroup group)
+        private void AddToGroup(TestGroup group)
         {
             group.ParentGroup = CurrentGroup;
             CurrentGroup.Executors.Add(group);
@@ -252,7 +252,7 @@ namespace Xenial.Delicious.Scopes
            => It(name, action)
                .Forced(() => true);
 
-        void AddToGroup(TestCase test)
+        private void AddToGroup(TestCase test)
         {
             test.Group = CurrentGroup;
             CurrentGroup.Executors.Add(test);
@@ -302,13 +302,13 @@ namespace Xenial.Delicious.Scopes
             AddToGroup(hook);
         }
 
-        void AddToGroup(TestBeforeEachHook hook)
+        private void AddToGroup(TestBeforeEachHook hook)
         {
             hook.Group = CurrentGroup;
             CurrentGroup.BeforeEachHooks.Add(hook);
         }
 
-        void AddToGroup(TestAfterEachHook hook)
+        private void AddToGroup(TestAfterEachHook hook)
         {
             hook.Group = CurrentGroup;
             CurrentGroup.AfterEachHooks.Add(hook);

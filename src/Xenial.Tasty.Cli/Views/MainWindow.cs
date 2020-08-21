@@ -9,20 +9,20 @@ namespace Xenial.Delicious.Cli.Views
     {
         internal Toplevel Top { get; }
 
-        FrameView _LeftPane;
-        ListView _CommandsListView;
-        FrameView _RightPane;
-        TextView _LogView;
-        MenuBar _Menu;
-        StatusBar _StatusBar;
-        MenuItem[] _ColorSchemeMenuItems;
-        MainWindowViewModel _ViewModel;
+        private readonly FrameView leftPane;
+        private readonly ListView commandsListView;
+        private readonly FrameView rightPane;
+        private readonly TextView logView;
+        private readonly MenuBar menu;
+        private readonly StatusBar statusBar;
+        private readonly MenuItem[] colorSchemeMenuItems;
+        private readonly MainWindowViewModel viewModel;
 
         public MainWindow(MainWindowViewModel viewModel, Toplevel top)
         {
-            _ViewModel = viewModel;
+            this.viewModel = viewModel;
             Top = top;
-            _LeftPane = new FrameView("Commands")
+            leftPane = new FrameView("Commands")
             {
                 X = 0,
                 Y = 1, // for menu
@@ -31,7 +31,7 @@ namespace Xenial.Delicious.Cli.Views
                 CanFocus = false,
             };
 
-            _CommandsListView = new ListView()
+            commandsListView = new ListView()
             {
                 X = 0,
                 Y = 0,
@@ -41,9 +41,9 @@ namespace Xenial.Delicious.Cli.Views
                 CanFocus = false,
             };
 
-            _LeftPane.Add(_CommandsListView);
+            leftPane.Add(commandsListView);
 
-            _RightPane = new FrameView("Output")
+            rightPane = new FrameView("Output")
             {
                 X = 25,
                 Y = 1, // for menu
@@ -52,7 +52,7 @@ namespace Xenial.Delicious.Cli.Views
                 CanFocus = false,
             };
 
-            _LogView = new TextView
+            logView = new TextView
             {
                 X = 0,
                 Y = 0,
@@ -62,11 +62,11 @@ namespace Xenial.Delicious.Cli.Views
                 CanFocus = true
             };
 
-            _RightPane.Add(_LogView);
+            rightPane.Add(logView);
 
-            _ColorSchemeMenuItems = CreateColorSchemeMenuItems();
+            colorSchemeMenuItems = CreateColorSchemeMenuItems();
 
-            _Menu = new MenuBar(new MenuBarItem[]
+            menu = new MenuBar(new MenuBarItem[]
             {
                 new MenuBarItem ("_File", new[]
                 {
@@ -79,11 +79,11 @@ namespace Xenial.Delicious.Cli.Views
                         await viewModel.StopApplication().ConfigureAwait(true);
                     })
                 }),
-                new MenuBarItem("_Color Scheme", _ColorSchemeMenuItems),
+                new MenuBarItem("_Color Scheme", colorSchemeMenuItems),
                 new MenuBarItem("_About...", "About Tasty.Cli", async () => await AboutTastyDialog.ShowDialogAsync().ConfigureAwait(true)),
             });
 
-            _StatusBar = new StatusBar(new[]
+            statusBar = new StatusBar(new[]
             {
                 new StatusItem(Key.ControlQ, "~CTRL-Q~ Quit", async () =>
                 {
@@ -99,38 +99,38 @@ namespace Xenial.Delicious.Cli.Views
                 }),
                 new StatusItem(Key.F6, "~F6~ Clear Log", async () =>
                 {
-                    await _ViewModel.ClearLog().ConfigureAwait(true);
+                    await this.viewModel.ClearLog().ConfigureAwait(true);
                 }),
                 new StatusItem(Key.F9, "~F9~ Open Menu", () =>
                 {
-                    _Menu.OpenMenu();
+                    menu.OpenMenu();
                 }),
             });
 
-            Top.Add(_Menu, _LeftPane, _RightPane, _StatusBar);
+            Top.Add(menu, leftPane, rightPane, statusBar);
 
-            SetColor(_ViewModel.ColorSchemeName, _ViewModel.ColorScheme);
+            SetColor(this.viewModel.ColorSchemeName, this.viewModel.ColorScheme);
 
-            _CommandsListView.OpenSelectedItem += CommandsListView_OpenSelectedItem;
-            _ViewModel.LogProgress.ProgressChanged += LogProgress_ProgressChanged;
-            _ViewModel.Commands.CollectionChanged += Commands_CollectionChanged;
+            commandsListView.OpenSelectedItem += CommandsListView_OpenSelectedItem;
+            this.viewModel.LogProgress.ProgressChanged += LogProgress_ProgressChanged;
+            this.viewModel.Commands.CollectionChanged += Commands_CollectionChanged;
             Top.Initialized += Top_Initialized;
-            Top.SetFocus(_LogView);
+            Top.SetFocus(logView);
         }
 
         private async void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            await _CommandsListView.SetSourceAsync(_ViewModel.Commands.ToList()).ConfigureAwait(true);
-            _CommandsListView.CanFocus = _ViewModel.Commands.Count > 0;
-            if (_CommandsListView.CanFocus)
+            await commandsListView.SetSourceAsync(viewModel.Commands.ToList()).ConfigureAwait(true);
+            commandsListView.CanFocus = viewModel.Commands.Count > 0;
+            if (commandsListView.CanFocus)
             {
-                Top.SetFocus(_CommandsListView);
+                Top.SetFocus(commandsListView);
             }
         }
 
         public MainWindow(MainWindowViewModel viewModel) : this(viewModel, Application.Top) { }
 
-        MenuItem[] CreateColorSchemeMenuItems()
+        private MenuItem[] CreateColorSchemeMenuItems()
              => Colors.ColorSchemes.Select(color => new
              {
                  Name = color.Key,
@@ -145,50 +145,50 @@ namespace Xenial.Delicious.Cli.Views
             .Select(m => m.MenuItem)
             .ToArray();
 
-        void SetColor(string colorSchemeName, ColorScheme colorScheme)
+        private void SetColor(string colorSchemeName, ColorScheme colorScheme)
         {
-            _ViewModel.SetColor(colorSchemeName, colorScheme);
+            viewModel.SetColor(colorSchemeName, colorScheme);
 
-            foreach (var menuItem in _ColorSchemeMenuItems)
+            foreach (var menuItem in colorSchemeMenuItems)
             {
                 menuItem.Checked = false;
             }
 
-            var menuItemToCheck = _ColorSchemeMenuItems.FirstOrDefault(m => m.Title.Equals(colorSchemeName));
+            var menuItemToCheck = colorSchemeMenuItems.FirstOrDefault(m => m.Title.Equals(colorSchemeName));
             if (menuItemToCheck != null)
             {
                 menuItemToCheck.Checked = true;
             }
 
-            _LeftPane.ColorScheme = colorScheme;
-            _RightPane.ColorScheme = colorScheme;
+            leftPane.ColorScheme = colorScheme;
+            rightPane.ColorScheme = colorScheme;
             Top.ColorScheme = colorScheme;
             Top.SetNeedsDisplay();
         }
 
         private async void Top_Initialized(object? sender, EventArgs e)
-            => await _ViewModel.ShowOpenProjectDialog().ConfigureAwait(false);
+            => await viewModel.ShowOpenProjectDialog().ConfigureAwait(false);
 
         private void LogProgress_ProgressChanged(object? sender, (string line, bool isRunning, int exitCode) e)
-            => _LogView.Text = _ViewModel.LogText;
+            => logView.Text = viewModel.LogText;
 
         private async void CommandsListView_OpenSelectedItem(ListViewItemEventArgs e)
         {
             var commandItem = (CommandItem)e.Value;
 
-            Top.SetFocus(_RightPane);
+            Top.SetFocus(rightPane);
 
-            await _ViewModel.ExecuteCommand(commandItem).ConfigureAwait(false);
+            await viewModel.ExecuteCommand(commandItem).ConfigureAwait(false);
         }
 
         public void Dispose()
         {
-            _CommandsListView.OpenSelectedItem -= CommandsListView_OpenSelectedItem;
-            _ViewModel.LogProgress.ProgressChanged -= LogProgress_ProgressChanged;
-            _ViewModel.Commands.CollectionChanged -= Commands_CollectionChanged;
+            commandsListView.OpenSelectedItem -= CommandsListView_OpenSelectedItem;
+            viewModel.LogProgress.ProgressChanged -= LogProgress_ProgressChanged;
+            viewModel.Commands.CollectionChanged -= Commands_CollectionChanged;
             Top.Initialized -= Top_Initialized;
 
-            _ViewModel.Dispose();
+            viewModel.Dispose();
         }
     }
 }

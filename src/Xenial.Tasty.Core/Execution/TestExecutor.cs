@@ -12,9 +12,9 @@ namespace Xenial.Delicious.Execution
 {
     public class TestExecutor
     {
-        private readonly IList<Func<TestDelegate, TestDelegate>> TestMiddlewares = new List<Func<TestDelegate, TestDelegate>>();
-        private readonly IList<Func<TestGroupDelegate, TestGroupDelegate>> TestGroupMiddlewares = new List<Func<TestGroupDelegate, TestGroupDelegate>>();
-        private readonly IList<Func<RuntimeDelegate, RuntimeDelegate>> RuntimeMiddlewares = new List<Func<RuntimeDelegate, RuntimeDelegate>>();
+        private readonly IList<Func<TestDelegate, TestDelegate>> testMiddlewares = new List<Func<TestDelegate, TestDelegate>>();
+        private readonly IList<Func<TestGroupDelegate, TestGroupDelegate>> testGroupMiddlewares = new List<Func<TestGroupDelegate, TestGroupDelegate>>();
+        private readonly IList<Func<RuntimeDelegate, RuntimeDelegate>> runtimeMiddlewares = new List<Func<RuntimeDelegate, RuntimeDelegate>>();
         internal TastyScope Scope { get; }
 
         public TestExecutor(TastyScope scope)
@@ -61,19 +61,19 @@ namespace Xenial.Delicious.Execution
 
         public TestExecutor Use(Func<TestDelegate, TestDelegate> middleware)
         {
-            TestMiddlewares.Add(middleware);
+            testMiddlewares.Add(middleware);
             return this;
         }
 
         public TestExecutor Use(Func<TestGroupDelegate, TestGroupDelegate> middleware)
         {
-            TestGroupMiddlewares.Add(middleware);
+            testGroupMiddlewares.Add(middleware);
             return this;
         }
 
         public TestExecutor Use(Func<RuntimeDelegate, RuntimeDelegate> middleware)
         {
-            RuntimeMiddlewares.Add(middleware);
+            runtimeMiddlewares.Add(middleware);
             return this;
         }
 
@@ -100,7 +100,7 @@ namespace Xenial.Delicious.Execution
                 return Task.CompletedTask;
             };
 
-            foreach (var middleware in RuntimeMiddlewares.Reverse())
+            foreach (var middleware in runtimeMiddlewares.Reverse())
             {
                 app = middleware(app);
             }
@@ -115,7 +115,7 @@ namespace Xenial.Delicious.Execution
                 return Task.CompletedTask;
             };
 
-            foreach (var middleware in TestMiddlewares.Reverse())
+            foreach (var middleware in testMiddlewares.Reverse())
             {
                 app = middleware(app);
             }
@@ -130,7 +130,7 @@ namespace Xenial.Delicious.Execution
                 return Task.CompletedTask;
             };
 
-            foreach (var middleware in TestGroupMiddlewares.Reverse())
+            foreach (var middleware in testGroupMiddlewares.Reverse())
             {
                 app = middleware(app);
             }

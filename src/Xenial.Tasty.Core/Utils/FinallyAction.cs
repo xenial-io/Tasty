@@ -24,7 +24,7 @@ namespace Xenial.Delicious.Utils
 
     internal struct FinallyAction : IDisposable
     {
-        readonly Action _Finally;
+        private readonly Action finallyAction;
         /// <summary>
         /// Initializes a new instance of the <see cref="FinallyAction" /> struct.
         /// </summary>
@@ -33,11 +33,11 @@ namespace Xenial.Delicious.Utils
         internal FinallyAction(Action action, Action @finally)
         {
             action();
-            _Finally = @finally;
+            finallyAction = @finally;
         }
 
         void IDisposable.Dispose()
-            => _Finally.Invoke();
+            => finallyAction.Invoke();
     }
 
     internal struct TryAction

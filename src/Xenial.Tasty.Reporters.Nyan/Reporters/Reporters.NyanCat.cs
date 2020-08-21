@@ -10,7 +10,7 @@ namespace Xenial.Delicious.Reporters
 {
     public static class NyanCatReporter
     {
-        private const int ColorCount = 6 * 7;
+        private const int colorCount = 6 * 7;
         private static readonly int nyanCatWidth;
         private static readonly int width;
         private static int colorIndex;
@@ -23,7 +23,9 @@ namespace Xenial.Delicious.Reporters
         static NyanCatReporter()
         {
             if (!HasValidConsole)
+            {
                 return;
+            }
 
             Pastel.ConsoleExtensions.Enable();
 
@@ -38,7 +40,7 @@ namespace Xenial.Delicious.Reporters
 
             trajectories = new List<List<string>>();
 
-            for (int i = 0; i < numberOfLines; i++)
+            for (var i = 0; i < numberOfLines; i++)
             {
                 trajectories.Add(new List<string>());
             }
@@ -46,34 +48,38 @@ namespace Xenial.Delicious.Reporters
             trajectoryWidthMax = width - nyanCatWidth;
 
             if (trajectoryWidthMax < 0)
+            {
                 trajectoryWidthMax = 0;
+            }
         }
 
         public static TastyScope RegisterNyanReporter(this TastyScope scope)
-         => scope.RegisterReporter(Report)
+         => (scope ?? throw new ArgumentNullException(nameof(scope))).RegisterReporter(Report)
                  .RegisterReporter(ReportSummary);
 
         public static TastyScope Register()
             => Tasty.TastyDefaultScope.RegisterNyanReporter();
 
-        static bool? _HasValidConsole;
+        private static bool? hasValidConsole;
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "We don't care about which exception is thrown")]
         private static bool HasValidConsole
         {
             get
             {
-                if (!_HasValidConsole.HasValue)
+                if (!hasValidConsole.HasValue)
                 {
                     try
                     {
-                        _HasValidConsole = Console.WindowWidth > 0;
+                        hasValidConsole = Console.WindowWidth > 0;
                     }
                     catch
                     {
-                        _HasValidConsole = false;
+                        hasValidConsole = false;
                     }
                 }
 
-                return _HasValidConsole.Value;
+                return hasValidConsole.Value;
             }
         }
 
@@ -123,11 +129,11 @@ namespace Xenial.Delicious.Reporters
 
         private static Color[] GenerateColors()
         {
-            var colors = new Color[ColorCount];
+            var colors = new Color[colorCount];
             var progress = 0f;
-            var step = 1f / ColorCount;
+            var step = 1f / colorCount;
 
-            for (var i = 0; i < ColorCount; i++)
+            for (var i = 0; i < colorCount; i++)
             {
                 colors[i] = Rainbow(progress);
 
@@ -139,9 +145,9 @@ namespace Xenial.Delicious.Reporters
 
         private static Color Rainbow(float progress)
         {
-            float div = (Math.Abs(progress % 1) * 6);
-            int ascending = (int)((div % 1) * 255);
-            int descending = 255 - ascending;
+            var div = (Math.Abs(progress % 1) * 6);
+            var ascending = (int)((div % 1) * 255);
+            var descending = 255 - ascending;
 
             return ((int)div) switch
             {
@@ -161,7 +167,7 @@ namespace Xenial.Delicious.Reporters
 
             tick = !tick;
 
-            for (int i = 0; i < numberOfLines; i++)
+            for (var i = 0; i < numberOfLines; i++)
             {
                 if (trajectories![i].Count > trajectoryWidthMax)
                 {

@@ -25,9 +25,9 @@ namespace Xenial.Delicious.Utils
             Action resolve = () => tsc.SetResult(true);
             Action reject = () => tsc.SetCanceled();
 
-            await functor(resolve, reject);
+            await functor(resolve, reject).ConfigureAwait(false);
 
-            await tsc.Task;
+            await tsc.Task.ConfigureAwait(false);
         }
 
         internal static Task<T> Promise<T>(Action<Action<T>, Action> functor)
@@ -83,9 +83,9 @@ namespace Xenial.Delicious.Utils
 
             Action resolve = () => tsc.SetResult(true);
 
-            await functor(resolve);
+            await functor(resolve).ConfigureAwait(false);
 
-            await tsc.Task;
+            await tsc.Task.ConfigureAwait(false);
         }
 
         internal static Task Promise(Action<Action> functor)

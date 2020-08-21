@@ -1,0 +1,16 @@
+﻿<RuleSet Name="CodeAnalysis Ruleset" Description="This ruleset sets the severity for the Microsot.CodeAnalysis.CSharp.CodeStyle package, so it breaks on build" ToolsVersion="10.0">
+    <!-- Even though the IDE will correctly show errors for rule violations in .editorconfig,
+         we need to explicitly set the severity in a ruleset file to get build errors for it:
+         https://github.com/dotnet/roslyn/issues/30541 -->
+    <!-- It doesn't really seem to matter what I put in the AnalyzerId and RuleNamespace fields,
+         as long as the rule ID is correct. -->
+    <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.CodeStyle" RuleNamespace="Microsoft.CodeQuality.Analyzers">
+        <!-- IDE0055 is the formatting analyzer from Microsoft.CodeAnalysis.CSharp.CodeStyle. -->
+        <Rule Id="IDE0055" Action="Error" />
+        <Rule Id="IDE0036" Action="Error" />
+        <Rule Id="IDE1006" Action="Error" />
+        <Rule Id="IDE1007" Action="Error" />
+        <Rule Id="IDE1011" Action="Error" />
+        <Rule Id="IDE1022" Action="Error" />
+    </Rules>
+</RuleSet>

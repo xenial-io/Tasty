@@ -8,13 +8,13 @@ namespace Xenial.Delicious.Execution.TestRuntime
             {
                 try
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
                 finally
                 {
                     if (context.Remote != null && !context.EndPipeLine)
                     {
-                        await context.Remote.SignalTestPipelineCompleted();
+                        await context.Remote.SignalTestPipelineCompleted().ConfigureAwait(false);
                     }
                 }
             });

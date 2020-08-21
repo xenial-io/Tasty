@@ -9,9 +9,9 @@ using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Plugins
 {
-    public class PluginLoader
+    internal static class PluginLoader
     {
-        public Task LoadPlugins(TastyScope scope)
+        internal static Task LoadPlugins(TastyScope scope)
         {
             var entryAssembly = Assembly.GetEntryAssembly();
 

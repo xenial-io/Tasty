@@ -49,7 +49,5 @@ namespace Xenial.Delicious.Reporters
             NotRunIcon = "?";
             IgnoredIcon = "‼";
         }
-
-        public new static ColorScheme Default { get; } = new ColorSchemeLegacy();
     }
 }

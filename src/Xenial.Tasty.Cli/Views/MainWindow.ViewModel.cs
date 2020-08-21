@@ -18,7 +18,7 @@ namespace Xenial.Delicious.Cli.Views
 {
     internal class MainWindowViewModel : IDisposable
     {
-        private Xenial.Delicious.Reporters.ColorScheme Scheme = Xenial.Delicious.Reporters.ColorScheme.Default;
+        private readonly Xenial.Delicious.Reporters.ColorScheme scheme = Xenial.Delicious.Reporters.ColorScheme.Default;
         public int SeparatorSize { get; set; } = 100;
         internal ColorScheme ColorScheme { get; private set; } = null!; //Trick the compiler for SetColor method
         internal string ColorSchemeName { get; private set; } = null!; //Trick the compiler for SetColor method
@@ -26,7 +26,7 @@ namespace Xenial.Delicious.Cli.Views
         internal string LogText { get; private set; } = string.Empty;
         internal Progress<(string line, bool isRunning, int exitCode)> LogProgress { get; }
         internal ObservableCollection<CommandItem> Commands { get; } = new ObservableCollection<CommandItem>();
-        CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
+        private CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
 
         public MainWindowViewModel(string colorSchemeName, ColorScheme colorScheme)
         {
@@ -47,22 +47,21 @@ namespace Xenial.Delicious.Cli.Views
 
         internal async Task ShowOpenProjectDialog()
         {
-            var path = await SelectProjectDialog.ShowDialogAsync(ColorScheme);
+            var path = await SelectProjectDialog.ShowDialogAsync(ColorScheme).ConfigureAwait(true);
             if (string.IsNullOrEmpty(path))
             {
                 return;
             }
-            await Commander.BuildProject(path, LogProgress);
-            await Commander.ConnectToRemote(path, CancellationTokenSource.Token);
+            await Commander.BuildProject(path, LogProgress).ConfigureAwait(true);
+            await Commander.ConnectToRemote(path, CancellationTokenSource.Token).ConfigureAwait(true);
 
             //TODO: ErrorDialog
-            var commands = await Commander.ListCommands(CancellationTokenSource.Token);
+            var commands = await Commander.ListCommands(CancellationTokenSource.Token).ConfigureAwait(true);
             Commands.Clear();
             foreach (var command in commands)
             {
                 Commands.Add(new CommandItem(command));
             }
-
         }
 
         internal Task Cancel()
@@ -73,6 +72,7 @@ namespace Xenial.Delicious.Cli.Views
 
         internal Task LaunchDebugger()
         {
+            _ = this;
             if (!Debugger.IsAttached)
             {
                 Debugger.Launch();
@@ -82,6 +82,7 @@ namespace Xenial.Delicious.Cli.Views
 
         internal Task StopApplication()
         {
+            _ = this;
             Application.RequestStop();
             return Task.CompletedTask;
         }
@@ -96,17 +97,14 @@ namespace Xenial.Delicious.Cli.Views
         }
 
         public async Task ExecuteCommand(CommandItem commandItem)
-        {
-            await Commander.DoExecuteCommand(new ExecuteCommandEventArgs
+            => await Commander.DoExecuteCommand(new ExecuteCommandEventArgs
             {
                 CommandName = commandItem.Command.Name
-            });
-        }
+            }).ConfigureAwait(false);
+
+        //TODO: once we have the last exitCode and isRunning props we need to report those
         private void WriteLine(string line = "")
-        {
-            //TODO: once we have the last exitCode and isRunning props we need to report those
-            ((IProgress<(string line, bool isRunning, int exitCode)>)LogProgress).Report((line, true, 0));
-        }
+            => ((IProgress<(string line, bool isRunning, int exitCode)>)LogProgress).Report((line, true, 0));
 
         public Task ReportSummary(IEnumerable<SerializableTestCase> tests)
         {
@@ -175,12 +173,12 @@ namespace Xenial.Delicious.Cli.Views
                 _ => throw new NotImplementedException($"{nameof(MainWindowViewModel)}.{nameof(Report)}.{nameof(TestOutcome)}={test.TestOutcome}")
             };
 
-        static string GetTestName(SerializableTestCase test)
+        private static string GetTestName(SerializableTestCase test)
             => test.FullName;
 
         private Task Success(SerializableTestCase test)
         {
-            WriteLine($"{Scheme.SuccessIcon} {Duration(test)} {GetTestName(test)}");
+            WriteLine($"{scheme.SuccessIcon} {Duration(test)} {GetTestName(test)}");
             if (!string.IsNullOrEmpty(test.AdditionalMessage))
             {
                 WriteLine($"\t{test.AdditionalMessage}");
@@ -190,13 +188,13 @@ namespace Xenial.Delicious.Cli.Views
 
         private Task NotRun(SerializableTestCase test)
         {
-            WriteLine($"{Scheme.NotRunIcon} {Duration(test)} {GetTestName(test)}");
+            WriteLine($"{scheme.NotRunIcon} {Duration(test)} {GetTestName(test)}");
             return Task.CompletedTask;
         }
 
         private Task Ignored(SerializableTestCase test)
         {
-            WriteLine($"{Scheme.IgnoredIcon} {Duration(test)} {GetTestName(test)}");
+            WriteLine($"{scheme.IgnoredIcon} {Duration(test)} {GetTestName(test)}");
             if (!string.IsNullOrEmpty(test.IgnoredReason))
             {
                 WriteLine($"\t{test.IgnoredReason}");
@@ -206,7 +204,7 @@ namespace Xenial.Delicious.Cli.Views
 
         private Task Failed(SerializableTestCase test)
         {
-            WriteLine($"{Scheme.ErrorIcon} {Duration(test)} {GetTestName(test)}");
+            WriteLine($"{scheme.ErrorIcon} {Duration(test)} {GetTestName(test)}");
             if (test.Exception != null)
             {
                 WriteLine($"\t{test.Exception}");
@@ -222,8 +220,6 @@ namespace Xenial.Delicious.Cli.Views
             => test.Duration.AsDuration();
 
         public void Dispose()
-        {
-            Commander.Dispose();
-        }
+            => Commander.Dispose();
     }
 }

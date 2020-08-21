@@ -1,4 +1,4 @@
-namespace Xenial.Delicious.Execution.TestMiddleware
+﻿namespace Xenial.Delicious.Execution.TestMiddleware
 {
     public static class BeforeEachTestMiddleware
     {
@@ -10,13 +10,13 @@ namespace Xenial.Delicious.Execution.TestMiddleware
                     ?? context.CurrentScope.BeforeEachHooks
                     )
                 {
-                    var hookResult = await hook.Executor.Invoke();
+                    var hookResult = await hook.Executor.Invoke().ConfigureAwait(false);
                     if (!hookResult)
                     {
                         return;
                     }
                 }
-                await next();
+                await next().ConfigureAwait(false);
             });
     }
 }

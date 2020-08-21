@@ -9,6 +9,7 @@ using static Xenial.Delicious.Utils.PromiseHelper;
 
 namespace Xenial.Delicious.Cli.Views
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1010:Generic interface should also be implemented", Justification = "By design")]
     public class SelectProjectDialog : OpenDialog
     {
         public SelectProjectDialog(ColorScheme colorScheme)

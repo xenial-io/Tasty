@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-
-using Xenial.Delicious.FeatureDetection.Win;
 
 namespace Xenial.Delicious.FeatureDetection
 {
@@ -20,32 +15,6 @@ namespace Xenial.Delicious.FeatureDetection
 
         internal static bool IsWindows()
             => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
-        public static bool IsCmd()
-        {
-            var proc = Process.GetCurrentProcess();
-
-            bool IsCmdProc(Process process)
-            {
-                if (process != null)
-                {
-                    if (CmdProcessNames.Any(name => string.Equals(name, process.ProcessName, StringComparison.CurrentCultureIgnoreCase)))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            while (proc != null)
-            {
-                if (IsCmdProc(proc))
-                {
-                    return true;
-                }
-                proc = proc.Parent();
-            }
-            return false;
-        }
 
         internal static bool IsWindowsTerminal()
         {

@@ -19,18 +19,18 @@ namespace Xenial.Delicious.Cli
 
     public class TastyServer
     {
-        private readonly List<AsyncRemoteTestReporter> Reporters = new List<AsyncRemoteTestReporter>();
-        private readonly List<AsyncRemoteTestSummaryReporter> SummaryReporters = new List<AsyncRemoteTestSummaryReporter>();
+        private readonly List<AsyncRemoteTestReporter> reporters = new List<AsyncRemoteTestReporter>();
+        private readonly List<AsyncRemoteTestSummaryReporter> summaryReporters = new List<AsyncRemoteTestSummaryReporter>();
 
         public TastyServer RegisterReporter(AsyncRemoteTestReporter reporter)
         {
-            Reporters.Add(reporter);
+            reporters.Add(reporter);
             return this;
         }
 
         public TastyServer RegisterReporter(AsyncRemoteTestSummaryReporter reporter)
         {
-            SummaryReporters.Add(reporter);
+            summaryReporters.Add(reporter);
             return this;
         }
 
@@ -40,28 +40,28 @@ namespace Xenial.Delicious.Cli
         internal async Task DoExecuteCommand(ExecuteCommandEventArgs args)
         {
             ExecuteCommand?.Invoke(this, args);
-            await Task.CompletedTask;
+            await Task.CompletedTask.ConfigureAwait(false);
         }
 
         internal async Task DoRequestCancellation()
         {
             CancellationRequested?.Invoke(this, EventArgs.Empty);
-            await Task.CompletedTask;
+            await Task.CompletedTask.ConfigureAwait(false);
         }
 
-        public async Task Report(SerializableTestCase @case)
+        public async Task Report(SerializableTestCase testCase)
         {
-            foreach (var reporter in Reporters)
+            foreach (var reporter in reporters)
             {
-                await reporter.Invoke(@case);
+                await reporter.Invoke(testCase).ConfigureAwait(false);
             }
         }
 
-        public async Task Report(IEnumerable<SerializableTestCase> @cases)
+        public async Task Report(IEnumerable<SerializableTestCase> testCases)
         {
-            foreach (var reporter in SummaryReporters)
+            foreach (var reporter in summaryReporters)
             {
-                await reporter.Invoke(@cases);
+                await reporter.Invoke(testCases).ConfigureAwait(false);
             }
         }
 
@@ -77,6 +77,7 @@ namespace Xenial.Delicious.Cli
         public void SignalTestPipelineCompleted()
             => TestPipelineCompletedSignaled?.Invoke();
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Need to be in sync with ITastyRemote")]
         public void ClearConsole()
         {
             try
@@ -86,18 +87,18 @@ namespace Xenial.Delicious.Cli
             catch (IOException) { /* Handle is invalid */}
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Need to be in sync with ITastyRemote")]
         public void ResetColor()
             => Console.ResetColor();
 
-        public static class ConsoleReporter
+        internal static class ConsoleReporter
         {
             public static ColorScheme Scheme = ColorScheme.Default;
 
             static ConsoleReporter()
                 => Console.OutputEncoding = Encoding.UTF8;
 
-
-            static Lazy<int> SeparatorSize = new Lazy<int>(() =>
+            private static readonly Lazy<int> separatorSize = new Lazy<int>(() =>
             {
                 const int fallBackSize = 100;
                 try
@@ -111,10 +112,10 @@ namespace Xenial.Delicious.Cli
             public static Task ReportSummary(IEnumerable<SerializableTestCase> tests)
             {
                 var totalTests = tests.Count();
-                var failedTests = tests.Where(m => m.TestOutcome == TestOutcome.Failed).Count();
-                var ignoredTests = tests.Where(m => m.TestOutcome == TestOutcome.Ignored).Count();
-                var notRunTests = tests.Where(m => m.TestOutcome == TestOutcome.NotRun).Count();
-                var successTests = tests.Where(m => m.TestOutcome == TestOutcome.Success).Count();
+                var failedTests = tests.Count(m => m.TestOutcome == TestOutcome.Failed);
+                var ignoredTests = tests.Count(m => m.TestOutcome == TestOutcome.Ignored);
+                var notRunTests = tests.Count(m => m.TestOutcome == TestOutcome.NotRun);
+                var successTests = tests.Count(m => m.TestOutcome == TestOutcome.Success);
                 var outcome = tests.Where(t => t.TestOutcome > TestOutcome.Ignored).Min(t => t.TestOutcome);
 
                 var totalTime = tests.Sum(m => m.Duration);
@@ -126,33 +127,33 @@ namespace Xenial.Delicious.Cli
                 var totalTimeString = totalTime.AsDuration();
 
                 Console.WriteLine();
-                Console.WriteLine(new string('=', SeparatorSize.Value));
+                Console.WriteLine(new string('=', separatorSize.Value));
 
-                Write(Scheme.DefaultColor, $"Summary: ");
+                Write(Scheme.DefaultColor, "Summary: ");
                 Write(failedTests > 0 ? Scheme.ErrorColor : Scheme.DefaultColor, $"F{failedTests}".PadLeft(totalTimeString.Length));
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(ignoredTests > 0 ? Scheme.WarningColor : Scheme.DefaultColor, $"I{ignoredTests}".PadLeft(totalTimeString.Length));
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(notRunTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, $"NR{notRunTests}".PadLeft(totalTimeString.Length));
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(successTests > 0 ? Scheme.SuccessColor : Scheme.DefaultColor, $"S{successTests}".PadLeft(totalTimeString.Length));
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(Scheme.DefaultColor, $"T{totalTests}");
 
                 Console.WriteLine();
-                Write(Scheme.DefaultColor, $"Time:    ");
+                Write(Scheme.DefaultColor, "Time:    ");
                 Write(failedTests > 0 ? Scheme.ErrorColor : Scheme.DefaultColor, failedTime.AsDuration());
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(ignoredTests > 0 ? Scheme.WarningColor : Scheme.DefaultColor, ignoredTime.AsDuration());
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(notRunTests > 0 ? Scheme.NotifyColor : Scheme.DefaultColor, notRunTime.AsDuration());
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(successTests > 0 ? Scheme.SuccessColor : Scheme.DefaultColor, successTime.AsDuration());
-                Write(Scheme.DefaultColor, $" | ");
+                Write(Scheme.DefaultColor, " | ");
                 Write(Scheme.DefaultColor, totalTimeString);
 
                 Console.WriteLine();
-                Write(Scheme.DefaultColor, $"Outcome: ");
+                Write(Scheme.DefaultColor, "Outcome: ");
                 Write(
                     failedTests > 0
                         ? Scheme.ErrorColor
@@ -164,23 +165,23 @@ namespace Xenial.Delicious.Cli
                             , outcome.ToString().PadLeft(totalTimeString.Length));
 
                 Console.WriteLine();
-                Console.WriteLine(new string('=', SeparatorSize.Value));
+                Console.WriteLine(new string('=', separatorSize.Value));
                 Console.WriteLine();
 
                 return Task.CompletedTask;
             }
 
             public static Task Report(SerializableTestCase test)
-                => test.TestOutcome switch
+                => (test ?? throw new ArgumentNullException(nameof(test))).TestOutcome switch
                 {
                     TestOutcome.Success => Success(test),
                     TestOutcome.NotRun => NotRun(test),
                     TestOutcome.Ignored => Ignored(test),
                     TestOutcome.Failed => Failed(test),
-                    _ => throw new NotImplementedException($"{nameof(ConsoleReporter)}.{nameof(Report)}.{nameof(TestOutcome)}={test.TestOutcome}")
+                    _ => throw new ArgumentOutOfRangeException($"{nameof(ConsoleReporter)}.{nameof(Report)}.{nameof(TestOutcome)}={test.TestOutcome}")
                 };
 
-            static string GetTestName(SerializableTestCase test)
+            private static string GetTestName(SerializableTestCase test)
                 => test.FullName;
 
             private static Task Success(SerializableTestCase test)

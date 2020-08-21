@@ -37,22 +37,22 @@ namespace Xenial.Delicious.Cli.Commands
                         await commander.BuildProject(path, new Progress<(string line, bool isRunning, int exitCode)>(p =>
                         {
                             Console.WriteLine(p.line);
-                        }), cancellationToken);
+                        }), cancellationToken).ConfigureAwait(false);
 
                         Console.WriteLine("Connecting to remote");
-                        var remoteTask = await commander.ConnectToRemote(path, cancellationToken: cancellationToken);
+                        var remoteTask = await commander.ConnectToRemote(path, cancellationToken: cancellationToken).ConfigureAwait(false);
                         Console.WriteLine("Connected to remote");
 
                         try
                         {
                             var uiTask = Task.Run(async () =>
                             {
-                                var commands = await commander.ListCommands(cancellationToken);
-                                await Task.Run(async () => await WaitForInput(commands, commander), cancellationToken);
+                                var commands = await commander.ListCommands(cancellationToken).ConfigureAwait(false);
+                                await Task.Run(async () => await WaitForInput(commands, commander).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
                                 Console.WriteLine("UI-Task ended");
                             }, cancellationToken);
 
-                            await Task.WhenAll(remoteTask, uiTask);
+                            await Task.WhenAll(remoteTask, uiTask).ConfigureAwait(false);
                         }
                         catch (TaskCanceledException)
                         {
@@ -143,7 +143,7 @@ namespace Xenial.Delicious.Cli.Commands
 
                 Func<Task<Func<Task>>> readInput = async () =>
                 {
-                    var info = await readConsoleKey();
+                    var info = await readConsoleKey().ConfigureAwait(false);
                     var command = findCommand(info);
                     if (command != null)
                     {
@@ -154,7 +154,7 @@ namespace Xenial.Delicious.Cli.Commands
                             await commander.DoExecuteCommand(new ExecuteCommandEventArgs
                             {
                                 CommandName = command.Name
-                            });
+                            }).ConfigureAwait(false);
                         };
                     }
                     if (info.Key == ConsoleKey.C)
@@ -163,7 +163,7 @@ namespace Xenial.Delicious.Cli.Commands
                         {
                             Console.WriteLine($"Requesting cancellation");
 
-                            await commander.DoRequestCancellation();
+                            await commander.DoRequestCancellation().ConfigureAwait(false);
                             reject();
                         });
                     }
@@ -174,7 +174,7 @@ namespace Xenial.Delicious.Cli.Commands
                 Task waitForInput() => Promise(async (resolve, reject) =>
                 {
                     writeCommands();
-                    var input = await readInput();
+                    var input = await readInput().ConfigureAwait(false);
 
                     var cancel = cancelKeyPress();
                     var endTestPipeline = endTestPipelineSignaled();
@@ -188,7 +188,7 @@ namespace Xenial.Delicious.Cli.Commands
                             reject();
                             return;
                         }
-                        var result = await Task.WhenAny(cancel, endTestPipeline, completedTestPipeLine);
+                        var result = await Task.WhenAny(cancel, endTestPipeline, completedTestPipeLine).ConfigureAwait(false);
                     }
                     catch (TaskCanceledException)
                     {
@@ -201,9 +201,9 @@ namespace Xenial.Delicious.Cli.Commands
                         return;
                     }
 
-                    await waitForInput();
+                    await waitForInput().ConfigureAwait(false);
                 });
-                await waitForInput();
+                await waitForInput().ConfigureAwait(false);
                 resolve();
             });
 

@@ -37,7 +37,7 @@ namespace Xenial.Delicious.ReturnValueTests
                 });
             });
 
-            Run();
+            Run(args);
         }
     }
 }

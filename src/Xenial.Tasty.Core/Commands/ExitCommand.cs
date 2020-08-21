@@ -11,7 +11,7 @@ namespace Xenial.Delicious.Commands
         public static (string name, Func<RuntimeContext, Task> command, string? description, bool? isDefault) Register()
             => ("x", Execute, "Exit interactive run", false);
 
-        static Task Execute(RuntimeContext context)
+        private static Task Execute(RuntimeContext context)
         {
             context.EndPipeLine = true;
             return Task.CompletedTask;

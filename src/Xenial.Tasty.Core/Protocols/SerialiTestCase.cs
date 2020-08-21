@@ -27,10 +27,15 @@ namespace Xenial.Delicious.Protocols
 
     public class SerializableTestGroup
     {
+        private List<SerializableTestCase> testCases = new List<SerializableTestCase>();
+        private List<SerializableTestGroup> testGroups = new List<SerializableTestGroup>();
+
         public string Name { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
-        public List<SerializableTestCase> TestCases { get; set; } = new List<SerializableTestCase>();
-        public List<SerializableTestGroup> TestGroups { get; set; } = new List<SerializableTestGroup>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Needed for serialization")]
+        public List<SerializableTestCase> TestCases { get => testCases; set => testCases = value ?? throw new ArgumentNullException(nameof(TestCases)); }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Needed for serialization")]
+        public List<SerializableTestGroup> TestGroups { get => testGroups; set => testGroups = value ?? throw new ArgumentNullException(nameof(TestGroups)); }
         public TestOutcome TestOutcome { get; set; } = TestOutcome.NotRun;
         public TimeSpan Duration { get; set; }
         public bool? IsForced { get; set; }

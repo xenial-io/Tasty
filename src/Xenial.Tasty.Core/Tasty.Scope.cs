@@ -15,9 +15,9 @@ namespace Xenial.Delicious.Scopes
     public class TastyScope : TestGroup
     {
         public bool ClearBeforeRun { get; set; } = true;
-        public bool LoadPlugins { get; set; } = false;
+        public bool LoadPlugins { get; set; }
 
-        private readonly List<AsyncTestReporter> Reporters = new List<AsyncTestReporter>();
+        private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
         internal readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
         internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
         internal ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
@@ -36,6 +36,9 @@ namespace Xenial.Delicious.Scopes
 
         public TastyScope RegisterCommand(string name, Func<RuntimeContext, Task> command, string? description = null, bool isDefault = false)
         {
+            _ = string.IsNullOrEmpty(name) ? throw new ArgumentNullException(nameof(command)) : string.Empty;
+            _ = command ?? throw new ArgumentNullException(nameof(command));
+
             if (isDefault)
             {
                 foreach (var cmd in Commands.Values)
@@ -50,42 +53,48 @@ namespace Xenial.Delicious.Scopes
 
         public TastyScope RegisterCommand(Func<(string name, Func<RuntimeContext, Task> command)> commandRegistration)
         {
+            _ = commandRegistration ?? throw new ArgumentNullException(nameof(commandRegistration));
             var (name, command) = commandRegistration();
             return RegisterCommand(name, command, string.Empty, false);
         }
 
         public TastyScope RegisterCommand(Func<(string name, Func<RuntimeContext, Task> command, string? description)> commandRegistration)
         {
+            _ = commandRegistration ?? throw new ArgumentNullException(nameof(commandRegistration));
             var (name, command, description) = commandRegistration();
             return RegisterCommand(name, command, description, false);
         }
 
         public TastyScope RegisterCommand(Func<(string name, Func<RuntimeContext, Task> command, string? description, bool? isDefault)> commandRegistration)
         {
+            _ = commandRegistration ?? throw new ArgumentNullException(nameof(commandRegistration));
             var (name, command, description, isDefault) = commandRegistration();
             return RegisterCommand(name, command, description, isDefault ?? false);
         }
 
         public TastyScope RegisterReporter(AsyncTestReporter reporter)
         {
-            Reporters.Add(reporter);
+            _ = reporter ?? throw new ArgumentNullException(nameof(reporter));
+            reporters.Add(reporter);
             return this;
         }
 
         public TastyScope RegisterReporter(AsyncTestSummaryReporter summaryReporter)
         {
+            _ = summaryReporter ?? throw new ArgumentNullException(nameof(summaryReporter));
             SummaryReporters.Add(summaryReporter);
             return this;
         }
 
         public TastyScope RegisterTransport(TransportStreamFactoryFunctor transportStreamFactory)
         {
+            _ = transportStreamFactory ?? throw new ArgumentNullException(nameof(transportStreamFactory));
             TransportStreamFactories.Add(transportStreamFactory);
             return this;
         }
 
         public Task Report(TestCase test)
-            => Task.WhenAll(Reporters.Select(async reporter => await reporter(test)).ToArray());
+            => Task.WhenAll(reporters.Select(async reporter => await reporter(test).ConfigureAwait(false)).ToArray());
 
         public TestGroup Describe(string name, Action action)
         {
@@ -109,7 +118,7 @@ namespace Xenial.Delicious.Scopes
                 Name = name,
                 Executor = async () =>
                 {
-                    await action();
+                    await action().ConfigureAwait(false);
                     return true;
                 },
             };
@@ -125,7 +134,7 @@ namespace Xenial.Delicious.Scopes
            => Describe(name, action)
                .Forced(() => true);
 
-        void AddToGroup(TestGroup group)
+        private void AddToGroup(TestGroup group)
         {
             group.ParentGroup = CurrentGroup;
             CurrentGroup.Executors.Add(group);
@@ -184,7 +193,7 @@ namespace Xenial.Delicious.Scopes
                 Name = name,
                 Executor = async () =>
                 {
-                    await action();
+                    await action().ConfigureAwait(false);
                     return true;
                 },
             };
@@ -200,7 +209,7 @@ namespace Xenial.Delicious.Scopes
             };
             test.Executor = async () =>
             {
-                var (success, message) = await action();
+                var (success, message) = await action().ConfigureAwait(false);
                 test.AdditionalMessage = message;
                 return success;
             };
@@ -243,7 +252,7 @@ namespace Xenial.Delicious.Scopes
            => It(name, action)
                .Forced(() => true);
 
-        void AddToGroup(TestCase test)
+        private void AddToGroup(TestCase test)
         {
             test.Group = CurrentGroup;
             CurrentGroup.Executors.Add(test);
@@ -253,7 +262,7 @@ namespace Xenial.Delicious.Scopes
         {
             var hook = new TestBeforeEachHook(async () =>
             {
-                await action();
+                await action().ConfigureAwait(false);
                 return true;
             }, null);
 
@@ -275,7 +284,7 @@ namespace Xenial.Delicious.Scopes
         {
             var hook = new TestAfterEachHook(async () =>
             {
-                await action();
+                await action().ConfigureAwait(false);
                 return true;
             }, null);
 
@@ -293,13 +302,13 @@ namespace Xenial.Delicious.Scopes
             AddToGroup(hook);
         }
 
-        void AddToGroup(TestBeforeEachHook hook)
+        private void AddToGroup(TestBeforeEachHook hook)
         {
             hook.Group = CurrentGroup;
             CurrentGroup.BeforeEachHooks.Add(hook);
         }
 
-        void AddToGroup(TestAfterEachHook hook)
+        private void AddToGroup(TestAfterEachHook hook)
         {
             hook.Group = CurrentGroup;
             CurrentGroup.AfterEachHooks.Add(hook);
@@ -307,13 +316,13 @@ namespace Xenial.Delicious.Scopes
 
         public async Task<int> Run(string[] args)
         {
+            _ = args ?? throw new ArgumentNullException(nameof(args));
             if (LoadPlugins)
             {
-                var pluginLoader = new PluginLoader();
-                await pluginLoader.LoadPlugins(this);
+                await PluginLoader.LoadPlugins(this).ConfigureAwait(false);
             }
             var executor = new TestExecutor(this);
-            return await executor.Execute();
+            return await executor.Execute().ConfigureAwait(false);
         }
 
         public Task<int> Run() => Run(Array.Empty<string>());

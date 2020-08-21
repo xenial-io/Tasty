@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using StreamJsonRpc;
 
+using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Scopes;
 
@@ -37,6 +38,9 @@ namespace Xenial.Delicious.Remote
 
         public static Task<ITastyRemote> AttachToStream(TastyScope scope, Stream remoteStream)
         {
+            _ = scope ?? throw new ArgumentNullException(nameof(scope));
+            _ = remoteStream ?? throw new ArgumentNullException(nameof(remoteStream));
+
             static SerializableTestCase MapToSerializableTestCase(Metadata.TestCase test)
             {
                 return new SerializableTestCase
@@ -86,7 +90,7 @@ namespace Xenial.Delicious.Remote
         static async Task<Stream> CreateNamedPipeTransportStream(string connectionId, CancellationToken token = default)
         {
             var stream = new NamedPipeClientStream(".", connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
-            await stream.ConnectAsync(token);
+            await stream.ConnectAsync(token).ConfigureAwait(false);
             return stream;
         }
     }

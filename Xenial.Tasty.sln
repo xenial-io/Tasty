@@ -12,6 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty", "src\Xenial.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D6FB3CE7-E596-41C6-A4ED-2717F10DD24F}"
 	ProjectSection(SolutionItems) = preProject
+		test\.editorconfig = test\.editorconfig
 		test\Directory.Build.props = test\Directory.Build.props
 	EndProjectSection
 EndProject
@@ -19,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.Tests", "test\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C5943CDE-1E3A-40B6-A2BB-8603142229BF}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		CodeFormatting.ruleset = CodeFormatting.ruleset
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
@@ -47,6 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.ColorSchemeTes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{9CAF2D6C-1E62-4F98-844F-07EFAAEEC5F4}"
 	ProjectSection(SolutionItems) = preProject
+		demos\.editorconfig = demos\.editorconfig
 		demos\Directory.Build.props = demos\Directory.Build.props
 	EndProjectSection
 EndProject

@@ -12,12 +12,12 @@ namespace Xenial.Delicious.Execution.TestRuntime
                 {
                     if (context.Scope.ClearBeforeRun && context.Remote != null)
                     {
-                        await context.Remote.ClearConsole();
+                        await context.Remote.ClearConsole().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
             });
     }

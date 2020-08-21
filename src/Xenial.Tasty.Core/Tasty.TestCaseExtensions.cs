@@ -11,6 +11,7 @@ namespace Xenial
     {
         public static TestGroup Describe(this TestGroup group, string name, Action action)
         {
+            _ = group ?? throw new ArgumentNullException(nameof(group));
             var nestedGroup = new TestGroup
             {
                 Name = name,
@@ -27,12 +28,13 @@ namespace Xenial
 
         public static TestGroup Describe(this TestGroup group, string name, Func<Task> action)
         {
+            _ = group ?? throw new ArgumentNullException(nameof(group));
             var nestedGroup = new TestGroup
             {
                 Name = name,
                 Executor = async () =>
                 {
-                    await action();
+                    await action().ConfigureAwait(false);
                     return true;
                 },
                 ParentGroup = group,
@@ -44,6 +46,7 @@ namespace Xenial
 
         public static TestCase It(this TestGroup group, string name, Action action)
         {
+            _ = group ?? throw new ArgumentNullException(nameof(group));
             var test = new TestCase
             {
                 Name = name,
@@ -59,6 +62,7 @@ namespace Xenial
 
         public static TestCase It(this TestGroup group, string name, Func<(bool success, string message)> action)
         {
+            _ = group ?? throw new ArgumentNullException(nameof(group));
             var test = new TestCase
             {
                 Name = name,
@@ -75,6 +79,7 @@ namespace Xenial
 
         public static TestCase It(this TestGroup group, string name, Func<bool> action)
         {
+            _ = group ?? throw new ArgumentNullException(nameof(group));
             var test = new TestCase
             {
                 Name = name,
@@ -90,12 +95,13 @@ namespace Xenial
 
         public static TestCase It(this TestGroup group, string name, Func<Task> action)
         {
+            _ = group ?? throw new ArgumentNullException(nameof(group));
             var test = new TestCase
             {
                 Name = name,
                 Executor = async () =>
                 {
-                    await action();
+                    await action().ConfigureAwait(false);
                     return true;
                 },
             };
@@ -105,13 +111,14 @@ namespace Xenial
 
         public static TestCase It(this TestGroup group, string name, Func<Task<(bool success, string message)>> action)
         {
+            _ = group ?? throw new ArgumentNullException(nameof(group));
             var test = new TestCase
             {
                 Name = name,
             };
             test.Executor = async () =>
             {
-                var (success, message) = await action();
+                var (success, message) = await action().ConfigureAwait(false);
                 test.AdditionalMessage = message;
                 return success;
             };
@@ -121,6 +128,7 @@ namespace Xenial
 
         public static TestCase It(this TestGroup group, string name, Executable action)
         {
+            _ = group ?? throw new ArgumentNullException(nameof(group));
             var test = new TestCase
             {
                 Name = name,
@@ -162,24 +170,28 @@ namespace Xenial
 
         public static TestCase Ignored(this TestCase test)
         {
+            _ = test ?? throw new ArgumentNullException(nameof(test));
             test.IsIgnored = () => true;
             return test;
         }
 
         public static TestCase Ignored(this TestCase test, Func<bool?> predicate)
         {
+            _ = test ?? throw new ArgumentNullException(nameof(test));
             test.IsIgnored = predicate;
             return test;
         }
 
         public static TestCase Ignored(this TestCase test, bool ignored)
         {
+            _ = test ?? throw new ArgumentNullException(nameof(test));
             test.IsIgnored = () => ignored;
             return test;
         }
 
         public static TestCase Ignored(this TestCase test, string reason)
         {
+            _ = test ?? throw new ArgumentNullException(nameof(test));
             test.IsIgnored = () => true;
             test.IgnoredReason = reason;
             return test;
@@ -187,12 +199,14 @@ namespace Xenial
 
         public static TestCase Forced(this TestCase test, Func<bool> predicate)
         {
+            _ = test ?? throw new ArgumentNullException(nameof(test));
             test.IsForced = predicate;
             return test;
         }
 
         public static TestGroup Forced(this TestGroup group, Func<bool> predicate)
         {
+            _ = group ?? throw new ArgumentNullException(nameof(group));
             group.IsForced = predicate;
             return group;
         }

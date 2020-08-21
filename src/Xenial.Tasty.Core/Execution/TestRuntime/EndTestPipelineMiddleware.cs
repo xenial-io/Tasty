@@ -10,7 +10,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
             {
                 try
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
                 finally
                 {
@@ -20,7 +20,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
                     }
                     if (context.EndPipeLine && context.Remote != null)
                     {
-                        await context.Remote.SignalEndTestPipeline();
+                        await context.Remote.SignalEndTestPipeline().ConfigureAwait(false);
                     }
                 }
             });

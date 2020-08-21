@@ -7,11 +7,11 @@
             {
                 try
                 {
-                    context.IsInteractive = await context.Scope.IsInteractiveRunHook();
+                    context.IsInteractive = await context.Scope.IsInteractiveRunHook().ConfigureAwait(false);
                 }
                 finally
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
             });
     }

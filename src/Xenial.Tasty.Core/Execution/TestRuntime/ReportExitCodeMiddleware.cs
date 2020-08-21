@@ -12,7 +12,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
             {
                 try
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
                 finally
                 {

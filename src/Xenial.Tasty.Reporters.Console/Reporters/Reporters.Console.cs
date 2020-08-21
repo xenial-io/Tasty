@@ -16,16 +16,16 @@ namespace Xenial.Delicious.Reporters
 {
     public static class ConsoleReporter
     {
-        public static ColorScheme Scheme = ColorScheme.Default;
-
+        private static ColorScheme scheme = ColorScheme.Default;
+        public static ColorScheme Scheme { get => scheme; set => scheme = value ?? throw new ArgumentNullException(nameof(Scheme)); }
         public static TastyScope RegisterConsoleReporter(this TastyScope scope)
-            => scope.RegisterReporter(Report)
+            => (scope ?? throw new ArgumentNullException(nameof(scope))).RegisterReporter(Report)
                     .RegisterReporter(ReportSummary);
 
         public static TastyScope Register()
             => Tasty.TastyDefaultScope.RegisterConsoleReporter();
 
-        static Lazy<int> SeparatorSize = new Lazy<int>(() =>
+        private static readonly Lazy<int> separatorSize = new Lazy<int>(() =>
         {
             const int fallBackSize = 100;
             try
@@ -54,7 +54,7 @@ namespace Xenial.Delicious.Reporters
             var totalTimeString = totalTime.AsDuration();
 
             Console.WriteLine();
-            Console.WriteLine(new string('=', SeparatorSize.Value));
+            Console.WriteLine(new string('=', separatorSize.Value));
 
             Write(Scheme.DefaultColor, $"Summary: ");
             Write(failedTests > 0 ? Scheme.ErrorColor : Scheme.DefaultColor, $"F{failedTests}".PadLeft(totalTimeString.Length));
@@ -92,14 +92,14 @@ namespace Xenial.Delicious.Reporters
                         , outcome.ToString().PadLeft(totalTimeString.Length));
 
             Console.WriteLine();
-            Console.WriteLine(new string('=', SeparatorSize.Value));
+            Console.WriteLine(new string('=', separatorSize.Value));
             Console.WriteLine();
 
             return Task.CompletedTask;
         }
 
         public static Task Report(TestCase test)
-            => test.TestOutcome switch
+            => (test ?? throw new ArgumentNullException(nameof(test))).TestOutcome switch
             {
                 TestOutcome.Success => Success(test),
                 TestOutcome.NotRun => NotRun(test),
@@ -108,7 +108,7 @@ namespace Xenial.Delicious.Reporters
                 _ => throw new NotImplementedException($"{nameof(ConsoleReporter)}.{nameof(Report)}.{nameof(TestOutcome)}={test.TestOutcome}")
             };
 
-        static string GetTestName(TestCase test)
+        private static string GetTestName(TestCase test)
             => test.FullName;
 
         private static Task Success(TestCase test)

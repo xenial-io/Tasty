@@ -23,28 +23,28 @@ namespace Xenial.Delicious.Cli.Internal
 {
     internal class TastyCommander : IDisposable
     {
-        private readonly List<AsyncRemoteTestReporter> Reporters = new List<AsyncRemoteTestReporter>();
-        private readonly List<AsyncRemoteTestSummaryReporter> SummaryReporters = new List<AsyncRemoteTestSummaryReporter>();
+        private readonly List<AsyncRemoteTestReporter> reporters = new List<AsyncRemoteTestReporter>();
+        private readonly List<AsyncRemoteTestSummaryReporter> summaryReporters = new List<AsyncRemoteTestSummaryReporter>();
+        private readonly IList<IDisposable> disposables = new List<IDisposable>();
+        private TastyServer? tastyServer;
+        private JsonRpc? jsonRpc;
 
         public TastyCommander RegisterReporter(AsyncRemoteTestReporter reporter)
         {
-            Reporters.Add(reporter);
+            reporters.Add(reporter);
             return this;
         }
 
         public TastyCommander RegisterReporter(AsyncRemoteTestSummaryReporter reporter)
         {
-            SummaryReporters.Add(reporter);
+            summaryReporters.Add(reporter);
             return this;
         }
 
-        IList<IDisposable> Disposables = new List<IDisposable>();
-
-        TastyServer? _TastyServer;
-        JsonRpc? _JsonRpc;
-
         internal async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)>? progress = null, CancellationToken cancellationToken = default)
         {
+            _ = this;
+
             return await Task.Run(async () =>
             {
                 var buildTask = BuildAsync(csProjFileName, cancellationToken);
@@ -58,10 +58,13 @@ namespace Xenial.Delicious.Cli.Internal
                     }
                 }
                 return 0;
-            });
+            }).ConfigureAwait(false);
         }
 
-        static async IAsyncEnumerable<(string line, bool hasStopped, int exitCode)> BuildAsync(string csProjFileName, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        private static async IAsyncEnumerable<(string line, bool hasStopped, int exitCode)> BuildAsync(
+            string csProjFileName,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default
+            )
         {
             using var proc = new Process
             {
@@ -82,7 +85,7 @@ namespace Xenial.Delicious.Cli.Internal
 
             proc.Start();
 
-            using StreamReader reader = proc.StandardOutput;
+            using var reader = proc.StandardOutput;
             while (!reader.EndOfStream)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -90,27 +93,27 @@ namespace Xenial.Delicious.Cli.Internal
                     proc.Close();
                     yield break;
                 }
-                var line = await reader.ReadLineAsync() ?? string.Empty;
+                var line = await reader.ReadLineAsync().ConfigureAwait(false) ?? string.Empty;
                 yield return (line, false, 0);
             }
 
-            var exitCode = await proc.WaitForExitAsync(cancellationToken);
+            var exitCode = await proc.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
             yield return (string.Empty, true, exitCode);
         }
 
-        async Task Report(SerializableTestCase @case)
+        private async Task Report(SerializableTestCase testCase)
         {
-            foreach (var reporter in Reporters)
+            foreach (var reporter in reporters)
             {
-                await reporter.Invoke(@case);
+                await reporter.Invoke(testCase).ConfigureAwait(false);
             }
         }
 
-        async Task ReportSummary(IEnumerable<SerializableTestCase> @cases)
+        private async Task ReportSummary(IEnumerable<SerializableTestCase> testCases)
         {
-            foreach (var reporter in SummaryReporters)
+            foreach (var reporter in summaryReporters)
             {
-                await reporter.Invoke(@cases);
+                await reporter.Invoke(testCases).ConfigureAwait(false);
             }
         }
 
@@ -126,7 +129,7 @@ namespace Xenial.Delicious.Cli.Internal
                 PipeOptions.Asynchronous
             );
 
-            Disposables.Add(stream);
+            disposables.Add(stream);
             var connectionTask = stream.WaitForConnectionAsync(cancellationToken);
 
             var remoteTask = ReadAsync("dotnet",
@@ -140,17 +143,17 @@ namespace Xenial.Delicious.Cli.Internal
                 }
             );
 
-            Disposables.Add(remoteTask);
+            disposables.Add(remoteTask);
 
-            await connectionTask;
+            await connectionTask.ConfigureAwait(false);
 
-            _TastyServer = new TastyServer();
+            tastyServer = new TastyServer();
 
-            _TastyServer.RegisterReporter(Report);
-            _TastyServer.RegisterReporter(ReportSummary);
+            tastyServer.RegisterReporter(Report);
+            tastyServer.RegisterReporter(ReportSummary);
 
-            _JsonRpc = JsonRpc.Attach(stream, _TastyServer);
-            Disposables.Add(_JsonRpc);
+            jsonRpc = JsonRpc.Attach(stream, tastyServer);
+            disposables.Add(jsonRpc);
             return remoteTask;
         }
 
@@ -158,12 +161,12 @@ namespace Xenial.Delicious.Cli.Internal
             => Promise<IList<SerializableTastyCommand>>((resolve, reject) =>
             {
                 //TODO: Make a guard method
-                if (_TastyServer != null)
+                if (tastyServer != null)
                 {
                     var cts = new CancellationTokenSource();
 
                     //TODO: this may cause a memory leak...
-                    Disposables.Add(cts);
+                    disposables.Add(cts);
 
                     //TODO: Make this configurable
                     cts.CancelAfter(10000);
@@ -171,10 +174,10 @@ namespace Xenial.Delicious.Cli.Internal
                     cts.Token.CombineWith(token)
                         .Token.Register(() => reject(cts.Token));
 
-                    _TastyServer.CommandsRegistered = (c) =>
+                    tastyServer.CommandsRegistered = (c) =>
                     {
                         cts.Dispose();
-                        _TastyServer.CommandsRegistered = null;
+                        tastyServer.CommandsRegistered = null;
                         resolve(c);
                     };
                 }
@@ -186,40 +189,41 @@ namespace Xenial.Delicious.Cli.Internal
 
         public Action? EndTestPipelineSignaled
         {
-            get => _TastyServer?.EndTestPipelineSignaled;
+            get => tastyServer?.EndTestPipelineSignaled;
             set
             {
-                if (_TastyServer != null)
+                if (tastyServer != null)
                 {
-                    _TastyServer.EndTestPipelineSignaled = value;
+                    tastyServer.EndTestPipelineSignaled = value;
                 }
             }
         }
 
         public Action? TestPipelineCompletedSignaled
         {
-            get => _TastyServer?.TestPipelineCompletedSignaled;
+            get => tastyServer?.TestPipelineCompletedSignaled;
             set
             {
-                if (_TastyServer != null)
+                if (tastyServer != null)
                 {
-                    _TastyServer.TestPipelineCompletedSignaled = value;
+                    tastyServer.TestPipelineCompletedSignaled = value;
                 }
             }
         }
 
         public Task DoRequestCancellation()
         {
-            if (_TastyServer != null)
+            if (tastyServer != null)
             {
-                _TastyServer?.DoRequestCancellation();
+                tastyServer?.DoRequestCancellation();
             }
             return Task.CompletedTask;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By design")]
         public void Dispose()
         {
-            foreach (var disposable in Disposables)
+            foreach (var disposable in disposables)
             {
                 try
                 {
@@ -230,16 +234,16 @@ namespace Xenial.Delicious.Cli.Internal
                     Console.WriteLine(ex.ToString());
                 }
             }
-            _JsonRpc = null;
-            _TastyServer = null;
+            jsonRpc = null;
+            tastyServer = null;
         }
 
         public async Task DoExecuteCommand(ExecuteCommandEventArgs executeCommandEventArgs)
         {
             //TODO: Make a guard method
-            if (_TastyServer != null)
+            if (tastyServer != null)
             {
-                await _TastyServer.DoExecuteCommand(executeCommandEventArgs);
+                await tastyServer.DoExecuteCommand(executeCommandEventArgs).ConfigureAwait(false);
             }
         }
     }

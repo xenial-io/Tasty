@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Xenial.Tasty.Cli")]
 [assembly: InternalsVisibleTo("Xenial.Tasty.Tests")]

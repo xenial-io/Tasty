@@ -6,6 +6,7 @@ using static Xenial.Tasty;
 
 namespace Xenial.Delicious.CalculatorTests
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By design")]
     public class Calculator
     {
         public int Add(int a, int b) => a + b;
@@ -34,7 +35,7 @@ namespace Xenial.Delicious.CalculatorTests
                 sut.Div(1, 0).ShouldBe(-1);
             });
 
-            Run();
+            Run(args);
         }
     }
 }

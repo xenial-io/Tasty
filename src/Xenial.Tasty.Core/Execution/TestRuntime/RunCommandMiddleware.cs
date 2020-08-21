@@ -11,12 +11,12 @@ namespace Xenial.Delicious.Execution.TestRuntime
                 {
                     if (context.CurrentCommand != null)
                     {
-                        await context.CurrentCommand.Command(context);
+                        await context.CurrentCommand.Command(context).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await next();
+                    await next().ConfigureAwait(false);
                 }
             });
     }

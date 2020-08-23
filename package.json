@@ -29,10 +29,11 @@
   "devDependencies": {
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^10.0.0",
-    "commitizen": "^4.1.2",
+    "commitizen": "^4.1.5",
     "cz-conventional-changelog": "^3.2.0",
     "dot-prop": "^5.2.0",
-    "husky": "^4.2.5"
+    "husky": "^4.2.5",
+    "terminalizer": "^0.7.2"
   },
   "config": {
     "commitizen": {

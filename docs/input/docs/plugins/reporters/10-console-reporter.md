@@ -7,7 +7,10 @@ Order: 10
 
 A very basic console reporter:
 
-![Console Reporter](/assets/img/plugins/reporters/console-reporter.png)
+<img src="/assets/img/plugins/reporters/console-reporter.png" class="img-screenshot" alt="Console Reporter">
+
+See it in action:
+<img src="/assets/img/plugins/reporters/console-reporter.gif" class="img-screenshot" alt="Console Reporter Demo">
 
 # 1. Installation
 

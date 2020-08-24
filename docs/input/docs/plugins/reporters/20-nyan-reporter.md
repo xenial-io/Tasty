@@ -7,7 +7,11 @@ Order: 20
 
 A rainbow full of joy reporter:
 
-![Nyan Reporter](/assets/img/plugins/reporters/nyan-reporter.png)
+<img src="/assets/img/plugins/reporters/nyan-reporter.png" class="img-screenshot" alt="Nyan Reporter">
+
+See it in action:
+
+<img src="/assets/img/plugins/reporters/nyan-reporter.gif" class="img-screenshot" alt="Nyan Reporter Demo">
 
 # 1. Installation
 

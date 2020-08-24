@@ -10,7 +10,6 @@ A rainbow full of joy reporter:
 <img src="/assets/img/plugins/reporters/nyan-reporter.png" class="img-screenshot" alt="Nyan Reporter">
 
 See it in action:
-
 <img src="/assets/img/plugins/reporters/nyan-reporter.gif" class="img-screenshot" alt="Nyan Reporter Demo">
 
 # 1. Installation

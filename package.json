@@ -4,7 +4,10 @@
   "description": "Tasty - Delicious dotnet testing",
   "main": "index.js",
   "scripts": {
-    "c": "git-cz"
+    "c": "git-cz",
+    "record": "terminalizer record artifacts/record",
+    "play": "terminalizer play artifacts/record",
+    "render": "terminalizer render artifacts/record -o artifacts/record.gif"
   },
   "repository": {
     "type": "git",

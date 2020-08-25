@@ -93,6 +93,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.Reporters.Nyan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xenial.Tasty.Core", "src\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj", "{6245C1AB-C89F-46D9-B36A-727FDB983347}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.Reporters.Remote", "src\Xenial.Tasty.Reporters.Remote\Xenial.Tasty.Reporters.Remote.csproj", "{26C02A5B-0340-4632-8789-9DC7AD1867CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -427,6 +429,18 @@ Global
 		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Release|x64.Build.0 = Release|Any CPU
 		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Release|x86.ActiveCfg = Release|Any CPU
 		{6245C1AB-C89F-46D9-B36A-727FDB983347}.Release|x86.Build.0 = Release|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Debug|x64.Build.0 = Debug|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Debug|x86.Build.0 = Debug|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Release|x64.ActiveCfg = Release|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Release|x64.Build.0 = Release|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Release|x86.ActiveCfg = Release|Any CPU
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -461,6 +475,7 @@ Global
 		{669A2580-59C0-4596-8FDE-E1AA4F71AFDB} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
 		{F167B74C-19D5-4439-B3B4-BA2054D416B7} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
 		{6245C1AB-C89F-46D9-B36A-727FDB983347} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
+		{26C02A5B-0340-4632-8789-9DC7AD1867CF} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D25470F-FCE8-4F98-A5B0-BE1C68CFEE7D}

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Xenial.Delicious.Execution.TestRuntime
 {
-    public static partial class ReportTestMiddleware
+    public static class RemoteClearConsole
     {
         public static TestExecutor UseRemoteClearConsole(this TestExecutor executor)
             => executor.UseRuntime(async (context, next) =>

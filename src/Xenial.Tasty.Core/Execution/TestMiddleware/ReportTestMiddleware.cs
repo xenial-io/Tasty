@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 
+using Xenial.Delicious.Reporters;
+
 namespace Xenial.Delicious.Execution.TestMiddleware
 {
     public static class ReportTestMiddleware
@@ -17,7 +19,7 @@ namespace Xenial.Delicious.Execution.TestMiddleware
                 {
                     try
                     {
-                        await context.CurrentScope.Report(context.CurrentCase).ConfigureAwait(false);
+                        await context.CurrentScope.Report(context.CurrentCase.ToResult()).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {

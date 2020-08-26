@@ -101,8 +101,8 @@ namespace Xenial.Delicious.Scopes
             return this;
         }
 
-        public Task Report(TestCase test)
-            => Task.WhenAll(reporters.Select(async reporter => await reporter(test.ToResult()).ConfigureAwait(false)).ToArray());
+        public Task Report(TestCaseResult testCaseResult)
+            => Task.WhenAll(reporters.Select(async reporter => await reporter(testCaseResult).ConfigureAwait(false)).ToArray());
 
         public TestGroup Describe(string name, Action action)
         {

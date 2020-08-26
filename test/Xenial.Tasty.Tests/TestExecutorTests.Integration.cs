@@ -1,11 +1,11 @@
 ﻿
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using SimpleExec;
+
 using Xenial.Delicious.Remote;
+
 using static System.IO.Path;
 using static Shouldly.Should;
 using static SimpleExec.Command;
@@ -15,7 +15,7 @@ namespace Xenial.Delicious.Tests
 {
     public static partial class TestExecutorTests
     {
-        static (
+        private static (
             string configuration,
             string targetFramework,
             string testDirectory,

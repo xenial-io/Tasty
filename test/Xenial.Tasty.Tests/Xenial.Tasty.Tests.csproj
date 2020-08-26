@@ -14,5 +14,5 @@
     <ProjectReference Include="..\..\src\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
     <ProjectReference Include="..\..\src\Xenial.Tasty.Transports.NamedPipes\Xenial.Tasty.Transports.NamedPipes.csproj" />
   </ItemGroup>
-  
+    
 </Project>

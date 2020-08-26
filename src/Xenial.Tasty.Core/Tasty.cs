@@ -59,10 +59,10 @@ namespace Xenial
         /// <summary>
         /// Reports the specified test to the configured test reporters.
         /// </summary>
-        /// <param name="test">The test.</param>
+        /// <param name="testCaseResult">The test.</param>
         /// <returns>Task.</returns>
-        public static Task Report(TestCase test)
-            => TastyDefaultScope.Report(test);
+        public static Task Report(TestCaseResult testCaseResult)
+            => TastyDefaultScope.Report(testCaseResult);
 
         /// <summary>
         /// Adds a describe block eg. <see cref="TestGroup"/> to the current scope

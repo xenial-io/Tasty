@@ -46,6 +46,10 @@ jobs:
         dotnet-version: 3.1.x
     - name: Restore tools
       run: dotnet tool restore
+    - name: Setup .NET Core 2.1
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.1.x
     - name: Build
       run: dotnet wyam docs -o artifacts/docs
     - uses: actions/upload-artifact@v2

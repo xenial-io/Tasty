@@ -44,15 +44,6 @@ namespace Xenial.Delicious.Remote
 
             var remote = JsonRpc.Attach<ITastyRemote>(remoteStream);
 
-            Task TestReporter(TestCaseResult testCase)
-               => remote.Report(testCase);
-
-            Task SummaryReporter(IEnumerable<TestCaseResult> testCases)
-                => remote.Report(testCases);
-
-            scope.RegisterReporter(TestReporter);
-            scope.RegisterReporter(SummaryReporter);
-
             return Task.FromResult(remote);
         }
     }

@@ -20,9 +20,11 @@ namespace Xenial.Delicious.Scopes
         private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
         internal readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
         internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
-        internal ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
+        public ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
         internal List<TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new List<TransportStreamFactoryFunctor>();
         internal Dictionary<string, TastyCommand> Commands { get; } = new Dictionary<string, TastyCommand>();
+
+        private readonly List<Action<TestExecutor>> executorMiddlewares = new List<Action<TestExecutor>>();
 
         internal TestGroup CurrentGroup { get; set; }
 
@@ -70,6 +72,12 @@ namespace Xenial.Delicious.Scopes
             _ = commandRegistration ?? throw new ArgumentNullException(nameof(commandRegistration));
             var (name, command, description, isDefault) = commandRegistration();
             return RegisterCommand(name, command, description, isDefault ?? false);
+        }
+
+        public TastyScope Use(Action<TestExecutor> executorMiddleWare)
+        {
+            executorMiddlewares.Add(executorMiddleWare ?? throw new ArgumentNullException(nameof(executorMiddleWare)));
+            return this;
         }
 
         public TastyScope RegisterReporter(AsyncTestReporter reporter)
@@ -323,20 +331,12 @@ namespace Xenial.Delicious.Scopes
             }
             var executor = new TestExecutor(this);
 
-            foreach (var executorMiddleWare in executorMiddleWares)
+            foreach (var executorMiddleware in executorMiddlewares)
             {
-                executorMiddleWare(executor);
+                executorMiddleware(executor);
             }
 
             return await executor.Execute().ConfigureAwait(false);
-        }
-
-        private readonly List<Action<TestExecutor>> executorMiddleWares = new List<Action<TestExecutor>>();
-
-        public TastyScope Use(Action<TestExecutor> executorMiddleWare)
-        {
-            executorMiddleWares.Add(executorMiddleWare ?? throw new ArgumentNullException(nameof(executorMiddleWare)));
-            return this;
         }
 
         public Task<int> Run() => Run(Array.Empty<string>());

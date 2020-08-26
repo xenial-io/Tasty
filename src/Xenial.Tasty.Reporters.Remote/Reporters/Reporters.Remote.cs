@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Threading.Tasks;
 
-using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Reporters
@@ -12,17 +9,28 @@ namespace Xenial.Delicious.Reporters
     public static class RemoteReporter
     {
         public static TastyScope RegisterRemoteReporter(this TastyScope scope)
-         => (scope ?? throw new ArgumentNullException(nameof(scope)))
-                .RegisterReporter(Report)
-                .RegisterReporter(ReportSummary);
+        {
+            _ = scope ?? throw new ArgumentNullException(nameof(scope));
 
-        public static TastyScope Register()
-            => Tasty.TastyDefaultScope.RegisterRemoteReporter();
+            var hook = scope.ConnectToRemoteRunHook;
 
-        private static Task ReportSummary(IEnumerable<TestCaseResult> tests)
-            => Task.CompletedTask;
+            scope.ConnectToRemoteRunHook = async (scope, remoteStream) =>
+            {
+                var remote = await hook(scope, remoteStream).ConfigureAwait(false);
 
-        public static Task Report(TestCaseResult test)
-            => Task.CompletedTask;
+                Task TestReporter(TestCaseResult testCase)
+                    => remote.Report(testCase);
+
+                Task SummaryReporter(IEnumerable<TestCaseResult> testCases)
+                    => remote.Report(testCases);
+
+                scope.RegisterReporter(TestReporter);
+                scope.RegisterReporter(SummaryReporter);
+
+                return remote;
+            };
+
+            return scope;
+        }
     }
 }

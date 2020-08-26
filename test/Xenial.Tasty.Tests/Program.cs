@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Reporters;
 
 using static Xenial.Delicious.Tests.Plugins.InvalidPluginExceptionTests;
@@ -13,7 +14,10 @@ namespace Xenial.Delicious.Tests
 {
     public static class Program
     {
-        static Program() => ConsoleReporter.Register();
+        static Program() => TastyDefaultScope
+            .UseConsoleReporter()
+            .UseNamedPipesTransport()
+        ;
 
         public static async Task<int> Main(string[] args)
         {

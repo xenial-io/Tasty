@@ -1,0 +1,9 @@
+﻿<Project>
+  
+  <Target Name="AddUseTastyNamedPipeTransport" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyNamedPipeTransport)">
+    <ItemGroup>
+      <Compile Include="$(MSBuildThisFileDirectory)NamedPipeTransportPluginAssemblyInfo.cs" Visible="false" />
+    </ItemGroup>  
+  </Target>
+  
+</Project>

@@ -12,8 +12,9 @@ namespace Xenial.Delicious.Reporters
     public static class RemoteReporter
     {
         public static TastyScope RegisterRemoteReporter(this TastyScope scope)
-         => (scope ?? throw new ArgumentNullException(nameof(scope))).RegisterReporter(Report)
-                 .RegisterReporter(ReportSummary);
+         => (scope ?? throw new ArgumentNullException(nameof(scope)))
+                .RegisterReporter(Report)
+                .RegisterReporter(ReportSummary);
 
         public static TastyScope Register()
             => Tasty.TastyDefaultScope.RegisterRemoteReporter();

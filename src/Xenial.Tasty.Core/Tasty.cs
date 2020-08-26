@@ -34,7 +34,7 @@ namespace Xenial
         public static TastyScope TastyDefaultScope { get; } = new TastyScope
         {
             LoadPlugins = true
-        }.RegisterTransport(NamedPipeRemoteHook.CreateNamedPipeTransportStream);
+        };
 
         /// <summary>
         /// Registers an async test reporter.

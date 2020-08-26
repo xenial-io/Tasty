@@ -322,7 +322,21 @@ namespace Xenial.Delicious.Scopes
                 await PluginLoader.LoadPlugins(this).ConfigureAwait(false);
             }
             var executor = new TestExecutor(this);
+
+            foreach (var executorMiddleWare in executorMiddleWares)
+            {
+                executorMiddleWare(executor);
+            }
+
             return await executor.Execute().ConfigureAwait(false);
+        }
+
+        private readonly List<Action<TestExecutor>> executorMiddleWares = new List<Action<TestExecutor>>();
+
+        public TastyScope Use(Action<TestExecutor> executorMiddleWare)
+        {
+            executorMiddleWares.Add(executorMiddleWare ?? throw new ArgumentNullException(nameof(executorMiddleWare)));
+            return this;
         }
 
         public Task<int> Run() => Run(Array.Empty<string>());

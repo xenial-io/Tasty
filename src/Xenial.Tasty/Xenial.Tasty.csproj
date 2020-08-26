@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
     <ProjectReference Include="..\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
+    <ProjectReference Include="..\Xenial.Tasty.Transports.NamedPipes\Xenial.Tasty.Transports.NamedPipes.csproj" />
   </ItemGroup>
   
   <ItemGroup>	

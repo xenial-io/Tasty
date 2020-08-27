@@ -10,7 +10,7 @@ using Xenial.Delicious.Remote;
 
 namespace Xenial.Delicious.Transports
 {
-    public static class NamedPipesTranport
+    public static class NamedPipesClientTranport
     {
         public static Task<TransportStreamFactory?> CreateNamedPipeTransportStream(CancellationToken token = default)
         {

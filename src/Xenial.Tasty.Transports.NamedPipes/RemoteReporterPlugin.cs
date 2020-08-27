@@ -9,6 +9,6 @@ namespace Xenial.Delicious.Plugins
     {
         public static TastyScope UseNamedPipesTransport(this TastyScope scope)
                => (scope ?? throw new ArgumentNullException(nameof(scope)))
-                .RegisterTransport(NamedPipesTranport.CreateNamedPipeTransportStream);
+                .RegisterTransport(NamedPipesClientTranport.CreateNamedPipeTransportStream);
     }
 }

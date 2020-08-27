@@ -29,6 +29,7 @@ namespace Xenial.Delicious.Execution
                 .UseExitCodeReporter()
                 .UseSummaryReporters()
                 .UseInteractiveRunDetection()
+                .UseParseConnectionString()
                 .UseRemote()
                 .UseRegisterCommands()
                 .UseSelectCommand()

@@ -20,8 +20,9 @@ namespace Xenial.Delicious.Scopes
         private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
         internal readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
         internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
+        internal ParseConnectionString ParseConnectionString { get; set; } = TastyRemoteDefaults.ParseConnectionString;
         public ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
-        internal List<TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new List<TransportStreamFactoryFunctor>();
+        internal Dictionary<string, TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new Dictionary<string, TransportStreamFactoryFunctor>();
         internal Dictionary<string, TastyCommand> Commands { get; } = new Dictionary<string, TastyCommand>();
 
         private readonly List<Action<TestExecutor>> executorMiddlewares = new List<Action<TestExecutor>>();
@@ -94,10 +95,10 @@ namespace Xenial.Delicious.Scopes
             return this;
         }
 
-        public TastyScope RegisterTransport(TransportStreamFactoryFunctor transportStreamFactory)
+        public TastyScope RegisterTransport(string protocol, TransportStreamFactoryFunctor transportStreamFactory)
         {
             _ = transportStreamFactory ?? throw new ArgumentNullException(nameof(transportStreamFactory));
-            TransportStreamFactories.Add(transportStreamFactory);
+            TransportStreamFactories[protocol] = transportStreamFactory;
             return this;
         }
 

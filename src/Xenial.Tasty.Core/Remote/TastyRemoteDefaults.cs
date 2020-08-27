@@ -11,8 +11,9 @@ using Xenial.Delicious.Scopes;
 namespace Xenial.Delicious.Remote
 {
     public delegate Task<bool> IsInteractiveRun();
+    public delegate Task<Uri?> ParseConnectionString();
 
-    public delegate Task<TransportStreamFactory?> TransportStreamFactoryFunctor(CancellationToken token = default);
+    public delegate Task<TransportStreamFactory?> TransportStreamFactoryFunctor(Uri connectionString, CancellationToken token = default);
 
     public delegate Task<Stream> TransportStreamFactory();
 
@@ -28,6 +29,16 @@ namespace Xenial.Delicious.Remote
                 return Task.FromResult(result);
             }
             return Task.FromResult(false);
+        }
+
+        public static Task<Uri?> ParseConnectionString()
+        {
+            var connectionString = Environment.GetEnvironmentVariable(EnvironmentVariables.TastyConnectionString);
+            if (Uri.IsWellFormedUriString(connectionString, UriKind.Absolute))
+            {
+                return Task.FromResult<Uri?>(new Uri(connectionString));
+            }
+            return Task.FromResult<Uri?>(null);
         }
 
         public static Task<ITastyRemote> AttachToStream(TastyScope scope, Stream remoteStream)

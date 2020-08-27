@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 using Terminal.Gui;
 
-using Xenial.Delicious.Cli.Internal;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Utils;
 

@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Xenial.Delicious.Cli.Internal;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 
 using static Xenial.Delicious.Utils.PromiseHelper;

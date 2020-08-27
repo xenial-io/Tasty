@@ -74,9 +74,9 @@ namespace Xenial.Delicious.Scopes
             return RegisterCommand(name, command, description, isDefault ?? false);
         }
 
-        public TastyScope Use(Action<TestExecutor> executorMiddleWare)
+        public TastyScope Use(Action<TestExecutor> executorMiddleware)
         {
-            executorMiddlewares.Add(executorMiddleWare ?? throw new ArgumentNullException(nameof(executorMiddleWare)));
+            executorMiddlewares.Add(executorMiddleware ?? throw new ArgumentNullException(nameof(executorMiddleware)));
             return this;
         }
 

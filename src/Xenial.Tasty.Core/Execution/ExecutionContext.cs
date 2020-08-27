@@ -4,6 +4,7 @@ using System.IO;
 
 using Xenial.Delicious.Commands;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Execution

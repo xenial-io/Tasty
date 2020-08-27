@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using StreamJsonRpc;
 
+using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Remote

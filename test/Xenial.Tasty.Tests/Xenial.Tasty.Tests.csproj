@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiveSharp" Version="1.5.66" />
     <PackageReference Include="SimpleExec" Version="6.2.0" />
   </ItemGroup>
   

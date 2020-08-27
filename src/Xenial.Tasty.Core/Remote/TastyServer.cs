@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
 
-namespace Xenial.Delicious.Cli
+namespace Xenial.Delicious.Remote
 {
     public class TastyServer
     {

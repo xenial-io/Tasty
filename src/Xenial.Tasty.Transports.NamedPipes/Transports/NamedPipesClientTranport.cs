@@ -19,8 +19,9 @@ namespace Xenial.Delicious.Transports
         private static async Task<Stream> CreateStream(Uri connectionString, CancellationToken token = default)
         {
             _ = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-            var connectionId = connectionString.LocalPath;
-            var stream = new NamedPipeClientStream(".", connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
+            var serverName = connectionString.Host;
+            var connectionId = connectionString.Segments[1];
+            var stream = new NamedPipeClientStream(serverName, connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
             await stream.ConnectAsync(token).ConfigureAwait(false);
             return stream;
         }

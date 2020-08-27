@@ -119,6 +119,7 @@ namespace Xenial.Delicious.Remote
         internal async Task<Task> ConnectToRemote(string csProjFileName, CancellationToken cancellationToken = default)
         {
             var connectionId = $"TASTY_{Guid.NewGuid()}";
+            var connectionString = new Uri($"{Uri.UriSchemeNetPipe}://localhost/{connectionId}");
 
             var stream = new NamedPipeServerStream(
                 connectionId,
@@ -137,8 +138,7 @@ namespace Xenial.Delicious.Remote
                 configureEnvironment: (env) =>
                 {
                     env.Add(EnvironmentVariables.InteractiveMode, "true");
-                    env.Add(EnvironmentVariables.InteractiveConnectionType, "NamedPipes");
-                    env.Add(EnvironmentVariables.InteractiveConnectionId, connectionId);
+                    env.Add(EnvironmentVariables.TastyConnectionString, connectionString.ToString());
                 }
             );
 

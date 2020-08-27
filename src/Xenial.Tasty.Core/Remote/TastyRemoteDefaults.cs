@@ -23,12 +23,9 @@ namespace Xenial.Delicious.Remote
         public static Task<bool> IsInteractiveRun()
         {
             var isInteractive = Environment.GetEnvironmentVariable(EnvironmentVariables.InteractiveMode);
-            if (!string.IsNullOrEmpty(isInteractive))
+            if (bool.TryParse(isInteractive, out var result))
             {
-                if (bool.TryParse(isInteractive, out var result))
-                {
-                    return Task.FromResult(result);
-                }
+                return Task.FromResult(result);
             }
             return Task.FromResult(false);
         }

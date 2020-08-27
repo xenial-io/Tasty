@@ -16,6 +16,7 @@ namespace Xenial.Delicious.Tests
     {
         static Program() => TastyDefaultScope
             .UseConsoleReporter()
+            .UseRemoteReporter()
             .UseNamedPipesTransport()
         ;
 

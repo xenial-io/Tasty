@@ -12,6 +12,7 @@ namespace Xenial.Delicious.Remote
     public delegate Task<bool> IsInteractiveRun();
 
     public delegate Task<TransportStreamFactory?> TransportStreamFactoryFunctor(CancellationToken token = default);
+
     public delegate Task<Stream> TransportStreamFactory();
 
     public delegate Task<ITastyRemote> ConnectToRemote(TastyScope scope, Stream remoteStream);

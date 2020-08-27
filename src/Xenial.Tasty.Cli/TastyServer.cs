@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
-using Xenial.Delicious.Utils;
-
-using static Xenial.Delicious.Utils.Actions;
 
 namespace Xenial.Delicious.Cli
 {

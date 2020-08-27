@@ -118,42 +118,41 @@ namespace Xenial.Delicious.Remote
 
         internal async Task<Task> ConnectToRemote(string csProjFileName, CancellationToken cancellationToken = default)
         {
+            // TODO: write a connection string builder once we introduce the next transport
             var connectionId = $"TASTY_{Guid.NewGuid()}";
             var connectionString = new Uri($"{Uri.UriSchemeNetPipe}://localhost/{connectionId}");
 
-            var stream = new NamedPipeServerStream(
-                connectionId,
-                PipeDirection.InOut,
-                NamedPipeServerStream.MaxAllowedServerInstances,
-                PipeTransmissionMode.Byte,
-                PipeOptions.Asynchronous
-            );
+            //TODO: we should not rely on default scope here
+            if (Tasty.TastyDefaultScope.ServerTransportStreamFactories.TryGetValue(connectionString.Scheme, out var factory))
+            {
+                var result = await factory(connectionString, cancellationToken).ConfigureAwait(false);
+                var streamTask = result();
 
-            disposables.Add(stream);
-            var connectionTask = stream.WaitForConnectionAsync(cancellationToken);
+                var remoteTask = ReadAsync("dotnet",
+                    $"run -p \"{csProjFileName}\" -f netcoreapp3.1 --no-restore --no-build",
+                    noEcho: true,
+                    configureEnvironment: (env) =>
+                    {
+                        env.Add(EnvironmentVariables.InteractiveMode, "true");
+                        env.Add(EnvironmentVariables.TastyConnectionString, connectionString.ToString());
+                    }
+                );
 
-            var remoteTask = ReadAsync("dotnet",
-                $"run -p \"{csProjFileName}\" -f netcoreapp3.1 --no-restore --no-build",
-                noEcho: true,
-                configureEnvironment: (env) =>
-                {
-                    env.Add(EnvironmentVariables.InteractiveMode, "true");
-                    env.Add(EnvironmentVariables.TastyConnectionString, connectionString.ToString());
-                }
-            );
+                disposables.Add(streamTask);
+                disposables.Add(remoteTask);
+                var stream = await streamTask.ConfigureAwait(false);
 
-            disposables.Add(remoteTask);
+                tastyServer = new TastyServer();
 
-            await connectionTask.ConfigureAwait(false);
+                tastyServer.RegisterReporter(Report);
+                tastyServer.RegisterReporter(ReportSummary);
 
-            tastyServer = new TastyServer();
+                jsonRpc = JsonRpc.Attach(stream, tastyServer);
+                disposables.Add(jsonRpc);
+                return remoteTask;
+            }
 
-            tastyServer.RegisterReporter(Report);
-            tastyServer.RegisterReporter(ReportSummary);
-
-            jsonRpc = JsonRpc.Attach(stream, tastyServer);
-            disposables.Add(jsonRpc);
-            return remoteTask;
+            return Task.CompletedTask;
         }
 
         internal Task<IList<SerializableTastyCommand>> ListCommands(CancellationToken token = default)

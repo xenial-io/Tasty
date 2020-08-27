@@ -13,7 +13,7 @@ namespace Xenial.Delicious.Remote
     public delegate Task<bool> IsInteractiveRun();
     public delegate Task<Uri?> ParseConnectionString();
 
-    public delegate Task<TransportStreamFactory?> TransportStreamFactoryFunctor(Uri connectionString, CancellationToken token = default);
+    public delegate Task<TransportStreamFactory> TransportStreamFactoryFunctor(Uri connectionString, CancellationToken token = default);
 
     public delegate Task<Stream> TransportStreamFactory();
 

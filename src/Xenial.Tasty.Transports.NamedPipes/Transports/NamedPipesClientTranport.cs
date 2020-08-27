@@ -10,16 +10,18 @@ namespace Xenial.Delicious.Transports
 {
     public static class NamedPipesClientTranport
     {
-        public static Task<TransportStreamFactory?> CreateNamedPipeTransportStream(Uri connectionString, CancellationToken token = default)
+        public static Task<TransportStreamFactory> CreateNamedPipeTransportStream(Uri connectionString, CancellationToken token = default)
         {
             TransportStreamFactory functor = () => CreateStream(connectionString, token);
-            return Task.FromResult<TransportStreamFactory?>(functor);
+            return Task.FromResult(functor);
         }
 
         private static async Task<Stream> CreateStream(Uri connectionString, CancellationToken token = default)
         {
             _ = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             var serverName = connectionString.Host;
+
+            // TODO: write a connection string parser once we introduce the next transport
             var connectionId = connectionString.Segments[1];
             var stream = new NamedPipeClientStream(serverName, connectionId, PipeDirection.InOut, PipeOptions.Asynchronous);
             await stream.ConnectAsync(token).ConfigureAwait(false);

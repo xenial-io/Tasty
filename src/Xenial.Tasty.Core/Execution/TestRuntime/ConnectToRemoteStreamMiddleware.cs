@@ -14,7 +14,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
                         && context.Remote == null
                     )
                     {
-                        if (context.Scope.TransportStreamFactories.TryGetValue(context.RemoteConnectionString.Scheme, out var remoteStreamFactoryFunctor))
+                        if (context.Scope.ClientTransportStreamFactories.TryGetValue(context.RemoteConnectionString.Scheme, out var remoteStreamFactoryFunctor))
                         {
                             var cts = new CancellationTokenSource();
                             try

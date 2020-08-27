@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
 
 namespace Xenial.Delicious.Protocols

@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using StreamJsonRpc;
 
 using Xenial.Delicious.Cli.Internal;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
 
-using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.PromiseHelper;
 
 namespace Xenial.Delicious.Cli.Commands

@@ -6,7 +6,7 @@ using Xenial.Delicious.Transports;
 
 namespace Xenial.Delicious.Plugins
 {
-    public static class RemoteReporterPlugin
+    public static class NamedPipesTransportPlugin
     {
         public static TastyScope UseNamedPipesTransport(this TastyScope scope)
                => (scope ?? throw new ArgumentNullException(nameof(scope)))

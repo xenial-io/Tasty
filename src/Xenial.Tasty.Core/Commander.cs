@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 
 using Xenial.Delicious.Commanders;
+using Xenial.Delicious.Remote;
 
 namespace Xenial
 {
@@ -13,5 +14,6 @@ namespace Xenial
         public static TastyCommander TastyDefaultCommander { get; } = new TastyCommander
         {
         };
+
     }
 }

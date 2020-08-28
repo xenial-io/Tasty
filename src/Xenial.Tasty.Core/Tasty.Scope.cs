@@ -328,7 +328,8 @@ namespace Xenial.Delicious.Scopes
             _ = args ?? throw new ArgumentNullException(nameof(args));
             if (LoadPlugins)
             {
-                await PluginLoader.LoadPlugins(this).ConfigureAwait(false);
+                var pluginLoader = new TastyPluginLoader();
+                await pluginLoader.LoadPlugins(this).ConfigureAwait(false);
             }
             var executor = new TestExecutor(this);
 

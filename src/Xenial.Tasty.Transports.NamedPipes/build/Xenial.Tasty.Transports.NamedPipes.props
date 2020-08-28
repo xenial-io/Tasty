@@ -1,7 +1,8 @@
 ﻿<Project>
   
   <PropertyGroup>
-    <UseTastyRemoteReporter>true</UseTastyRemoteReporter>
+    <UseTastyNamedPipeClientTransport>true</UseTastyNamedPipeClientTransport>
+    <UseTastyNamedPipeServerTransport>true</UseTastyNamedPipeServerTransport>
   </PropertyGroup>
   
 </Project>

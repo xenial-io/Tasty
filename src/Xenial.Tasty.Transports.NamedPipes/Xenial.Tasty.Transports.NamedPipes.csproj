@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="build\NamedPipeTransportPluginAssemblyInfo.cs" />
+    <Compile Remove="build\NamedPipeClientTransportPluginAssemblyInfo.cs" />
+    <Compile Remove="build\NamedPipeServerTransportPluginAssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>

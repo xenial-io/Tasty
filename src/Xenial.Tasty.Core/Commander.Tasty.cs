@@ -23,6 +23,8 @@ namespace Xenial.Delicious.Commanders
 {
     public sealed class TastyCommander : IDisposable
     {
+        internal Dictionary<string, TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new Dictionary<string, TransportStreamFactoryFunctor>();
+
         private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
         private readonly List<AsyncTestSummaryReporter> summaryReporters = new List<AsyncTestSummaryReporter>();
         private readonly IList<IDisposable> disposables = new List<IDisposable>();
@@ -38,6 +40,13 @@ namespace Xenial.Delicious.Commanders
         public TastyCommander RegisterReporter(AsyncTestSummaryReporter reporter)
         {
             summaryReporters.Add(reporter);
+            return this;
+        }
+
+        public TastyCommander RegisterTransport(string protocol, TransportStreamFactoryFunctor transportStreamFactory)
+        {
+            _ = transportStreamFactory ?? throw new ArgumentNullException(nameof(transportStreamFactory));
+            TransportStreamFactories[protocol] = transportStreamFactory;
             return this;
         }
 
@@ -124,7 +133,7 @@ namespace Xenial.Delicious.Commanders
             var connectionString = new Uri($"{Uri.UriSchemeNetPipe}://localhost/{connectionId}");
 
             //TODO: we should not rely on default scope here
-            if (Tasty.TastyDefaultScope.ServerTransportStreamFactories.TryGetValue(connectionString.Scheme, out var factory))
+            if (TransportStreamFactories.TryGetValue(connectionString.Scheme, out var factory))
             {
                 var result = await factory(connectionString, cancellationToken).ConfigureAwait(false);
                 var streamTask = result();

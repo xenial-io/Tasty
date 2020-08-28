@@ -11,8 +11,7 @@ namespace Xenial.Delicious.Plugins
                => (scope ?? throw new ArgumentNullException(nameof(scope)))
                 .RegisterTransport(
                    Uri.UriSchemeNetPipe,
-                   NamedPipesClientTranport.CreateNamedPipeTransportStream,
-                   NamedPipesServerTranport.CreateNamedPipeTransportStream
+                   NamedPipesClientTranport.CreateNamedPipeTransportStream
                 );
     }
 }

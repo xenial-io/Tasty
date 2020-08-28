@@ -21,7 +21,7 @@ using static Xenial.Delicious.Utils.PromiseHelper;
 
 namespace Xenial.Delicious.Commanders
 {
-    internal class TastyCommander : IDisposable
+    public sealed class TastyCommander : IDisposable
     {
         private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
         private readonly List<AsyncTestSummaryReporter> summaryReporters = new List<AsyncTestSummaryReporter>();

@@ -3,16 +3,12 @@
   <PropertyGroup>
     <RootNamespace>Xenial.Delicious</RootNamespace>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <PackageDescription>Tasty Remote Reporter - Delicious dotnet testing</PackageDescription>
+    <PackageDescription>Tasty Transport NamedPipes - Delicious dotnet testing</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="build\**" Pack="True" PackagePath="build\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="build\NamedPipeClientTransportPluginAssemblyInfo.cs" />
-    <Compile Remove="build\NamedPipeServerTransportPluginAssemblyInfo.cs" />
+    <Compile Remove="build\*.cs" />
   </ItemGroup>
 
   <ItemGroup>

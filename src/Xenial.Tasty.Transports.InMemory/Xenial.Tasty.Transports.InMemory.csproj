@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Xenial.Delicious</RootNamespace>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <PackageDescription>Tasty Console Reporter - Delicious dotnet testing</PackageDescription>
+    <PackageDescription>Tasty Transport InMemory - Delicious dotnet testing</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +14,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.Streams" Version="2.5.76" />
+  </ItemGroup>
   
   <ItemGroup>
     <None Include="THIRD-PARTY-NOTICES.TXT">
@@ -22,6 +26,5 @@
       <Visible>false</Visible>
     </None>
   </ItemGroup>
-
 
 </Project>

@@ -97,6 +97,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.Reporters.Remo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.Transports.NamedPipes", "src\Xenial.Tasty.Transports.NamedPipes\Xenial.Tasty.Transports.NamedPipes.csproj", "{CDB88A6A-07FF-4DB9-A4D3-A5092C77269B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xenial.Tasty.Transports.InMemory", "src\Xenial.Tasty.Transports.InMemory\Xenial.Tasty.Transports.InMemory.csproj", "{9553529B-9632-4095-BC0D-66DB93370DE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -455,6 +457,18 @@ Global
 		{CDB88A6A-07FF-4DB9-A4D3-A5092C77269B}.Release|x64.Build.0 = Release|Any CPU
 		{CDB88A6A-07FF-4DB9-A4D3-A5092C77269B}.Release|x86.ActiveCfg = Release|Any CPU
 		{CDB88A6A-07FF-4DB9-A4D3-A5092C77269B}.Release|x86.Build.0 = Release|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Debug|x64.Build.0 = Debug|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Debug|x86.Build.0 = Debug|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Release|x64.ActiveCfg = Release|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Release|x64.Build.0 = Release|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Release|x86.ActiveCfg = Release|Any CPU
+		{9553529B-9632-4095-BC0D-66DB93370DE0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -491,6 +505,7 @@ Global
 		{6245C1AB-C89F-46D9-B36A-727FDB983347} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
 		{26C02A5B-0340-4632-8789-9DC7AD1867CF} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
 		{CDB88A6A-07FF-4DB9-A4D3-A5092C77269B} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
+		{9553529B-9632-4095-BC0D-66DB93370DE0} = {CEC91D22-0825-4CCF-BF0E-13ED88FB6D6B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D25470F-FCE8-4F98-A5B0-BE1C68CFEE7D}

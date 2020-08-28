@@ -8,16 +8,7 @@
 
   <ItemGroup>
     <None Include="build\**" Pack="True" PackagePath="build\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Reporters\NewFolder\**" />
-    <EmbeddedResource Remove="Reporters\NewFolder\**" />
-    <None Remove="Reporters\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="build\RemoteReporterPluginAssemblyInfo.cs" />
+    <Compile Remove="build\*.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -14,23 +14,17 @@ namespace Xenial.Delicious.Transports
         {
             _ = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             var connectionId = connectionString.Segments[1];
+
             TransportStreamFactory functor = () => CreateStream(connectionId, token);
             return Task.FromResult(functor);
         }
 
-        private static async Task<Stream> CreateStream(string connectionId, CancellationToken token = default)
+        private static Task<Stream> CreateStream(string connectionId, CancellationToken token = default)
         {
-            var stream = new NamedPipeServerStream(
-                  connectionId,
-                  PipeDirection.InOut,
-                  NamedPipeServerStream.MaxAllowedServerInstances,
-                  PipeTransmissionMode.Byte,
-                  PipeOptions.Asynchronous
-              );
+            _ = connectionId ?? throw new ArgumentNullException(nameof(connectionId));
 
-            await stream.WaitForConnectionAsync(token).ConfigureAwait(false);
-
-            return stream;
+            var (_, serverStream) = InMemoryTransport.GetStream(connectionId);
+            return Task.FromResult(serverStream);
         }
     }
 }

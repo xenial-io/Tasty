@@ -11,6 +11,7 @@ using Terminal.Gui;
 
 using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Utils;
@@ -32,6 +33,7 @@ namespace Xenial.Delicious.Cli.Views
         public MainWindowViewModel(string colorSchemeName, Terminal.Gui.ColorScheme colorScheme)
         {
             Commander = new TastyCommander()
+                .UseNamedPipesTransport()
                 .RegisterReporter(Report)
                 .RegisterReporter(ReportSummary);
 

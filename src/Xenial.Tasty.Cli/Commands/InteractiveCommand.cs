@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Commanders;
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
 
@@ -28,6 +29,7 @@ namespace Xenial.Delicious.Cli.Commands
                     {
                         Console.WriteLine(csProjFileName);
                         var commander = new TastyCommander()
+                            .UseNamedPipesTransport()
                             .RegisterReporter(ConsoleReporter.Report)
                             .RegisterReporter(ConsoleReporter.ReportSummary);
 

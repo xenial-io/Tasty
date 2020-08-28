@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Threading;
 
 using StreamJsonRpc;
 
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
@@ -23,6 +24,8 @@ namespace Xenial.Delicious.Commanders
 {
     public sealed class TastyCommander : IDisposable
     {
+        public bool LoadPlugins { get; set; } = true;
+
         internal Dictionary<string, TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new Dictionary<string, TransportStreamFactoryFunctor>();
 
         private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
@@ -53,6 +56,12 @@ namespace Xenial.Delicious.Commanders
         internal async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)>? progress = null, CancellationToken cancellationToken = default)
         {
             _ = this;
+
+            if (LoadPlugins)
+            {
+                var pluginLoader = new CommanderPluginLoader();
+                await pluginLoader.LoadPlugins(this).ConfigureAwait(false);
+            }
 
             return await Task.Run(async () =>
             {

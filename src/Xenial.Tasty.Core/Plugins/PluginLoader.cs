@@ -11,7 +11,7 @@ namespace Xenial.Delicious.Plugins
         where TPluginAttribute : Attribute, IPluginAttribute
         where TPluginDelegate : Delegate
     {
-        internal virtual Task LoadPlugins(TPluginArgument scope)
+        internal virtual Task LoadPlugins(TPluginArgument pluginArgument)
         {
             var entryAssembly = Assembly.GetEntryAssembly();
 
@@ -29,7 +29,7 @@ namespace Xenial.Delicious.Plugins
                         null,
                         pluginAttribute.PluginType.GetMethod(pluginAttribute.PluginEntryPoint, BindingFlags.Static | BindingFlags.Public)
                     );
-                    @delegate.DynamicInvoke(scope);
+                    @delegate.DynamicInvoke(pluginArgument);
                 }
                 catch (ArgumentException ex)
                 {

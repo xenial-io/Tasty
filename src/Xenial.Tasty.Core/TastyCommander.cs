@@ -13,12 +13,13 @@ using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc;
 
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 
 using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.PromiseHelper;
 
-namespace Xenial.Delicious.Remote
+namespace Xenial.Delicious.Commanders
 {
     internal class TastyCommander : IDisposable
     {

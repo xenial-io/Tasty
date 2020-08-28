@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;

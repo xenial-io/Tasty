@@ -23,6 +23,8 @@ namespace Xenial.Delicious.Transports
         {
             _ = connectionId ?? throw new ArgumentNullException(nameof(connectionId));
 
+            token.ThrowIfCancellationRequested();
+
             var (_, serverStream) = InMemoryTransport.GetStream(connectionId);
             return Task.FromResult(serverStream);
         }

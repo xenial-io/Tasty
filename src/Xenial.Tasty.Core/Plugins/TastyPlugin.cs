@@ -1,4 +1,5 @@
-﻿using Xenial.Delicious.Scopes;
+﻿using Xenial.Delicious.Commanders;
+using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Plugins
 {

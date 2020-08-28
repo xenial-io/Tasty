@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Plugins

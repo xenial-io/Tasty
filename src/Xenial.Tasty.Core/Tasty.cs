@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
-using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Scopes;
 

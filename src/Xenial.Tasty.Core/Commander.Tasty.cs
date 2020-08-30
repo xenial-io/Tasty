@@ -140,7 +140,6 @@ namespace Xenial.Delicious.Commanders
             var connectionId = $"TASTY_{Guid.NewGuid()}";
             var connectionString = new Uri($"{Uri.UriSchemeNetPipe}://localhost/{connectionId}");
 
-            //TODO: we should not rely on default scope here
             if (TransportStreamFactories.TryGetValue(connectionString.Scheme, out var factory))
             {
                 var result = await factory(connectionString, cancellationToken).ConfigureAwait(false);

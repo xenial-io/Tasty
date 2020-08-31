@@ -51,7 +51,9 @@ jobs:
     - name: Restore tools
       run: dotnet tool restore
     - name: Show version
-      run: dotnet --version      
+      run: dotnet --version
+    - name: List SDKs
+      run: dotnet --list-sdks
     - name: Build
       run: dotnet wyam docs -o artifacts/docs
     - uses: actions/upload-artifact@v2

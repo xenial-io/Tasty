@@ -49,7 +49,7 @@ jobs:
         dotnet-version: 2.2.x
     - name: Install Wyam.Tool global
       run: |
-        dotnet tool install -g Wyam.Tool --tool-path c:\dotnet-tools
+        dotnet tool install -g --tool-path c:\dotnet-tools Wyam.Tool
     - name: Show version
       run: dotnet --version
     - name: List SDKs

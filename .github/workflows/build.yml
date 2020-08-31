@@ -40,22 +40,25 @@ jobs:
     - name: Fetch all history for all tags and branches
       run: |
         git fetch --prune --unshallow
-    # - name: Delete global.json
-    #   run: |
-    #     del global.json
-    # - name: Setup .NET Core 2.2
-    #   uses: actions/setup-dotnet@v1
-    #   with:
-    #     dotnet-version: 2.2.x
-    - name: Setup .NET Core 3.1
+
+    # Remove global json cause wyam needs 2.2
+    - name: Delete global.json
+      run: |
+        del global.json
+    - name: Setup .NET Core 2.2
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
+        dotnet-version: 2.2.x
+
+    # Install with a tool location to trick tool resolution
     - name: Install Wyam.Tool
       run: |
         dotnet tool install --tool-path c:\dotnet-tools Wyam.Tool
+    
+    # Run from the installed tool location
     - name: Build
       run: c:\dotnet-tools\wyam.exe docs -o artifacts/docs
+    
     - uses: actions/upload-artifact@v2
       if: startsWith(github.ref, 'refs/tags/v')
       with:

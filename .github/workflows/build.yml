@@ -54,6 +54,8 @@ jobs:
       run: dotnet --version
     - name: List SDKs
       run: dotnet --list-sdks
+    - name: List global tools
+      run: dotnet tool list -g
     - name: Build
       run: dotnet tool run wyam docs -o artifacts/docs
     - uses: actions/upload-artifact@v2

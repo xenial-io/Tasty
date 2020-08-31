@@ -55,7 +55,7 @@ jobs:
     - name: List SDKs
       run: dotnet --list-sdks
     - name: Build
-      run: dotnet wyam docs -o artifacts/docs
+      run: dotnet tool run wyam docs -o artifacts/docs
     - uses: actions/upload-artifact@v2
       if: startsWith(github.ref, 'refs/tags/v')
       with:

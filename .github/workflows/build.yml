@@ -49,7 +49,7 @@ jobs:
         dotnet-version: 2.2.x
     - name: Install Wyam.Tool global
       run: |
-        dotnet tool install -g --tool-path c:\dotnet-tools Wyam.Tool
+        dotnet tool install --tool-path c:\dotnet-tools Wyam.Tool
     - name: Show version
       run: dotnet --version
     - name: List SDKs
@@ -59,7 +59,7 @@ jobs:
     - name: dir toolpath
       run: dir c:\dotnet-tools
     - name: Build
-      run: dotnet wyam --tool-path c:\dotnet-tools docs -o artifacts/docs
+      run: dotnet c:\dotnet-tools\wyam docs -o artifacts/docs
     - uses: actions/upload-artifact@v2
       if: startsWith(github.ref, 'refs/tags/v')
       with:

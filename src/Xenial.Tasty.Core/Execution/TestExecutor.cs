@@ -22,10 +22,10 @@ namespace Xenial.Delicious.Execution
             Scope = scope ?? throw new ArgumentNullException(nameof(scope));
 
             this
+                .UseRemoteDisposal()
                 .UseEndTestPipeline()
                 .UseTestPipelineCompleted()
                 .UseResetConsoleColor()
-                .UseRemoteDisposal()
                 .UseExitCodeReporter()
                 .UseSummaryReporters()
                 .UseInteractiveRunDetection()

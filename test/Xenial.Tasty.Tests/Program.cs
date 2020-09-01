@@ -5,7 +5,9 @@ using Xenial.Delicious.Plugins;
 using static Xenial.Delicious.Tests.Plugins.InvalidPluginExceptionTests;
 using static Xenial.Delicious.Tests.TastyScopeTests;
 using static Xenial.Delicious.Tests.TestExecutorTests;
+using static Xenial.Delicious.Tests.TastyCommanderTests;
 using static Xenial.Tasty;
+using System.Diagnostics;
 
 namespace Xenial.Delicious.Tests
 {
@@ -21,6 +23,7 @@ namespace Xenial.Delicious.Tests
         {
             Describe(nameof(Tasty), () =>
             {
+                Commander();
                 DependencyTree();
                 DefaultRuntimeCases();
                 OverloadRuntimeCases();

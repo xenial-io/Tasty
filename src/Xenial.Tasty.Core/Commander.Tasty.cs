@@ -134,29 +134,14 @@ namespace Xenial.Delicious.Commanders
             }
         }
 
-        internal async Task<Task> ConnectToRemote(string csProjFileName, CancellationToken cancellationToken = default)
+        internal async Task<TastyServer?> ConnectToRemote(System.Uri connectionString, CancellationToken cancellationToken = default)
         {
-            // TODO: write a connection string builder once we introduce the next transport
-            var connectionId = $"TASTY_{Guid.NewGuid()}";
-            var connectionString = new Uri($"{Uri.UriSchemeNetPipe}://localhost/{connectionId}");
-
             if (TransportStreamFactories.TryGetValue(connectionString.Scheme, out var factory))
             {
                 var result = await factory(connectionString, cancellationToken).ConfigureAwait(false);
                 var streamTask = result();
 
-                var remoteTask = ReadAsync("dotnet",
-                    $"run -p \"{csProjFileName}\" -f netcoreapp3.1 --no-restore --no-build",
-                    noEcho: true,
-                    configureEnvironment: (env) =>
-                    {
-                        env.Add(EnvironmentVariables.InteractiveMode, "true");
-                        env.Add(EnvironmentVariables.TastyConnectionString, connectionString.ToString());
-                    }
-                );
-
                 disposables.Add(streamTask);
-                disposables.Add(remoteTask);
                 var stream = await streamTask.ConfigureAwait(false);
 
                 tastyServer = new TastyServer();
@@ -166,10 +151,32 @@ namespace Xenial.Delicious.Commanders
 
                 jsonRpc = JsonRpc.Attach(stream, tastyServer);
                 disposables.Add(jsonRpc);
-                return remoteTask;
+                return tastyServer;
             }
+            return null;
+        }
 
-            return Task.CompletedTask;
+        internal async Task<Task> ConnectToRemote(string csProjFileName, CancellationToken cancellationToken = default)
+        {
+            // TODO: write a connection string builder once we introduce the next transport
+            var connectionId = $"TASTY_{Guid.NewGuid()}";
+            var connectionString = new Uri($"{Uri.UriSchemeNetPipe}://localhost/{connectionId}");
+
+            var remote = ConnectToRemote(connectionString, cancellationToken).ConfigureAwait(false);
+
+            var remoteTask = ReadAsync("dotnet",
+                $"run -p \"{csProjFileName}\" -f netcoreapp3.1 --no-restore --no-build",
+                noEcho: true,
+                configureEnvironment: (env) =>
+                {
+                    env.Add(EnvironmentVariables.InteractiveMode, "true");
+                    env.Add(EnvironmentVariables.TastyConnectionString, connectionString.ToString());
+                }
+            );
+
+            await remote;
+
+            return remoteTask;
         }
 
         internal Task<IList<SerializableTastyCommand>> ListCommands(CancellationToken token = default)

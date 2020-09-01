@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Xenial.Delicious.Plugins;
 
 namespace Xenial.Delicious.Transports
 {

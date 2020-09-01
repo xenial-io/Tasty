@@ -4,12 +4,12 @@ using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Scopes;
 using Xenial.Delicious.Transports;
 
+using static Xenial.Delicious.Transports.InMemoryConnectionStringBuilder;
+
 namespace Xenial.Delicious.Plugins
 {
     public static class InMemoryTransportPlugin
     {
-        public static string Scheme => "inmem";
-
         public static TastyScope UseInMemoryTransport(this TastyScope scope)
                => (scope ?? throw new ArgumentNullException(nameof(scope)))
                 .RegisterTransport(

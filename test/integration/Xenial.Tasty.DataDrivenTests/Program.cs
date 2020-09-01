@@ -3,13 +3,19 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Plugins;
+
 using static Xenial.Tasty;
 
 namespace Xenial.Delicious.DataDrivenTests
 {
-    class Program
+    internal static class Program
     {
-        static async Task<int> Main(string[] args)
+        static Program() => TastyDefaultScope
+            .UseNamedPipesTransport()
+            .UseRemoteReporter();
+
+        internal static async Task<int> Main(string[] args)
         {
             Describe("Data driven tests", async () =>
             {

@@ -10,7 +10,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
             {
                 try
                 {
-                    if (context.Scope.ClearBeforeRun && context.Remote != null)
+                    if (context.Scope.ClearBeforeRun && context.Remote != null && context.IsInteractive)
                     {
                         await context.Remote.ClearConsole().ConfigureAwait(false);
                     }

@@ -3,17 +3,23 @@ using System.Threading.Tasks;
 
 using FakeItEasy;
 
+using Xenial.Delicious.Plugins;
+
 using static Xenial.Tasty;
 
 namespace Xenial.Delicious.LifecycleTests
 {
-    class Program
+    internal static class Program
     {
-        class Calculator
+        static Program() => TastyDefaultScope
+            .UseNamedPipesTransport()
+            .UseRemoteReporter();
+
+        internal class Calculator
         {
-            private Action<int> Printer;
+            private readonly Action<int> printer;
             internal Calculator(Action<int> printer)
-                => Printer = printer;
+                => this.printer = printer;
 
             internal int Sum;
 
@@ -31,13 +37,13 @@ namespace Xenial.Delicious.LifecycleTests
             }
 
             private void Print()
-                => Printer(Sum);
+                => printer(Sum);
 
             internal void Reset()
                 => Sum = 0;
         }
 
-        static void Main(string[] args)
+        internal static async Task Main(string[] args)
         {
             Describe("LifecycleTests", () =>
             {
@@ -95,7 +101,7 @@ namespace Xenial.Delicious.LifecycleTests
                 });
             });
 
-            Run(args);
+            await Run(args);
         }
     }
 }

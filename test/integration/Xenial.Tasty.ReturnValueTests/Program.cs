@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Plugins;
+
 using static Xenial.Tasty;
 
 namespace Xenial.Delicious.ReturnValueTests
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        static Program() => TastyDefaultScope
+            .UseNamedPipesTransport()
+            .UseRemoteReporter();
+
+        internal static async Task Main(string[] args)
         {
             Describe("Return values", () =>
             {
@@ -37,7 +43,7 @@ namespace Xenial.Delicious.ReturnValueTests
                 });
             });
 
-            Run(args);
+            await Run(args);
         }
     }
 }

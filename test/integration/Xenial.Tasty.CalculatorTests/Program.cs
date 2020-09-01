@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 using Shouldly;
+
+using Xenial.Delicious.Plugins;
 
 using static Xenial.Tasty;
 
@@ -14,9 +18,13 @@ namespace Xenial.Delicious.CalculatorTests
         public int Div(int a, int b) => a / b;
     }
 
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        static Program() => TastyDefaultScope
+            .UseNamedPipesTransport()
+            .UseRemoteReporter();
+
+        internal static async Task Main(string[] args)
         {
             var sut = new Calculator();
 
@@ -35,7 +43,7 @@ namespace Xenial.Delicious.CalculatorTests
                 sut.Div(1, 0).ShouldBe(-1);
             });
 
-            Run(args);
+            await Run(args);
         }
     }
 }

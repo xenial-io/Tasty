@@ -10,11 +10,37 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
-    <ProjectReference Include="..\..\src\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
-    <ProjectReference Include="..\..\src\Xenial.Tasty.Reporters.Remote\Xenial.Tasty.Reporters.Remote.csproj" />
-    <ProjectReference Include="..\..\src\Xenial.Tasty.Transports.InMemory\Xenial.Tasty.Transports.InMemory.csproj" />
-    <ProjectReference Include="..\..\src\Xenial.Tasty.Transports.NamedPipes\Xenial.Tasty.Transports.NamedPipes.csproj" />
+    <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\integration\Xenial.Tasty.CalculatorTests\Xenial.Tasty.CalculatorTests.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\integration\Xenial.Tasty.ColorSchemeTests\Xenial.Tasty.ColorSchemeTests.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\integration\Xenial.Tasty.DataDrivenTests\Xenial.Tasty.DataDrivenTests.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\integration\Xenial.Tasty.DeclarativeTests\Xenial.Tasty.DeclarativeTests.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\integration\Xenial.Tasty.ForcedTests\Xenial.Tasty.ForcedTests.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\integration\Xenial.Tasty.LifecycleNativeTests\Xenial.Tasty.LifecycleNativeTests.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\integration\Xenial.Tasty.LifecycleTests\Xenial.Tasty.LifecycleTests.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\integration\Xenial.Tasty.NestedDescribeTests\Xenial.Tasty.NestedDescribeTests.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\integration\Xenial.Tasty.ReturnValueTests\Xenial.Tasty.ReturnValueTests.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

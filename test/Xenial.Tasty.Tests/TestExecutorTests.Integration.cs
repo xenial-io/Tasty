@@ -3,8 +3,12 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
+using Xenial.Delicious.Commanders;
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Remote;
+using Xenial.Delicious.Transports;
 
 using static System.IO.Path;
 using static Shouldly.Should;
@@ -44,26 +48,31 @@ namespace Xenial.Delicious.Tests
 
             foreach (var integrationTest in integrationTests)
             {
-                It($"should run {integrationTest} with {targetFramework}/{configuration}", () =>
+                It($"should run {integrationTest} with {targetFramework}/{configuration}", async () =>
                 {
                     var workingDirectory = Combine(testsDirectory, integrationTest);
 
-                    //We don't mind restore, cause adding dependencies 
-                    //in watch mode isn't happening that often and
-                    //cuts test time almost in half
-                    var args = !isWatchMode
-                        ? "--no-build --no-restore"
-                        : "--no-restore";
+                    using var commander = new TastyCommander()
+                    {
+                        LoadPlugins = false
+                    }
+                    .UseNamedPipesTransport();
 
-                    NotThrow(async () => await ReadAsync("dotnet",
-                        $"run {args} --framework {targetFramework} -c {configuration}",
+                    var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
+
+                    var remote = commander.ConnectToRemote(connectionString);
+
+                    var remoteProcess = ReadAsync("dotnet",
+                        $"run --no-build --no-restore --framework {targetFramework} -c {configuration}",
                         workingDirectory,
                         noEcho: true,
                         configureEnvironment: (env) =>
                         {
                             env.Add(EnvironmentVariables.InteractiveMode, "false");
-                        })
-                    );
+                            env.Add(EnvironmentVariables.TastyConnectionString, connectionString.ToString());
+                        });
+
+                    await Task.WhenAll(remote, remoteProcess);
                 });
             }
         });

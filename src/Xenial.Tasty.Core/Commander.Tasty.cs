@@ -32,6 +32,8 @@ namespace Xenial.Delicious.Commanders
         private readonly IList<IDisposable> disposables = new List<IDisposable>();
         private TastyServer? tastyServer;
         private JsonRpc? jsonRpc;
+        private readonly Queue<TestCaseResult> queue = new Queue<TestCaseResult>();
+        private bool running;
 
         public TastyCommander RegisterReporter(AsyncTestReporter reporter)
         {
@@ -118,11 +120,12 @@ namespace Xenial.Delicious.Commanders
             yield return (string.Empty, true, exitCode);
         }
 
-        private async Task Report(TestCaseResult testCase)
+        private async Task Report(TestCaseResult testCaseResult)
         {
+            queue.Enqueue(testCaseResult);
             foreach (var reporter in reporters)
             {
-                await reporter.Invoke(testCase).ConfigureAwait(false);
+                await reporter.Invoke(testCaseResult).ConfigureAwait(false);
             }
         }
 
@@ -148,12 +151,33 @@ namespace Xenial.Delicious.Commanders
 
                 tastyServer.RegisterReporter(Report);
                 tastyServer.RegisterReporter(ReportSummary);
+                tastyServer.EndTestPipelineSignaled += () => running = false;
 
                 jsonRpc = JsonRpc.Attach(stream, tastyServer);
                 disposables.Add(jsonRpc);
+                running = true;
                 return tastyServer;
             }
             return null;
+        }
+
+        public async IAsyncEnumerable<TestCaseResult> WaitForResults()
+        {
+            if (tastyServer is null)
+            {
+                yield break;
+            }
+
+            await Task.CompletedTask.ConfigureAwait(false);
+
+            while (running)
+            {
+                if (queue.Count > 0)
+                {
+                    var testCaseResult = queue.Dequeue();
+                    yield return testCaseResult;
+                }
+            }
         }
 
         internal async Task<Task> ConnectToRemote(string csProjFileName, CancellationToken cancellationToken = default)

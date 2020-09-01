@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -108,6 +109,15 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase It(string name, Action action)
+            => TastyDefaultScope.It(name, action);
+
+        /// <summary>
+        /// Adds a <see cref="TestCase"/> to the current scope
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="action">The action.</param>
+        /// <returns>TestCase.</returns>
+        public static TestCase It(string name, Func<IAsyncEnumerable<TestCaseResult>> action)
             => TastyDefaultScope.It(name, action);
 
         /// <summary>

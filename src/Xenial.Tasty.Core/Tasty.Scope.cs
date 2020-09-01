@@ -237,6 +237,29 @@ namespace Xenial.Delicious.Scopes
             return test;
         }
 
+        public TestCase It(string name, Func<IAsyncEnumerable<TestCaseResult>> action)
+        {
+            var test = new TestCase
+            {
+                Name = name
+            };
+            test.Executor = async () =>
+            {
+                await foreach (var testCase in action())
+                {
+                    test.AdditionalMessage += $"{testCase.TestOutcome} {testCase.FullName}";
+                    if (testCase.TestOutcome == TestOutcome.Failed)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+            AddToGroup(test);
+            return test;
+        }
+
         public TestCase FIt(string name, Action action)
             => It(name, action)
                 .Forced(() => true);

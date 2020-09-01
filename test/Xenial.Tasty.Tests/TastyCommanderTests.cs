@@ -26,12 +26,12 @@ namespace Xenial.Delicious.Tests
                 var scope = new TastyScope()
                 {
                     LoadPlugins = false,
-                    ClearBeforeRun = false
-                }.UseInMemoryTransport()
-                 .UseRemoteReporter();
-
-                //This would block the interactive run
-                scope.IsInteractiveRunHook = () => Task.FromResult(false);
+                    ClearBeforeRun = false,
+                    //This would block the interactive run
+                    IsInteractiveRunHook = () => Task.FromResult(false)
+                }
+                .UseInMemoryTransport()
+                .UseRemoteReporter();
 
                 scope.It("A test case", () => true);
                 scope.ParseConnectionString = () => TastyRemoteDefaults.ParseConnectionString(connectionString.ToString());
@@ -39,7 +39,8 @@ namespace Xenial.Delicious.Tests
                 var commander = new TastyCommander()
                 {
                     LoadPlugins = false
-                }.UseInMemoryTransport();
+                }
+                .UseInMemoryTransport();
 
                 var reporter = A.Fake<AsyncTestReporter>();
                 commander.RegisterReporter(reporter);
@@ -60,18 +61,18 @@ namespace Xenial.Delicious.Tests
             });
 
             It("Remote scope succeeds with non zero exit code", async () =>
-            {
-                var (connectionString, scope, commander, _) = CreateRemote();
-                var remote = commander.ConnectToRemote(connectionString);
+                {
+                    var (connectionString, scope, commander, _) = CreateRemote();
+                    var remote = commander.ConnectToRemote(connectionString);
 
-                var runner = scope.Run();
+                    var runner = scope.Run();
 
-                await Task.WhenAll(remote, runner);
+                    await Task.WhenAll(remote, runner);
 
-                var exitCode = await runner;
+                    var exitCode = await runner;
 
-                return (exitCode == 0, "Remote scope should return non zero exit code");
-            });
+                    return (exitCode == 0, "Remote scope should return non zero exit code");
+                });
 
             async IAsyncEnumerable<TestCaseResult> RemoteReportsTestCase()
             {

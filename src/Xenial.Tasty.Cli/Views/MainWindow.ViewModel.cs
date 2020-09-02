@@ -14,6 +14,7 @@ using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
+using Xenial.Delicious.Transports;
 using Xenial.Delicious.Utils;
 
 namespace Xenial.Delicious.Cli.Views
@@ -24,7 +25,7 @@ namespace Xenial.Delicious.Cli.Views
         public int SeparatorSize { get; set; } = 100;
         internal Terminal.Gui.ColorScheme ColorScheme { get; private set; } = null!; //Trick the compiler for SetColor method
         internal string ColorSchemeName { get; private set; } = null!; //Trick the compiler for SetColor method
-        internal TastyCommander Commander { get; }
+        internal TastyProcessCommander Commander { get; }
         internal string LogText { get; private set; } = string.Empty;
         internal Progress<(string line, bool isRunning, int exitCode)> LogProgress { get; }
         internal ObservableCollection<CommandItem> Commands { get; } = new ObservableCollection<CommandItem>();
@@ -32,10 +33,12 @@ namespace Xenial.Delicious.Cli.Views
 
         public MainWindowViewModel(string colorSchemeName, Terminal.Gui.ColorScheme colorScheme)
         {
-            Commander = new TastyCommander()
-                .UseNamedPipesTransport()
-                .RegisterReporter(Report)
-                .RegisterReporter(ReportSummary);
+            var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
+
+            Commander = new TastyProcessCommander(connectionString);
+            Commander.UseNamedPipesTransport()
+                     .RegisterReporter(Report)
+                     .RegisterReporter(ReportSummary);
 
             LogProgress = new Progress<(string line, bool isRunning, int exitCode)>(p =>
             {

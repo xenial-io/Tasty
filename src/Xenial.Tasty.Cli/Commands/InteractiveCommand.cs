@@ -9,6 +9,7 @@ using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Reporters;
+using Xenial.Delicious.Transports;
 
 using static Xenial.Delicious.Utils.PromiseHelper;
 
@@ -27,11 +28,14 @@ namespace Xenial.Delicious.Cli.Commands
                     var csProjFileName = Path.Combine(path, $"{directoryName}.csproj");
                     if (File.Exists(csProjFileName))
                     {
+                        var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
+
                         Console.WriteLine(csProjFileName);
-                        var commander = new TastyCommander()
-                            .UseNamedPipesTransport()
-                            .RegisterReporter(ConsoleReporter.Report)
-                            .RegisterReporter(ConsoleReporter.ReportSummary);
+                        var commander = new TastyProcessCommander(connectionString);
+
+                        commander.UseNamedPipesTransport()
+                                 .RegisterReporter(ConsoleReporter.Report)
+                                 .RegisterReporter(ConsoleReporter.ReportSummary);
 
                         await commander.BuildProject(path, new Progress<(string line, bool isRunning, int exitCode)>(p =>
                         {

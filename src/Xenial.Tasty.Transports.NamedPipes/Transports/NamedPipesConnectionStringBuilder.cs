@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Xenial.Delicious.FeatureDetection;
+
 namespace Xenial.Delicious.Transports
 {
     public static class NamedPipesConnectionStringBuilder

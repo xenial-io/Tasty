@@ -4,6 +4,7 @@ using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.FeatureDetection;
 using Xenial.Delicious.Remote;
 
 namespace Xenial.Delicious.Transports
@@ -19,7 +20,8 @@ namespace Xenial.Delicious.Transports
         private static async Task<Stream> CreateStream(Uri connectionString, CancellationToken token = default)
         {
             _ = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
-            var serverName = connectionString.Host;
+
+            var serverName = FeatureDetector.IsWindows() ? connectionString.Host : ".";
 
             // TODO: write a connection string parser once we introduce the next transport
             var connectionId = connectionString.Segments[1];

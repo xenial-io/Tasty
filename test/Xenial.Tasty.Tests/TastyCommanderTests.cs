@@ -76,13 +76,13 @@ namespace Xenial.Delicious.Tests
 
             async IAsyncEnumerable<TestCaseResult> RemoteReportsTestCase()
             {
-                var (connectionString, scope, commander, reporter) = CreateRemote();
+                var (connectionString, scope, commander, _) = CreateRemote();
 
                 try
                 {
                     var remote = commander.ConnectToRemote(connectionString);
                     var tests = scope.Run();
-                    await foreach (var report in commander.WaitForResults())
+                    await foreach (var report in commander.Run())
                     {
                         yield return report;
                     }

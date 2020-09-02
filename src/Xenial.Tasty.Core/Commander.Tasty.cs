@@ -24,18 +24,18 @@ namespace Xenial.Delicious.Commanders
 {
     public class TastyCommander : IDisposable
     {
-        public bool LoadPlugins { get; set; } = true;
-
-        internal Dictionary<string, TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new Dictionary<string, TransportStreamFactoryFunctor>();
-
+        private Dictionary<string, TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new Dictionary<string, TransportStreamFactoryFunctor>();
         private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
         private readonly List<AsyncTestSummaryReporter> summaryReporters = new List<AsyncTestSummaryReporter>();
         private readonly IList<IDisposable> disposables = new List<IDisposable>();
         private TastyServer? tastyServer;
         private JsonRpc? jsonRpc;
         private readonly ConcurrentQueue<TestCaseResult> queue = new ConcurrentQueue<TestCaseResult>();
-        private bool running;
-        private bool disposedValue;
+        private bool pluginsLoaded;
+        public bool LoadPlugins { get; set; } = true;
+        public bool IsDisposed { get; private set; }
+        public bool IsRunning { get; private set; }
+        public bool IsConnected => tastyServer is object;
 
         public TastyCommander RegisterReporter(AsyncTestReporter reporter)
         {
@@ -56,15 +56,24 @@ namespace Xenial.Delicious.Commanders
             return this;
         }
 
-        internal async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)>? progress = null, CancellationToken cancellationToken = default)
+        protected async Task TryLoadPlugins()
         {
-            _ = this;
+            if (pluginsLoaded)
+            {
+                return;
+            }
 
             if (LoadPlugins)
             {
                 var pluginLoader = new CommanderPluginLoader();
                 await pluginLoader.LoadPlugins(this).ConfigureAwait(false);
+                pluginsLoaded = true;
             }
+        }
+
+        internal async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)>? progress = null, CancellationToken cancellationToken = default)
+        {
+            await TryLoadPlugins().ConfigureAwait(false);
 
             return await Task.Run(async () =>
             {
@@ -153,17 +162,20 @@ namespace Xenial.Delicious.Commanders
 
                 tastyServer.RegisterReporter(Report);
                 tastyServer.RegisterReporter(ReportSummary);
-                tastyServer.EndTestPipelineSignaled += () => running = false;
+                tastyServer.EndTestPipelineSignaled += () => IsRunning = false;
 
                 jsonRpc = JsonRpc.Attach(stream, tastyServer);
                 disposables.Add(jsonRpc);
-                running = true;
+                IsRunning = true;
                 return tastyServer;
             }
             return null;
         }
 
-        protected async IAsyncEnumerable<TestCaseResult> WaitForResults()
+        public virtual IAsyncEnumerable<TestCaseResult> Run(CancellationToken cancellationToken = default)
+            => WaitForResults(cancellationToken);
+
+        protected async IAsyncEnumerable<TestCaseResult> WaitForResults([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (tastyServer is null)
             {
@@ -172,8 +184,9 @@ namespace Xenial.Delicious.Commanders
 
             await Task.CompletedTask.ConfigureAwait(false);
 
-            while (running)
+            while (IsRunning)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (queue.Count > 0)
                 {
                     if (queue.TryDequeue(out var testCaseResult))
@@ -289,7 +302,7 @@ namespace Xenial.Delicious.Commanders
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By design")]
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!IsDisposed)
             {
                 if (disposing)
                 {
@@ -308,7 +321,7 @@ namespace Xenial.Delicious.Commanders
                     tastyServer = null;
                 }
 
-                disposedValue = true;
+                IsDisposed = true;
             }
         }
 

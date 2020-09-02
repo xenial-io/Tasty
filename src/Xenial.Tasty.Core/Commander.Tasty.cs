@@ -21,7 +21,7 @@ using static Xenial.Delicious.Utils.PromiseHelper;
 
 namespace Xenial.Delicious.Commanders
 {
-    public sealed class TastyCommander : IDisposable
+    public class TastyCommander : IDisposable
     {
         public bool LoadPlugins { get; set; } = true;
 
@@ -34,6 +34,7 @@ namespace Xenial.Delicious.Commanders
         private JsonRpc? jsonRpc;
         private readonly Queue<TestCaseResult> queue = new Queue<TestCaseResult>();
         private bool running;
+        private bool disposedValue;
 
         public TastyCommander RegisterReporter(AsyncTestReporter reporter)
         {
@@ -273,24 +274,6 @@ namespace Xenial.Delicious.Commanders
             return Task.CompletedTask;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By design")]
-        public void Dispose()
-        {
-            foreach (var disposable in disposables)
-            {
-                try
-                {
-                    disposable.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-            }
-            jsonRpc = null;
-            tastyServer = null;
-        }
-
         public Task DoExecuteCommand(ExecuteCommandEventArgs executeCommandEventArgs)
         {
             var server = tastyServer;
@@ -299,6 +282,38 @@ namespace Xenial.Delicious.Commanders
                 return server.DoExecuteCommand(executeCommandEventArgs);
             }
             return Task.CompletedTask;
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "By design")]
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    foreach (var disposable in disposables)
+                    {
+                        try
+                        {
+                            disposable.Dispose();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                        }
+                    }
+                    jsonRpc = null;
+                    tastyServer = null;
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

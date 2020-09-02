@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Transports;
 
@@ -31,19 +33,17 @@ namespace Xenial.Delicious.Cli.Commands
                         var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
 
                         Console.WriteLine(csProjFileName);
-                        var commander = new TastyProcessCommander(connectionString);
+                        var commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create("dotnet", $"run --no-build --no-restore {csProjFileName}", configureEnvironment: env =>
+                        {
+                            env[EnvironmentVariables.InteractiveMode] = "true";
+                        })));
 
                         commander.UseNamedPipesTransport()
                                  .RegisterReporter(ConsoleReporter.Report)
                                  .RegisterReporter(ConsoleReporter.ReportSummary);
 
-                        await commander.BuildProject(path, new Progress<(string line, bool isRunning, int exitCode)>(p =>
-                        {
-                            Console.WriteLine(p.line);
-                        }), cancellationToken).ConfigureAwait(false);
-
                         Console.WriteLine("Connecting to remote");
-                        var remoteTask = await commander.ConnectToRemote(path, cancellationToken: cancellationToken).ConfigureAwait(false);
+                        var remoteTask = await commander.ConnectAsync(cancellationToken).ConfigureAwait(true);
                         Console.WriteLine("Connected to remote");
 
                         try

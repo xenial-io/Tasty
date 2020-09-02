@@ -4,14 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-
 using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Transports;
-
 using static System.IO.Path;
-using static Shouldly.Should;
 using static SimpleExec.Command;
 using static Xenial.Tasty;
 
@@ -66,7 +63,7 @@ namespace Xenial.Delicious.Tests
                         $"run --no-build --no-restore --framework {targetFramework} -c {configuration}",
                         workingDirectory,
                         noEcho: true,
-                        configureEnvironment: (env) =>
+                        configureEnvironment: env =>
                         {
                             env.Add(EnvironmentVariables.InteractiveMode, "false");
                             env.Add(EnvironmentVariables.TastyConnectionString, connectionString.ToString());

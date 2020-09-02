@@ -13,6 +13,7 @@ using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Metadata;
 using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Transports;
 using Xenial.Delicious.Utils;
@@ -27,7 +28,9 @@ namespace Xenial.Delicious.Cli.Views
         internal string ColorSchemeName { get; private set; } = null!; //Trick the compiler for SetColor method
         internal TastyProcessCommander Commander { get; }
         internal string LogText { get; private set; } = string.Empty;
-        internal Progress<(string line, bool isRunning, int exitCode)> LogProgress { get; }
+        internal string CurrentProject { get; private set; } = string.Empty;
+
+        internal Progress<(string line, bool isError, int? exitCode)> LogProgress { get; }
         internal ObservableCollection<CommandItem> Commands { get; } = new ObservableCollection<CommandItem>();
         private CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
 
@@ -35,15 +38,19 @@ namespace Xenial.Delicious.Cli.Views
         {
             var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
 
-            Commander = new TastyProcessCommander(connectionString);
-            Commander.UseNamedPipesTransport()
-                     .RegisterReporter(Report)
-                     .RegisterReporter(ReportSummary);
-
-            LogProgress = new Progress<(string line, bool isRunning, int exitCode)>(p =>
+            LogProgress = new Progress<(string line, bool isError, int? exitCode)>(p =>
             {
                 LogText += $"{p.line.TrimEnd(Environment.NewLine.ToArray())}{Environment.NewLine}";
             });
+
+            Commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create("dotnet", $"run --no-build --no-restore -f netcoreapp3.1 {CurrentProject}", configureEnvironment: env =>
+            {
+                env[EnvironmentVariables.InteractiveMode] = "true";
+            })), LogProgress);
+
+            Commander.UseNamedPipesTransport()
+                     .RegisterReporter(Report)
+                     .RegisterReporter(ReportSummary);
 
             SetColor(colorSchemeName, colorScheme);
         }
@@ -58,8 +65,10 @@ namespace Xenial.Delicious.Cli.Views
             {
                 return;
             }
-            await Commander.BuildProject(path, LogProgress).ConfigureAwait(true);
-            await Commander.ConnectToRemote(path, CancellationTokenSource.Token).ConfigureAwait(true);
+
+            CurrentProject = path;
+
+            await Commander.ConnectAsync(CancellationTokenSource.Token).ConfigureAwait(true);
 
             //TODO: ErrorDialog
             var commands = await Commander.ListCommands(CancellationTokenSource.Token).ConfigureAwait(true);

@@ -1,109 +1,122 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Threading;
 
-using Xenial.Delicious.Remote;
-
-using static SimpleExec.Command;
+using Xenial.Delicious.FeatureDetection;
 
 namespace Xenial.Delicious.Commanders
 {
-    public class TastyProcessCommander : TastyCommander
+    internal static class ProcessStartInfoHelper
     {
-        public Uri ConnectionString { get; }
-
-        public TastyProcessCommander(Uri connectionString)
-            => ConnectionString = connectionString;
-
-        internal async Task<int> BuildProject(string csProjFileName, IProgress<(string line, bool isRunning, int exitCode)>? progress = null, CancellationToken cancellationToken = default)
+        public static ProcessStartInfo Create(
+            string name,
+            string args,
+            string? workingDirectory = null,
+            bool captureOutput = true,
+            string? windowsName = null,
+            string? windowsArgs = null,
+            Action<IDictionary<string, string>>? configureEnvironment = null)
         {
-            await TryLoadPlugins().ConfigureAwait(false);
+            var isWindows = FeatureDetector.IsWindows();
 
-            return await Task.Run(async () =>
+            var startInfo = new ProcessStartInfo
             {
-                var buildTask = BuildAsync(csProjFileName, cancellationToken);
-
-                await foreach (var (line, hasStopped, exitCode) in buildTask)
-                {
-                    progress?.Report((line, hasStopped, exitCode));
-                    if (hasStopped)
-                    {
-                        return exitCode;
-                    }
-                }
-                return 0;
-            }).ConfigureAwait(false);
-        }
-
-        private static async IAsyncEnumerable<(string line, bool hasStopped, int exitCode)> BuildAsync(
-            string csProjFileName,
-            [EnumeratorCancellation] CancellationToken cancellationToken = default
-            )
-        {
-            using var proc = new Process
-            {
-                StartInfo = new ProcessStartInfo("dotnet", $"build \"{csProjFileName}\" -f netcoreapp3.1")
-                {
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-
-                    //On windows dotnet core seams to set the codepage to 850
-                    //see: https://github.com/dotnet/runtime/issues/17849#issuecomment-353612399
-                    StandardOutputEncoding = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                        ? Encoding.GetEncoding(850) //DOS-Latin-1
-                        : Encoding.Default,
-                }
+                FileName = isWindows ? (windowsName ?? name) : name,
+                Arguments = isWindows ? (windowsArgs ?? args) : args,
+                WorkingDirectory = workingDirectory ?? Environment.CurrentDirectory,
+                UseShellExecute = false,
+                RedirectStandardError = captureOutput,
+                RedirectStandardOutput = captureOutput,
+                //On windows dotnet core seams to set the codepage to 850
+                //see: https://github.com/dotnet/runtime/issues/17849#issuecomment-353612399
+                StandardOutputEncoding = isWindows
+                    ? Encoding.GetEncoding(850) //DOS-Latin-1
+                    : Encoding.Default,
             };
 
-            proc.Start();
+            configureEnvironment?.Invoke(startInfo.Environment);
 
-            using var reader = proc.StandardOutput;
-            while (!reader.EndOfStream)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    proc.Close();
-                    yield break;
-                }
-                var line = await reader.ReadLineAsync().ConfigureAwait(false) ?? string.Empty;
-                yield return (line, false, 0);
-            }
-
-            var exitCode = await proc.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
-            yield return (string.Empty, true, exitCode);
+            return startInfo;
         }
 
-
-        internal async Task<Task> ConnectToRemote(string csProjFileName, CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<(string line, bool isError, int? exitCode)> RunAsync(this Process process, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            // TODO: write a connection string builder once we introduce the next transport
-            var connectionId = $"TASTY_{Guid.NewGuid()}";
-            var connectionString = new Uri($"{Uri.UriSchemeNetPipe}://localhost/{connectionId}");
+            using (process)
+            {
+                var queue = new ConcurrentQueue<(string line, bool isError, int? exitCode)>();
 
-            var remote = ConnectToRemote(connectionString, cancellationToken).ConfigureAwait(false);
-
-            var remoteTask = ReadAsync("dotnet",
-                $"run -p \"{csProjFileName}\" -f netcoreapp3.1 --no-restore --no-build",
-                noEcho: true,
-                configureEnvironment: (env) =>
+                process.OutputDataReceived += (sender, eventArgs) => queue.Enqueue((eventArgs.Data, false, null));
+                process.ErrorDataReceived += (sender, eventArgs) => queue.Enqueue((eventArgs.Data, true, null));
+                if (process.Start())
                 {
-                    env.Add(EnvironmentVariables.InteractiveMode, "true");
-                    env.Add(EnvironmentVariables.TastyConnectionString, connectionString.ToString());
+                    try
+                    {
+                        process.BeginOutputReadLine();
+                        process.BeginErrorReadLine();
+                    }
+#pragma warning disable CA1031 // Do not catch general exception types
+                    catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+
+                    var processTask = process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+
+                    while (!process.HasExited)
+                    {
+                        if (queue.TryDequeue(out var result))
+                        {
+                            yield return result;
+                        }
+                    }
+
+                    while (queue.Count > 0)
+                    {
+                        if (queue.TryDequeue(out var result))
+                        {
+                            yield return result;
+                        }
+                    }
+
+                    var exitCode = await processTask;
+
+                    yield return (string.Empty, exitCode != 0, exitCode);
                 }
-            );
-
-            await remote;
-
-            return remoteTask;
+            }
         }
+    }
+
+    public class TastyProcessCommander : TastyRemoteCommander
+    {
+        public IProgress<(string line, bool isError, int? exitCode)>? Progress { get; }
+
+        public TastyProcessCommander(Uri connectionString, Func<ProcessStartInfo> processFactory, IProgress<(string line, bool isError, int? exitCode)>? progress = null)
+            : this(connectionString, () => new Process
+            {
+                StartInfo = processFactory()
+            }, progress)
+        { }
+
+        public TastyProcessCommander(Uri connectionString, Func<Process> processFactory, IProgress<(string line, bool isError, int? exitCode)>? progress = null) : base(connectionString, () => async () =>
+        {
+            using var proc = processFactory();
+            await foreach (var (line, isError, exitCode) in proc.RunAsync())
+            {
+                progress?.Report((line, isError, exitCode));
+                if (exitCode.HasValue)
+                {
+                    return exitCode.Value;
+                }
+            }
+            return 0;
+        }) => Progress = progress;
     }
 }

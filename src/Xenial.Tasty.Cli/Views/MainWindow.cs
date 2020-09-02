@@ -169,7 +169,7 @@ namespace Xenial.Delicious.Cli.Views
         private async void Top_Initialized(object? sender, EventArgs e)
             => await viewModel.ShowOpenProjectDialog().ConfigureAwait(false);
 
-        private void LogProgress_ProgressChanged(object? sender, (string line, bool isRunning, int exitCode) e)
+        private void LogProgress_ProgressChanged(object? sender, (string line, bool isError, int? exitCode) e)
             => logView.Text = viewModel.LogText;
 
         private async void CommandsListView_OpenSelectedItem(ListViewItemEventArgs e)

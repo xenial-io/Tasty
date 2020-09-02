@@ -9,41 +9,14 @@ using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Commanders
 {
-    public class TastyScopeCommander : TastyCommander
+    public class TastyScopeCommander : TastyRemoteCommander
     {
-        private readonly Lazy<TastyScope> scopeFactory;
-        public Uri ConnectionString { get; }
-
         public TastyScopeCommander(Uri connectionString, Func<TastyScope> createScope)
-            => (ConnectionString, scopeFactory) = (connectionString, new Lazy<TastyScope>(createScope));
-
-        public async Task TryConnect(CancellationToken cancellationToken = default)
-        {
-            await TryLoadPlugins().ConfigureAwait(false);
-
-            if (!IsConnected)
+            : base(connectionString, () => () =>
             {
-                await ConnectToRemote(ConnectionString, cancellationToken).ConfigureAwait(false);
-            }
-        }
-
-        public override async IAsyncEnumerable<TestCaseResult> Run([EnumeratorCancellation] CancellationToken cancellationToken = default)
-        {
-            await TryLoadPlugins().ConfigureAwait(false);
-
-            var remote = TryConnect(cancellationToken).ConfigureAwait(false);
-
-            var tests = scopeFactory.Value.Run().ConfigureAwait(false);
-
-            await remote;
-
-            await foreach (var report in WaitForResults(cancellationToken))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                yield return report;
-            }
-
-            await tests;
-        }
+                var scope = createScope();
+                return scope.Run();
+            })
+        { }
     }
 }

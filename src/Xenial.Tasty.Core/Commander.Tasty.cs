@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -32,7 +33,7 @@ namespace Xenial.Delicious.Commanders
         private readonly IList<IDisposable> disposables = new List<IDisposable>();
         private TastyServer? tastyServer;
         private JsonRpc? jsonRpc;
-        private readonly Queue<TestCaseResult> queue = new Queue<TestCaseResult>();
+        private readonly ConcurrentQueue<TestCaseResult> queue = new ConcurrentQueue<TestCaseResult>();
         private bool running;
         private bool disposedValue;
 
@@ -140,7 +141,7 @@ namespace Xenial.Delicious.Commanders
 
         internal async Task<TastyServer?> ConnectToRemote(System.Uri connectionString, CancellationToken cancellationToken = default)
         {
-            if (TransportStreamFactories.TryGetValue(connectionString.Scheme, out var factory))
+            if (tastyServer is null && TransportStreamFactories.TryGetValue(connectionString.Scheme, out var factory))
             {
                 var result = await factory(connectionString, cancellationToken).ConfigureAwait(false);
                 var streamTask = result();
@@ -162,7 +163,7 @@ namespace Xenial.Delicious.Commanders
             return null;
         }
 
-        public async IAsyncEnumerable<TestCaseResult> WaitForResults()
+        protected async IAsyncEnumerable<TestCaseResult> WaitForResults()
         {
             if (tastyServer is null)
             {
@@ -175,8 +176,10 @@ namespace Xenial.Delicious.Commanders
             {
                 if (queue.Count > 0)
                 {
-                    var testCaseResult = queue.Dequeue();
-                    yield return testCaseResult;
+                    if (queue.TryDequeue(out var testCaseResult))
+                    {
+                        yield return testCaseResult;
+                    }
                 }
             }
         }
@@ -207,8 +210,7 @@ namespace Xenial.Delicious.Commanders
         internal Task<IList<SerializableTastyCommand>> ListCommands(CancellationToken token = default)
             => Promise<IList<SerializableTastyCommand>>((resolve, reject) =>
             {
-                //TODO: Make a guard method
-                if (tastyServer != null)
+                if (tastyServer is object)
                 {
                     var cts = new CancellationTokenSource();
 

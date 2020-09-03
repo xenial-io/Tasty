@@ -59,7 +59,9 @@ jobs:
     
     # Run from the installed tool location
     - name: Build
-      run: "c:\\dotnet-tools\\wyam.exe docs -o artifacts\\docs"
+      run: |
+        "c:\\dotnet-tools\\wyam.exe docs -o artifacts\\docs"
+        "dir artifacts\\docs"
     
     - uses: actions/upload-artifact@v2
       if: startsWith(github.ref, 'refs/tags/v')

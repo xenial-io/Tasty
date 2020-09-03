@@ -1,0 +1,15 @@
+﻿<Project>
+  
+  <Target Name="AddUseTastyNamedPipeClientTransport" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyNamedPipeClientTransport)">
+    <ItemGroup>
+      <Compile Include="$(MSBuildThisFileDirectory)NamedPipeClientTransportPluginAssemblyInfo.cs" Visible="false" />
+    </ItemGroup>  
+  </Target>
+  
+  <Target Name="AddUseTastyNamedPipeServerTransport" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyNamedPipeServerTransport)">
+    <ItemGroup>
+      <Compile Include="$(MSBuildThisFileDirectory)NamedPipeServerTransportPluginAssemblyInfo.cs" Visible="false" />
+    </ItemGroup>
+  </Target>
+
+</Project>

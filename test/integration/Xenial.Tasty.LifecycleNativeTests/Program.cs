@@ -1,36 +1,45 @@
 ﻿using System;
+using System.Threading.Tasks;
+
 using FakeItEasy;
+
+using Xenial.Delicious.Plugins;
+
 using static Xenial.Tasty;
 
 namespace Xenial.Delicious.LifecycleNativeTests
 {
-    class Program
+    internal static class Program
     {
-        class Calculator
-        {
-            private Action<int> Printer;
-            internal Calculator(Action<int> printer)
-                => Printer = printer;
+        static Program() => TastyDefaultScope
+            .UseNamedPipesTransport()
+            .UseRemoteReporter();
 
-            private int Sum;
+        internal class Calculator
+        {
+            private readonly Action<int> printer;
+            internal Calculator(Action<int> printer)
+                => this.printer = printer;
+
+            private int sum;
 
             internal void Add(int a, int b)
             {
-                Sum += a + b;
+                sum += a + b;
                 Print();
             }
 
             internal void Sub(int a, int b)
             {
-                Sum += a - b;
+                sum += a - b;
                 Print();
             }
 
             private void Print()
-                => Printer(Sum);
+                => printer(sum);
         }
 
-        static void Main(string[] args)
+        internal static async Task Main(string[] args)
         {
             Describe("LifecycleNativeTests", () =>
             {
@@ -59,7 +68,7 @@ namespace Xenial.Delicious.LifecycleNativeTests
                 });
             });
 
-            Run(args);
+            await Run(args);
         }
     }
 }

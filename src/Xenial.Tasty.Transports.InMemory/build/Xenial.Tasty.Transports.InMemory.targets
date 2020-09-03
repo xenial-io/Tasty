@@ -1,0 +1,9 @@
+﻿<Project>
+  
+  <Target Name="AddUseTastyInMemoryTransport" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyInMemoryTransport)">
+    <ItemGroup>
+      <Compile Include="$(MSBuildThisFileDirectory)InMemoryTransportPluginAssemblyInfo.cs" Visible="false" />
+    </ItemGroup>  
+  </Target>
+
+</Project>

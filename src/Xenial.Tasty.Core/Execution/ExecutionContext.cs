@@ -4,13 +4,15 @@ using System.IO;
 
 using Xenial.Delicious.Commands;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Protocols;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.Execution
 {
     public class RuntimeContext : IDisposable
     {
-        Queue<TestCase> testQueue = new Queue<TestCase>();
+        private Queue<TestCase> testQueue = new Queue<TestCase>();
+        private bool disposedValue;
 
         public RuntimeContext(TestExecutor executor)
             => Executor = executor ?? throw new ArgumentNullException(nameof(executor));
@@ -18,6 +20,7 @@ namespace Xenial.Delicious.Execution
         public TestExecutor Executor { get; }
         public TastyScope Scope => Executor.Scope;
         public bool IsRemoteAttached => RemoteStream != null;
+        public Uri? RemoteConnectionString { get; internal set; }
         public Stream? RemoteStream { get; internal set; }
         public ITastyRemote? Remote { get; internal set; }
         public int ExitCode { get; internal set; }
@@ -33,7 +36,6 @@ namespace Xenial.Delicious.Execution
 
         internal TastyCommand? CurrentCommand { get; set; }
 
-        private bool disposedValue;
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

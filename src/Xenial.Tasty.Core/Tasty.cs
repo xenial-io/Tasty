@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Execution;
 using Xenial.Delicious.Metadata;
-using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Scopes;
 
@@ -34,7 +34,7 @@ namespace Xenial
         public static TastyScope TastyDefaultScope { get; } = new TastyScope
         {
             LoadPlugins = true
-        }.RegisterTransport(NamedPipeRemoteHook.CreateNamedPipeTransportStream);
+        };
 
         /// <summary>
         /// Registers an async test reporter.
@@ -59,10 +59,10 @@ namespace Xenial
         /// <summary>
         /// Reports the specified test to the configured test reporters.
         /// </summary>
-        /// <param name="test">The test.</param>
+        /// <param name="testCaseResult">The test.</param>
         /// <returns>Task.</returns>
-        public static Task Report(TestCase test)
-            => TastyDefaultScope.Report(test);
+        public static Task Report(TestCaseResult testCaseResult)
+            => TastyDefaultScope.Report(testCaseResult);
 
         /// <summary>
         /// Adds a describe block eg. <see cref="TestGroup"/> to the current scope
@@ -109,6 +109,15 @@ namespace Xenial
         /// <param name="action">The action.</param>
         /// <returns>TestCase.</returns>
         public static TestCase It(string name, Action action)
+            => TastyDefaultScope.It(name, action);
+
+        /// <summary>
+        /// Adds a <see cref="TestCase"/> to the current scope
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="action">The action.</param>
+        /// <returns>TestCase.</returns>
+        public static TestCase It(string name, Func<IAsyncEnumerable<TestCaseResult>> action)
             => TastyDefaultScope.It(name, action);
 
         /// <summary>

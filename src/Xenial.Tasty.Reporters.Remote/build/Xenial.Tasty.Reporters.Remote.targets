@@ -1,0 +1,9 @@
+﻿<Project>
+  
+  <Target Name="AddUseTastyRemoteReporter" BeforeTargets="CoreGenerateAssemblyInfo" Condition="$(UseTastyRemoteReporter)">
+    <ItemGroup>
+      <Compile Include="$(MSBuildThisFileDirectory)RemoteReporterPluginAssemblyInfo.cs" Visible="false" />
+    </ItemGroup>  
+  </Target>
+  
+</Project>

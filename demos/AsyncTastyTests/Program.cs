@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Reporters;
-using Xenial.Delicious.Scopes;
 
 using static Xenial.Tasty;
 

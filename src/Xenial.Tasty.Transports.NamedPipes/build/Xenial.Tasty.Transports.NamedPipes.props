@@ -1,0 +1,8 @@
+﻿<Project>
+  
+  <PropertyGroup>
+    <UseTastyNamedPipeClientTransport>true</UseTastyNamedPipeClientTransport>
+    <UseTastyNamedPipeServerTransport>true</UseTastyNamedPipeServerTransport>
+  </PropertyGroup>
+  
+</Project>

@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Reporters;
 using Xenial.Delicious.Scopes;
 
 namespace Xenial.Delicious.DeclarativeTests
 {
-    class Program
+    internal static class Program
     {
-        static async Task<int> Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
             var scope = new TastyScope()
-                .RegisterReporter(ConsoleReporter.Report)
-                .RegisterReporter(ConsoleReporter.ReportSummary);
+                .UseConsoleReporter()
+                .UseRemoteReporter()
+                .UseNamedPipesTransport();
 
             var group = scope.Describe("I'm a group", () => { });
 

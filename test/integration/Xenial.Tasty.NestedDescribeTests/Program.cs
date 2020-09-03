@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using Xenial.Delicious.Plugins;
+
 using static Xenial.Tasty;
 
 namespace Xenial.Delicious.NestedDescribeTests
 {
-    class Program
+    internal static class Program
     {
-        static async Task<int> Main(string[] args)
+        static Program() => TastyDefaultScope
+            .UseNamedPipesTransport()
+            .UseRemoteReporter();
+
+        internal static async Task<int> Main(string[] args)
         {
             Describe("A group", () =>
             {

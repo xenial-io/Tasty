@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 
-using Xenial.Delicious.Reporters;
+using Xenial.Delicious.Plugins;
 
 using static Xenial.Delicious.Tests.Plugins.InvalidPluginExceptionTests;
+using static Xenial.Delicious.Tests.TastyCommanderTests;
 using static Xenial.Delicious.Tests.TastyScopeTests;
 using static Xenial.Delicious.Tests.TestExecutorTests;
 using static Xenial.Tasty;
@@ -13,12 +13,17 @@ namespace Xenial.Delicious.Tests
 {
     public static class Program
     {
-        static Program() => ConsoleReporter.Register();
+        static Program() => TastyDefaultScope
+            .UseConsoleReporter()
+            .UseRemoteReporter()
+            .UseNamedPipesTransport()
+        ;
 
         public static async Task<int> Main(string[] args)
         {
             Describe(nameof(Tasty), () =>
             {
+                Commander();
                 DependencyTree();
                 DefaultRuntimeCases();
                 OverloadRuntimeCases();

@@ -4,13 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+
 using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Remote;
 using Xenial.Delicious.Transports;
+
 using static System.IO.Path;
 using static SimpleExec.Command;
 using static Xenial.Tasty;
+using static Xenial.Commander;
 
 namespace Xenial.Delicious.Tests
 {
@@ -45,31 +48,19 @@ namespace Xenial.Delicious.Tests
 
             foreach (var integrationTest in integrationTests)
             {
-                It($"should run {integrationTest} with {targetFramework}/{configuration}", async () =>
+                It($"should run {integrationTest} with {targetFramework}/{configuration}", () =>
                 {
                     var workingDirectory = Combine(testsDirectory, integrationTest);
 
-                    using var commander = new TastyCommander()
-                    {
-                        LoadPlugins = false
-                    }
-                    .UseNamedPipesTransport();
-
                     var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
 
-                    var remote = commander.ConnectToRemote(connectionString);
-
-                    var remoteProcess = ReadAsync("dotnet",
+                    return TasteProcess(
+                        connectionString,
+                        "dotnet",
                         $"run --no-build --no-restore --framework {targetFramework} -c {configuration}",
                         workingDirectory,
-                        noEcho: true,
-                        configureEnvironment: env =>
-                        {
-                            env.Add(EnvironmentVariables.InteractiveMode, "false");
-                            env.Add(EnvironmentVariables.TastyConnectionString, connectionString.ToString());
-                        });
-
-                    await Task.WhenAll(remote, remoteProcess);
+                        configureCommander: commander => commander.UseNamedPipesTransport()
+                    );
                 });
             }
         });

@@ -27,7 +27,7 @@ namespace Xenial.Delicious.ColorSchemeTests
             Describe("ColorSchemes", () =>
             {
                 It("can be adjusted", () => true);
-                It("can be whatever you want", () => false);
+                It("can be whatever you want", () => true);
             });
 
             await Run(args);

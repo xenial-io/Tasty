@@ -15,7 +15,14 @@ namespace Xenial.Delicious.CalculatorTests
     {
         public int Add(int a, int b) => a + b;
         public int Sub(int a, int b) => a - b;
-        public int Div(int a, int b) => a / b;
+        public int Div(int a, int b)
+        {
+            if (b == 0)
+            {
+                return -1;
+            }
+            return a / b;
+        }
     }
 
     internal static class Program

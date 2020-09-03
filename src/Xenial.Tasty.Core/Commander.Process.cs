@@ -106,7 +106,7 @@ namespace Xenial.Delicious.Commanders
             }, progress)
         { }
 
-        public TastyProcessCommander(Uri connectionString, Func<Process> processFactory, IProgress<(string line, bool isError, int? exitCode)>? progress = null) : base(connectionString, (cancellationToken) =>
+        internal TastyProcessCommander(Uri connectionString, Func<Process> processFactory, IProgress<(string line, bool isError, int? exitCode)>? progress = null) : base(connectionString, (cancellationToken) =>
         {
             var process = processFactory();
             process.StartInfo.EnvironmentVariables[EnvironmentVariables.TastyConnectionString] = connectionString.ToString();

@@ -11,9 +11,8 @@ using Xenial.Delicious.Remote;
 using Xenial.Delicious.Transports;
 
 using static System.IO.Path;
-using static SimpleExec.Command;
-using static Xenial.Tasty;
 using static Xenial.Commander;
+using static Xenial.Tasty;
 
 namespace Xenial.Delicious.Tests
 {

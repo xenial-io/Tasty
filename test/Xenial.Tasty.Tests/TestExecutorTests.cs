@@ -82,8 +82,14 @@ namespace Xenial.Delicious.Tests
                         () => test.TestOutcome.ShouldBe(outcome),
                         () =>
                         {
-                            if (ignored) A.CallTo(action).MustNotHaveHappened();
-                            else A.CallTo(action).MustHaveHappenedOnceExactly();
+                            if (ignored)
+                            {
+                                A.CallTo(action).MustNotHaveHappened();
+                            }
+                            else
+                            {
+                                A.CallTo(action).MustHaveHappenedOnceExactly();
+                            }
                         }
                     );
                 });

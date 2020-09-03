@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -33,10 +34,16 @@ namespace Xenial.Delicious.Cli.Commands
                         var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
 
                         Console.WriteLine(csProjFileName);
-                        var commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create("dotnet", $"run --no-build --no-restore {csProjFileName}", configureEnvironment: env =>
+
+                        var progress = new Progress<(string line, bool isError, int? exitCode)>(p =>
+                        {
+                            Console.WriteLine(p.line);
+                        });
+
+                        var commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create("dotnet", $"run --no-build --no-restore -c Debug -f netcoreapp3.1 --project {csProjFileName}", configureEnvironment: env =>
                         {
                             env[EnvironmentVariables.InteractiveMode] = "true";
-                        })));
+                        })), progress);
 
                         commander.UseNamedPipesTransport()
                                  .RegisterReporter(ConsoleReporter.Report)

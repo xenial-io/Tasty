@@ -115,7 +115,7 @@ namespace Xenial.Delicious.Cli.Views
             this.viewModel.LogProgress.ProgressChanged += LogProgress_ProgressChanged;
             this.viewModel.Commands.CollectionChanged += Commands_CollectionChanged;
             Top.Initialized += Top_Initialized;
-            Top.SetFocus(logView);
+            logView.SetFocus();
         }
 
         private async void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -124,7 +124,7 @@ namespace Xenial.Delicious.Cli.Views
             commandsListView.CanFocus = viewModel.Commands.Count > 0;
             if (commandsListView.CanFocus)
             {
-                Top.SetFocus(commandsListView);
+                commandsListView.SetFocus();
             }
         }
 
@@ -176,7 +176,7 @@ namespace Xenial.Delicious.Cli.Views
         {
             var commandItem = (CommandItem)e.Value;
 
-            Top.SetFocus(rightPane);
+            rightPane.SetFocus();
 
             await viewModel.ExecuteCommand(commandItem).ConfigureAwait(false);
         }

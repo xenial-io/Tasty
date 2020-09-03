@@ -12,10 +12,10 @@ namespace Xenial.Delicious.Commanders
     {
         public Uri ConnectionString { get; }
 
-        private readonly Lazy<Func<Task<int>>> remoteTaskFactory;
+        private readonly Func<CancellationToken, Task<int>> remoteTaskFactory;
 
-        public TastyRemoteCommander(Uri connectionString, Func<Func<Task<int>>> taskFactory)
-            => (ConnectionString, remoteTaskFactory) = (connectionString, new Lazy<Func<Task<int>>>(taskFactory));
+        public TastyRemoteCommander(Uri connectionString, Func<CancellationToken, Task<int>> taskFactory)
+            => (ConnectionString, remoteTaskFactory) = (connectionString, taskFactory);
 
         public async Task TryConnect(CancellationToken cancellationToken = default)
         {
@@ -47,7 +47,7 @@ namespace Xenial.Delicious.Commanders
 
             var remote = TryConnect(cancellationToken).ConfigureAwait(false);
 
-            var tests = remoteTaskFactory.Value();
+            var tests = remoteTaskFactory(cancellationToken);
 
             await remote;
 

@@ -31,6 +31,8 @@ namespace Xenial.Delicious.Cli.Views
         internal string CurrentProject { get; private set; } = string.Empty;
 
         internal Progress<(string line, bool isError, int? exitCode)> LogProgress { get; }
+        internal IProgress<(string line, bool isError, int? exitCode)> Logger => LogProgress;
+
         internal ObservableCollection<CommandItem> Commands { get; } = new ObservableCollection<CommandItem>();
         private CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
 
@@ -40,10 +42,10 @@ namespace Xenial.Delicious.Cli.Views
 
             LogProgress = new Progress<(string line, bool isError, int? exitCode)>(p =>
             {
-                LogText += $"{p.line.TrimEnd(Environment.NewLine.ToArray())}{Environment.NewLine}";
+                LogText += $"{p.line?.TrimEnd(Environment.NewLine.ToArray())}{Environment.NewLine}";
             });
 
-            Commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create("dotnet", $"run --no-build --no-restore -f netcoreapp3.1 {CurrentProject}", configureEnvironment: env =>
+            Commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create("dotnet", $"run --no-build --no-restore -c Debug -f netcoreapp3.1 --project {CurrentProject}", configureEnvironment: env =>
             {
                 env[EnvironmentVariables.InteractiveMode] = "true";
             })), LogProgress);
@@ -119,7 +121,7 @@ namespace Xenial.Delicious.Cli.Views
 
         //TODO: once we have the last exitCode and isRunning props we need to report those
         private void WriteLine(string line = "")
-            => ((IProgress<(string line, bool isRunning, int exitCode)>)LogProgress).Report((line, true, 0));
+            => Logger.Report((line, true, 0));
 
         public Task ReportSummary(IEnumerable<TestCaseResult> tests)
         {

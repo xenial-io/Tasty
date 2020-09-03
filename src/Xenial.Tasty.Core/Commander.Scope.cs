@@ -12,7 +12,7 @@ namespace Xenial.Delicious.Commanders
     public class TastyScopeCommander : TastyRemoteCommander
     {
         public TastyScopeCommander(Uri connectionString, Func<TastyScope> createScope)
-            : base(connectionString, () => () =>
+            : base(connectionString, (cancellationToken) =>
             {
                 var scope = createScope();
                 return scope.Run();

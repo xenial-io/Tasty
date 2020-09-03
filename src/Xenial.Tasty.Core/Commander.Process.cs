@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Threading;
 
 using Xenial.Delicious.FeatureDetection;
+using Xenial.Delicious.Remote;
 
 namespace Xenial.Delicious.Commanders
 {
@@ -105,18 +106,22 @@ namespace Xenial.Delicious.Commanders
             }, progress)
         { }
 
-        public TastyProcessCommander(Uri connectionString, Func<Process> processFactory, IProgress<(string line, bool isError, int? exitCode)>? progress = null) : base(connectionString, () => async () =>
+        public TastyProcessCommander(Uri connectionString, Func<Process> processFactory, IProgress<(string line, bool isError, int? exitCode)>? progress = null) : base(connectionString, (cancellationToken) =>
         {
-            using var proc = processFactory();
-            await foreach (var (line, isError, exitCode) in proc.RunAsync())
+            var process = processFactory();
+            process.StartInfo.EnvironmentVariables[EnvironmentVariables.TastyConnectionString] = connectionString.ToString();
+
+            if (progress is object)
             {
-                progress?.Report((line, isError, exitCode));
-                if (exitCode.HasValue)
-                {
-                    return exitCode.Value;
-                }
+                process.OutputDataReceived += (sender, eventArgs) => progress.Report((eventArgs.Data, false, null));
+                process.ErrorDataReceived += (sender, eventArgs) => progress.Report((eventArgs.Data, true, null));
             }
-            return 0;
+
+            process.EnableRaisingEvents = true;
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            return process.WaitForExitAsync(cancellationToken);
         }) => Progress = progress;
     }
 }

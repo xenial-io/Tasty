@@ -58,7 +58,7 @@ jobs:
 
     # Run from the installed tool location
     - name: Build
-      run: "c:\\dotnet-tools\\wyam.exe docs -o artifacts\\docs"
+      run: "c:\\dotnet-tools\\wyam.exe docs -o ..\\artifacts\\docs"
     - name: List
       run: "dir artifacts\\docs"
 

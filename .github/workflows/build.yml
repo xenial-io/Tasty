@@ -54,13 +54,12 @@ jobs:
 
     # Install with a tool location to trick tool resolution
     - name: Install Wyam.Tool
-      run: |
-        dotnet tool install --tool-path c:\dotnet-tools Wyam.Tool
-    
+      run: dotnet tool install --tool-path c:\dotnet-tools Wyam.Tool
+
     # Run from the installed tool location
     - name: Build
-      run: c:\dotnet-tools\wyam.exe docs -o artifacts/docs
-    
+      run: c:\dotnet-tools\wyam.exe docs -o ..\artifacts\docs
+
     - uses: actions/upload-artifact@v2
       if: startsWith(github.ref, 'refs/tags/v')
       with:

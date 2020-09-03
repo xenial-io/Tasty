@@ -36,17 +36,5 @@ namespace Xenial
 
             return commander.Run();
         }
-
-        //public static IAsyncEnumerable<TestCaseResult> TasteProcess(string scheme, string command, string arguments)
-        //{
-        //    using var commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create(command, arguments));
-        //    return commander.Run();
-        //}
-
-        //public static IAsyncEnumerable<TestCaseResult> TasteProcess(string command, string arguments)
-        //{
-        //    using var commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create(command, arguments));
-        //    return commander.Run();
-        //}
     }
 }

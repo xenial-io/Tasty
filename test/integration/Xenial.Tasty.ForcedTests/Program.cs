@@ -1,37 +1,28 @@
 ﻿using System;
-using System.Threading.Tasks;
 
+using Xenial;
 using Xenial.Delicious.Plugins;
 
 using static Xenial.Tasty;
 
-namespace Xenial.Delicious.ForcedTests
+TastyDefaultScope
+    .UseNamedPipesTransport()
+    .UseRemoteReporter();
+
+Describe("ForcedTests", () =>
 {
-    internal static class Program
+    It("Should not run #1", () => false);
+    FIt("Should run #1", () => true);
+    FIt("Should run #2", () => true);
+    It("Should not run #2", () => false);
+
+    FDescribe("All those tests are in focus mode", () =>
     {
-        static Program() => TastyDefaultScope
-            .UseNamedPipesTransport()
-            .UseRemoteReporter();
+        It("Focused #1", () => true);
+        It("Focused #2", () => true);
+        It("Focused #3", () => false)
+            .Ignored("I'm ignored 😥");
+    });
+});
 
-        internal static async Task<int> Main(string[] args)
-        {
-            Describe("ForcedTests", () =>
-            {
-                It("Should not run #1", () => false);
-                FIt("Should run #1", () => true);
-                FIt("Should run #2", () => true);
-                It("Should not run #2", () => false);
-
-                FDescribe("All those tests are in focus mode", () =>
-                {
-                    It("Focused #1", () => true);
-                    It("Focused #2", () => true);
-                    It("Focused #3", () => false)
-                        .Ignored("I'm ignored 😥");
-                });
-            });
-
-            return await Run(args);
-        }
-    }
-}
+return await Run(args);

@@ -1,48 +1,38 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 using Xenial.Delicious.Plugins;
 
 using static Xenial.Tasty;
 
-namespace Xenial.Delicious.DataDrivenTests
+TastyDefaultScope
+    .UseNamedPipesTransport()
+    .UseRemoteReporter();
+
+Describe("Data driven tests", async () =>
 {
-    internal static class Program
+    var numbers = Enumerable.Range(0, 3);
+
+    foreach (var number in numbers)
     {
-        static Program() => TastyDefaultScope
-            .UseNamedPipesTransport()
-            .UseRemoteReporter();
+        It($"can be as simple as a foreach #{number}", () => true);
+    }
 
-        internal static async Task<int> Main(string[] args)
+    _ = numbers
+        .Select((n) => It($"can be a linq expression #{n}", () => true))
+        .ToList();
+
+    using (var reader = File.OpenText("data.txt"))
+    {
+        var fileText = await reader.ReadToEndAsync();
+        var cases = fileText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+        foreach (var @case in cases)
         {
-            Describe("Data driven tests", async () =>
-            {
-                var numbers = Enumerable.Range(0, 3);
-
-                foreach (var number in numbers)
-                {
-                    It($"can be as simple as a foreach #{number}", () => true);
-                }
-
-                _ = numbers
-                    .Select((n) => It($"can be a linq expression #{n}", () => true))
-                    .ToList();
-
-                using (var reader = File.OpenText("data.txt"))
-                {
-                    var fileText = await reader.ReadToEndAsync();
-                    var cases = fileText.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-                    foreach (var @case in cases)
-                    {
-                        It($"can be anything, your imagination is the limit #{@case}", () => true);
-                    }
-                }
-            });
-
-            return await Run(args);
+            It($"can be anything, your imagination is the limit #{@case}", () => true);
         }
     }
-}
+});
+
+return await Run(args);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -11,11 +12,27 @@ namespace Xenial.Delicious.Plugins
         where TPluginAttribute : Attribute, IPluginAttribute
         where TPluginDelegate : Delegate
     {
-        internal virtual Task LoadPlugins(TPluginArgument pluginArgument)
+        internal Func<IEnumerable<TPluginAttribute>> FindAttributes { get; set; } = FindAssemblyAttributes;
+        private static IEnumerable<TPluginAttribute> FindAssemblyAttributes()
         {
             var entryAssembly = Assembly.GetEntryAssembly();
 
             var pluginAttributes = entryAssembly.GetCustomAttributes(typeof(TPluginAttribute), true).OfType<TPluginAttribute>();
+
+            return pluginAttributes;
+        }
+
+        internal virtual Task LoadPlugins(TPluginArgument pluginArgument)
+        {
+            InvalidPluginException CreatePluginException(TPluginAttribute pluginAttribute, Exception? ex = null)
+                => new InvalidPluginException(@$"Unable to load plugin {pluginAttribute.PluginType} from {pluginAttribute.PluginType.Assembly.Location}.
+The plugin needs to be compatible with delegate {typeof(TastyPlugin).FullName}.
+It must be a static extension method that accepts and returns a {typeof(TastyScope).FullName}",
+                    pluginAttribute,
+                    ex);
+
+
+            var pluginAttributes = FindAttributes();
 
             foreach (var pluginAttribute in pluginAttributes)
             {
@@ -24,20 +41,23 @@ namespace Xenial.Delicious.Plugins
 #endif
                 try
                 {
+                    var methods = pluginAttribute.PluginType.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(m => m.Name == pluginAttribute.PluginEntryPoint);
+                    var method = methods
+                        .FirstOrDefault(m => typeof(TPluginArgument)
+                        .IsAssignableFrom(m.GetParameters().FirstOrDefault()?.ParameterType))
+                        ?? throw CreatePluginException(pluginAttribute);
+
                     var @delegate = (TPluginDelegate)Delegate.CreateDelegate(
                         typeof(TPluginDelegate),
                         null,
-                        pluginAttribute.PluginType.GetMethod(pluginAttribute.PluginEntryPoint, BindingFlags.Static | BindingFlags.Public)
+                        method
                     );
+
                     @delegate.DynamicInvoke(pluginArgument);
                 }
                 catch (ArgumentException ex)
                 {
-                    throw new InvalidPluginException(@$"Unable to load plugin {pluginAttribute.PluginType} from {pluginAttribute.PluginType.Assembly.Location}.
-The plugin needs to be compatible with delegate {typeof(TastyPlugin).FullName}.
-It must be a static extension method that accepts and returns a {typeof(TastyScope).FullName}",
-                    pluginAttribute,
-                    ex);
+                    throw CreatePluginException(pluginAttribute, ex);
                 }
 #if DEBUG
                 Console.WriteLine($"Loaded Plugin: {pluginAttribute.PluginType} from {pluginAttribute.PluginType.Assembly.Location}");

@@ -8,11 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
-    <ProjectReference Include="..\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
-    <ProjectReference Include="..\Xenial.Tasty.Reporters.Remote\Xenial.Tasty.Reporters.Remote.csproj" />
-    <ProjectReference Include="..\Xenial.Tasty.Transports.InMemory\Xenial.Tasty.Transports.InMemory.csproj" />
-    <ProjectReference Include="..\Xenial.Tasty.Transports.NamedPipes\Xenial.Tasty.Transports.NamedPipes.csproj" />
+    <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj">
+      <PrivateAssets>None</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj">
+      <PrivateAssets>None</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\Xenial.Tasty.Reporters.Remote\Xenial.Tasty.Reporters.Remote.csproj">
+      <PrivateAssets>None</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\Xenial.Tasty.Transports.InMemory\Xenial.Tasty.Transports.InMemory.csproj">
+      <PrivateAssets>None</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\Xenial.Tasty.Transports.NamedPipes\Xenial.Tasty.Transports.NamedPipes.csproj">
+      <PrivateAssets>None</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
   
   <ItemGroup>	

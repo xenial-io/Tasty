@@ -67,7 +67,7 @@ Describe("LifecycleTests", () =>
     });
 });
 
-await Run(args);
+return await Run(args);
 
 internal class Calculator
 {

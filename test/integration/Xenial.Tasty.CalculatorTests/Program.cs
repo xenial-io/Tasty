@@ -25,7 +25,7 @@ It("should not divide by 0", () =>
     sut.Div(1, 0).ShouldBe(-1);
 });
 
-await Run(args);
+return await Run(args);
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "By design")]
 public class Calculator

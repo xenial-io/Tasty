@@ -10,9 +10,9 @@ using System.IO;
 
 namespace Tasty.Build
 {
-    static partial class Program
+    internal static partial class Program
     {
-        static async Task Main(string[] args)
+        internal static async Task Main(string[] args)
         {
             static string logOptions(string target)
                 => $"/maxcpucount /nologo /verbosity:minimal /bl:./artifacts/logs/tasty.{target}.binlog";
@@ -63,7 +63,7 @@ namespace Tasty.Build
             });
 
             Target("lic", DependsOn("test"),
-                async () => 
+                async () =>
                 {
                     var files = Directory.EnumerateFiles(@"src", "*.csproj", SearchOption.AllDirectories).Select(file => new
                     {
@@ -93,7 +93,7 @@ namespace Tasty.Build
             {
                 var files = Directory.EnumerateFiles("artifacts/nuget", "*.nupkg");
 
-                foreach(var file in files)
+                foreach (var file in files)
                 {
                     await RunAsync("dotnet", $"nuget push {file} --skip-duplicate -s https://api.nuget.org/v3/index.json -k {Environment.GetEnvironmentVariable("NUGET_AUTH_TOKEN")}",
                         noEcho: true
@@ -101,7 +101,7 @@ namespace Tasty.Build
                 }
             });
 
-            Target("release", async () => 
+            Target("release", async () =>
             {
                 await Release();
             });

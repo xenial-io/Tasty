@@ -37,7 +37,7 @@ Describe("LifecycleNativeTests", () =>
     });
 });
 
-await Run(args);
+return await Run(args);
 
 internal class Calculator
 {

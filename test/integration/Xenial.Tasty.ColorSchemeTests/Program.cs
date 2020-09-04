@@ -23,4 +23,4 @@ Describe("ColorSchemes", () =>
     It("can be whatever you want", () => true);
 });
 
-await Run(args);
+return await Run(args);

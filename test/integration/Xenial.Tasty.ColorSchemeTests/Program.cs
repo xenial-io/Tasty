@@ -1,36 +1,26 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Reporters;
 
 using static Xenial.Tasty;
 
-namespace Xenial.Delicious.ColorSchemeTests
+TastyDefaultScope
+    .UseNamedPipesTransport()
+    .UseRemoteReporter();
+
+ConsoleReporter.Scheme = new ColorScheme
 {
-    internal static class Program
-    {
-        static Program() => TastyDefaultScope
-               .UseNamedPipesTransport()
-               .UseRemoteReporter();
+    ErrorIcon = "🤬",
+    ErrorColor = ConsoleColor.Magenta,
+    SuccessIcon = "🥰",
+    SuccessColor = ConsoleColor.White
+};
 
-        internal static async Task Main(string[] args)
-        {
-            ConsoleReporter.Scheme = new ColorScheme
-            {
-                ErrorIcon = "🤬",
-                ErrorColor = ConsoleColor.Magenta,
-                SuccessIcon = "🥰",
-                SuccessColor = ConsoleColor.White
-            };
+Describe("ColorSchemes", () =>
+{
+    It("can be adjusted", () => true);
+    It("can be whatever you want", () => true);
+});
 
-            Describe("ColorSchemes", () =>
-            {
-                It("can be adjusted", () => true);
-                It("can be whatever you want", () => true);
-            });
-
-            await Run(args);
-        }
-    }
-}
+await Run(args);

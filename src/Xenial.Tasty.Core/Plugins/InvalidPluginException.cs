@@ -11,7 +11,7 @@ namespace Xenial.Delicious.Plugins
         public string TastyPluginType { get; }
         public string TastyPluginEntryPoint { get; }
 
-        internal InvalidPluginException(string message, IPluginAttribute pluginAttribute, Exception innerException)
+        internal InvalidPluginException(string message, IPluginAttribute pluginAttribute, Exception? innerException)
             : base(message, innerException)
         {
             if (pluginAttribute == null)

@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-
 using Xenial.Delicious.Plugins;
-
 using static Xenial.Delicious.Tests.Plugins.InvalidPluginExceptionTests;
+using static Xenial.Delicious.Tests.Plugins.PluginLoaderTests;
 using static Xenial.Delicious.Tests.TastyCommanderTests;
 using static Xenial.Delicious.Tests.TastyScopeTests;
 using static Xenial.Delicious.Tests.TestExecutorTests;
@@ -23,6 +22,7 @@ namespace Xenial.Delicious.Tests
         {
             Describe(nameof(Tasty), () =>
             {
+                PluginLoader();
                 Commander();
                 DependencyTree();
                 DefaultRuntimeCases();

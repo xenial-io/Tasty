@@ -138,7 +138,7 @@ namespace Xenial
             return test;
         }
 
-        static void AddToGroup(TestGroup group, TestCase test)
+        private static void AddToGroup(TestGroup group, TestCase test)
         {
             test.Group = group;
             group.Executors.Add(test);

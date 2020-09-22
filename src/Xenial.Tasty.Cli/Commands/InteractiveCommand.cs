@@ -35,7 +35,7 @@ namespace Xenial.Delicious.Cli.Commands
 
                         Console.WriteLine(csProjFileName);
 
-                        var progress = new Progress<(string line, bool isError, int? exitCode)>(p =>
+                        var progress = new Progress<(string? line, bool isError, int? exitCode)>(p =>
                         {
                             Console.WriteLine(p.line);
                         });
@@ -89,7 +89,7 @@ namespace Xenial.Delicious.Cli.Commands
         private static Task WaitForInput(IList<SerializableTastyCommand> commands, TastyCommander commander)
             => Promise(async (resolve) =>
             {
-                Func<Task> cancelKeyPress = () => Promise((resolve, reject) =>
+                Task cancelKeyPress() => Promise((resolve, reject) =>
                 {
                     Console.CancelKeyPress += (_, e) =>
                     {
@@ -101,7 +101,7 @@ namespace Xenial.Delicious.Cli.Commands
                     };
                 });
 
-                Func<Task> endTestPipelineSignaled = () => Promise((resolve) =>
+                Task endTestPipelineSignaled() => Promise((resolve) =>
                 {
                     commander.EndTestPipelineSignaled = () =>
                     {
@@ -110,7 +110,7 @@ namespace Xenial.Delicious.Cli.Commands
                     };
                 });
 
-                Func<Task> testPipelineCompletedSignaled = () => Promise((resolve) =>
+                Task testPipelineCompletedSignaled() => Promise((resolve) =>
                 {
                     commander.TestPipelineCompletedSignaled = () =>
                     {
@@ -119,7 +119,7 @@ namespace Xenial.Delicious.Cli.Commands
                     };
                 });
 
-                Func<Task<ConsoleKeyInfo>> readConsoleKey = () => Promise<ConsoleKeyInfo>(resolve =>
+                Task<ConsoleKeyInfo> readConsoleKey() => Promise<ConsoleKeyInfo>(resolve =>
                 {
                     _ = Task.Run(() =>
                     {
@@ -128,7 +128,7 @@ namespace Xenial.Delicious.Cli.Commands
                     });
                 });
 
-                Action writeCommands = () =>
+                void writeCommands()
                 {
                     Console.WriteLine("Interactive Mode");
                     Console.WriteLine("================");
@@ -140,18 +140,18 @@ namespace Xenial.Delicious.Cli.Commands
 
                     Console.WriteLine("c - Cancel");
                     Console.WriteLine("================");
-                };
+                }
 
-                Func<ConsoleKeyInfo, SerializableTastyCommand?> findCommand = (info) =>
+                SerializableTastyCommand? findCommand(ConsoleKeyInfo info)
                 {
                     var command = info.Key == ConsoleKey.Enter
                         ? commands.FirstOrDefault(c => c.IsDefault)
                         : commands.FirstOrDefault(c => string.Equals(c.Name, info.Key.ToString(), StringComparison.OrdinalIgnoreCase));
 
                     return command;
-                };
+                }
 
-                Func<Task<Func<Task>>> readInput = async () =>
+                async Task<Func<Task>> readInput()
                 {
                     var info = await readConsoleKey().ConfigureAwait(false);
                     var command = findCommand(info);
@@ -179,7 +179,7 @@ namespace Xenial.Delicious.Cli.Commands
                     }
 
                     return () => Task.CompletedTask;
-                };
+                }
 
                 Task waitForInput() => Promise(async (resolve, reject) =>
                 {

@@ -13,7 +13,14 @@
                 {
                     if (!context.IsInteractive)
                     {
+#if NET5
+                        if (context.RemoteStream != null)
+                        {
+                            await context.RemoteStream.DisposeAsync().ConfigureAwait(false);
+                        }
+#else
                         context.RemoteStream?.Dispose();
+#endif
                         context.Remote?.Dispose();
                     }
                 }

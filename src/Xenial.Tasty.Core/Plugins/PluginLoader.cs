@@ -15,7 +15,7 @@ namespace Xenial.Delicious.Plugins
         internal Func<IEnumerable<TPluginAttribute>> FindAttributes { get; set; } = FindAssemblyAttributes;
         private static IEnumerable<TPluginAttribute> FindAssemblyAttributes()
         {
-            var entryAssembly = Assembly.GetEntryAssembly();
+            var entryAssembly = Assembly.GetEntryAssembly() ?? throw new ArgumentNullException(nameof(Assembly.GetEntryAssembly));
 
             var pluginAttributes = entryAssembly.GetCustomAttributes(typeof(TPluginAttribute), true).OfType<TPluginAttribute>();
 
@@ -24,13 +24,12 @@ namespace Xenial.Delicious.Plugins
 
         internal virtual Task LoadPlugins(TPluginArgument pluginArgument)
         {
-            InvalidPluginException CreatePluginException(TPluginAttribute pluginAttribute, Exception? ex = null)
+            static InvalidPluginException CreatePluginException(TPluginAttribute pluginAttribute, Exception? ex = null)
                 => new InvalidPluginException(@$"Unable to load plugin {pluginAttribute.PluginType} from {pluginAttribute.PluginType.Assembly.Location}.
 The plugin needs to be compatible with delegate {typeof(TastyPlugin).FullName}.
 It must be a static extension method that accepts and returns a {typeof(TastyScope).FullName}",
                     pluginAttribute,
                     ex);
-
 
             var pluginAttributes = FindAttributes();
 

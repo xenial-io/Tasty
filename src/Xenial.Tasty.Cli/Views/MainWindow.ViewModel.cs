@@ -30,8 +30,8 @@ namespace Xenial.Delicious.Cli.Views
         internal string LogText { get; private set; } = string.Empty;
         internal string CurrentProject { get; private set; } = string.Empty;
 
-        internal Progress<(string line, bool isError, int? exitCode)> LogProgress { get; }
-        internal IProgress<(string line, bool isError, int? exitCode)> Logger => LogProgress;
+        internal Progress<(string? line, bool isError, int? exitCode)> LogProgress { get; }
+        internal IProgress<(string? line, bool isError, int? exitCode)> Logger => LogProgress;
 
         internal ObservableCollection<CommandItem> Commands { get; } = new ObservableCollection<CommandItem>();
         private CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
@@ -40,7 +40,7 @@ namespace Xenial.Delicious.Cli.Views
         {
             var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
 
-            LogProgress = new Progress<(string line, bool isError, int? exitCode)>(p =>
+            LogProgress = new Progress<(string? line, bool isError, int? exitCode)>(p =>
             {
                 LogText += $"{p.line?.TrimEnd(Environment.NewLine.ToArray())}{Environment.NewLine}";
             });

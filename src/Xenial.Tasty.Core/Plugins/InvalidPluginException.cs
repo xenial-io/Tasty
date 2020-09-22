@@ -19,7 +19,7 @@ namespace Xenial.Delicious.Plugins
                 throw new ArgumentNullException(nameof(pluginAttribute));
             }
 
-            TastyPluginType = pluginAttribute.PluginType.FullName;
+            TastyPluginType = pluginAttribute.PluginType.FullName ?? throw new ArgumentException($"{pluginAttribute.PluginType} does not have a {nameof(Type.FullName)}");
             TastyPluginEntryPoint = pluginAttribute.PluginEntryPoint;
         }
 
@@ -27,11 +27,13 @@ namespace Xenial.Delicious.Plugins
             : base(info, context)
             => (TastyPluginType, TastyPluginEntryPoint)
             = (
-                info.GetString(nameof(TastyPluginType)),
-                info.GetString(nameof(TastyPluginEntryPoint))
+                info.GetString(nameof(TastyPluginType)) ?? string.Empty,
+                info.GetString(nameof(TastyPluginEntryPoint)) ?? string.Empty
             );
 
+#if FULL_FRAMEWORK
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+#endif
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null)

@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Threading;
 
@@ -23,7 +22,7 @@ namespace Xenial.Delicious.Commanders
             bool captureOutput = true,
             string? windowsName = null,
             string? windowsArgs = null,
-            Action<IDictionary<string, string>>? configureEnvironment = null)
+            Action<IDictionary<string, string?>>? configureEnvironment = null)
         {
             var isWindows = FeatureDetector.IsWindows();
 
@@ -47,11 +46,11 @@ namespace Xenial.Delicious.Commanders
             return startInfo;
         }
 
-        public static async IAsyncEnumerable<(string line, bool isError, int? exitCode)> RunAsync(this Process process, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<(string? line, bool isError, int? exitCode)> RunAsync(this Process process, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             using (process)
             {
-                var queue = new ConcurrentQueue<(string line, bool isError, int? exitCode)>();
+                var queue = new ConcurrentQueue<(string? line, bool isError, int? exitCode)>();
 
                 process.OutputDataReceived += (sender, eventArgs) => queue.Enqueue((eventArgs.Data, false, null));
                 process.ErrorDataReceived += (sender, eventArgs) => queue.Enqueue((eventArgs.Data, true, null));
@@ -69,7 +68,7 @@ namespace Xenial.Delicious.Commanders
                         Console.WriteLine(ex.ToString());
                     }
 
-                    var processTask = process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+                    var processTask = AwaitExtensions.WaitForExitAsync(process, cancellationToken).ConfigureAwait(false);
 
                     while (!process.HasExited)
                     {
@@ -87,7 +86,8 @@ namespace Xenial.Delicious.Commanders
                         }
                     }
 
-                    var exitCode = await processTask;
+                    await processTask;
+                    var exitCode = process.ExitCode;
 
                     yield return (string.Empty, exitCode != 0, exitCode);
                 }
@@ -97,16 +97,16 @@ namespace Xenial.Delicious.Commanders
 
     public class TastyProcessCommander : TastyRemoteCommander
     {
-        public IProgress<(string line, bool isError, int? exitCode)>? Progress { get; }
+        public IProgress<(string? line, bool isError, int? exitCode)>? Progress { get; }
 
-        public TastyProcessCommander(Uri connectionString, Func<ProcessStartInfo> processFactory, IProgress<(string line, bool isError, int? exitCode)>? progress = null)
+        public TastyProcessCommander(Uri connectionString, Func<ProcessStartInfo> processFactory, IProgress<(string? line, bool isError, int? exitCode)>? progress = null)
             : this(connectionString, () => new Process
             {
                 StartInfo = processFactory()
             }, progress)
         { }
 
-        internal TastyProcessCommander(Uri connectionString, Func<Process> processFactory, IProgress<(string line, bool isError, int? exitCode)>? progress = null) : base(connectionString, (cancellationToken) =>
+        internal TastyProcessCommander(Uri connectionString, Func<Process> processFactory, IProgress<(string? line, bool isError, int? exitCode)>? progress = null) : base(connectionString, (cancellationToken) =>
         {
             var process = processFactory();
             process.StartInfo.EnvironmentVariables[EnvironmentVariables.TastyConnectionString] = connectionString.ToString();
@@ -121,7 +121,7 @@ namespace Xenial.Delicious.Commanders
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-            return process.WaitForExitAsync(cancellationToken);
+            return AwaitExtensions.WaitForExitAsync(process, cancellationToken);
         }) => Progress = progress;
     }
 }

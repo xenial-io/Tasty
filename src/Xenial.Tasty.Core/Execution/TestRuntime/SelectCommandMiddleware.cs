@@ -18,7 +18,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
                     {
                         var command = await Promise<TastyCommand?>((resolve, reject) =>
                         {
-                            void ExecuteCommand(object _, Protocols.ExecuteCommandEventArgs e)
+                            void ExecuteCommand(object? _, Protocols.ExecuteCommandEventArgs e)
                             {
                                 var cmd = context.Scope.Commands.Values.FirstOrDefault(p => p.Name == e.CommandName);
                                 context.Remote.ExecuteCommand -= ExecuteCommand;
@@ -26,6 +26,7 @@ namespace Xenial.Delicious.Execution.TestRuntime
                             }
                             context.Remote.ExecuteCommand -= ExecuteCommand;
                             context.Remote.ExecuteCommand += ExecuteCommand;
+
                             context.Remote.CancellationRequested += (s, _) => reject();
                         }).ConfigureAwait(false);
 

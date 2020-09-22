@@ -48,12 +48,12 @@ namespace Tasty.Build
 
             Target("test", DependsOn("build"), async () =>
             {
-                var (fullFramework, netcore) = FindTfms();
+                var (fullFramework, netcore, net5) = FindTfms();
 
                 var tfms = RuntimeInformation
                             .IsOSPlatform(OSPlatform.Windows)
-                            ? new[] { fullFramework, netcore }
-                            : new[] { netcore };
+                            ? new[] { fullFramework, netcore, net5 }
+                            : new[] { netcore, net5 };
 
                 var tests = tfms
                     .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Tasty.Tests/Xenial.Tasty.Tests.csproj --no-build --no-restore --framework {tfm} -c {Configuration} {properties()}"))

@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   
   <PropertyGroup>
     <Product>Xenial.Tasty</Product>
@@ -9,7 +9,8 @@
     <FullFrameworkVersion>net462</FullFrameworkVersion>
     <NetStandardVersion>netstandard2.0</NetStandardVersion>
     <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
-    <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <Net5Version>net5</Net5Version>
+    <TargetFrameworks>$(Net5Version);$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

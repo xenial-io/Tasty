@@ -6,7 +6,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <TargetFrameworks>$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
+    <TargetFrameworks>$(Net5Version);$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
   </PropertyGroup>
 	
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">

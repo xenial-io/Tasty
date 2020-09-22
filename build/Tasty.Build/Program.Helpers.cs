@@ -9,13 +9,14 @@ namespace Tasty.Build
 {
     static partial class Program
     {
-        static (string fullFramework, string netcore) FindTfms()
+        static (string fullFramework, string netcore, string net5) FindTfms()
         {
             var dirProps = XElement.Load("Directory.Build.props");
             var props = dirProps.Descendants("PropertyGroup");
             var fullFramework = props.Descendants("FullFrameworkVersion").First().Value;
             var netcore = props.Descendants("NetCoreVersion").First().Value;
-            return (fullFramework, netcore);
+            var net5 = props.Descendants("Net5Version").First().Value;
+            return (fullFramework, netcore, net5);
         }
 
         async static Task EnsureTools()

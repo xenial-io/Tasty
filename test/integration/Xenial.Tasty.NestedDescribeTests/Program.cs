@@ -1,33 +1,30 @@
 ﻿using System;
-using System.Threading.Tasks;
+
+using Xenial.Delicious.Plugins;
 
 using static Xenial.Tasty;
 
-namespace Xenial.Delicious.NestedDescribeTests
+TastyDefaultScope
+    .UseNamedPipesTransport()
+    .UseRemoteReporter();
+
+Describe("A group", () =>
 {
-    class Program
+    It("can contain a test", () => true);
+
+    Describe("with nesting", () =>
     {
-        static async Task<int> Main(string[] args)
+        It("should be allowed", () => true);
+    });
+
+    Describe("that has multiple groups", () =>
+    {
+        Describe("with really deep nesting", () =>
         {
-            Describe("A group", () =>
-            {
-                It("can contain a test", () => true);
+            It("should be allowed", () => true);
+        });
+    });
+});
 
-                Describe("with nesting", () =>
-                {
-                    It("should be allowed", () => true);
-                });
+return await Run(args);
 
-                Describe("that has multiple groups", () =>
-                {
-                    Describe("with really deep nesting", () =>
-                    {
-                        It("should be allowed", () => true);
-                    });
-                });
-            });
-
-            return await Run(args);
-        }
-    }
-}

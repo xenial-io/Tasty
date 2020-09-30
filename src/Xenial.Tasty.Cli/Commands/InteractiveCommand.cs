@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using StreamJsonRpc;
-
-using Xenial.Delicious.Cli.Internal;
+using Xenial.Delicious.Commanders;
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
+using Xenial.Delicious.Transports;
 
-using static SimpleExec.Command;
 using static Xenial.Delicious.Utils.PromiseHelper;
 
 namespace Xenial.Delicious.Cli.Commands
@@ -30,18 +31,26 @@ namespace Xenial.Delicious.Cli.Commands
                     var csProjFileName = Path.Combine(path, $"{directoryName}.csproj");
                     if (File.Exists(csProjFileName))
                     {
-                        Console.WriteLine(csProjFileName);
-                        var commander = new TastyCommander()
-                            .RegisterReporter(ConsoleReporter.Report)
-                            .RegisterReporter(ConsoleReporter.ReportSummary);
+                        var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
 
-                        await commander.BuildProject(path, new Progress<(string line, bool isRunning, int exitCode)>(p =>
+                        Console.WriteLine(csProjFileName);
+
+                        var progress = new Progress<(string line, bool isError, int? exitCode)>(p =>
                         {
                             Console.WriteLine(p.line);
-                        }), cancellationToken).ConfigureAwait(false);
+                        });
+
+                        var commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create("dotnet", $"run --no-build --no-restore -c Debug -f netcoreapp3.1 --project {csProjFileName}", configureEnvironment: env =>
+                        {
+                            env[EnvironmentVariables.InteractiveMode] = "true";
+                        })), progress);
+
+                        commander.UseNamedPipesTransport()
+                                 .RegisterReporter(ConsoleReporter.Report)
+                                 .RegisterReporter(ConsoleReporter.ReportSummary);
 
                         Console.WriteLine("Connecting to remote");
-                        var remoteTask = await commander.ConnectToRemote(path, cancellationToken: cancellationToken).ConfigureAwait(false);
+                        var remoteTask = await commander.ConnectAsync(cancellationToken).ConfigureAwait(true);
                         Console.WriteLine("Connected to remote");
 
                         try

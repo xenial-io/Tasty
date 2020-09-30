@@ -1,0 +1,7 @@
+﻿<Project>
+  
+  <PropertyGroup>
+    <UseTastyRemoteReporter>true</UseTastyRemoteReporter>
+  </PropertyGroup>
+  
+</Project>

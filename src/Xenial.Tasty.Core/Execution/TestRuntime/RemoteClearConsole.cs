@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace Xenial.Delicious.Execution.TestRuntime
 {
-    public static partial class ReportTestMiddleware
+    public static class RemoteClearConsole
     {
         public static TestExecutor UseRemoteClearConsole(this TestExecutor executor)
             => executor.UseRuntime(async (context, next) =>
             {
                 try
                 {
-                    if (context.Scope.ClearBeforeRun && context.Remote != null)
+                    if (context.Scope.ClearBeforeRun && context.Remote != null && context.IsInteractive)
                     {
                         await context.Remote.ClearConsole().ConfigureAwait(false);
                     }

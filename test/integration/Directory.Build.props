@@ -1,12 +1,13 @@
-<Project>
+﻿<Project>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <PropertyGroup>
-    <NoWarn>VSTHRD110</NoWarn>
+    <!-- CA1812;AD0001 are false positives for C#9 Top-Level Programs -->
+    <NoWarn>VSTHRD110;CA2007;CA1812;AD0001</NoWarn>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
   </ItemGroup>
-  
+
 </Project>

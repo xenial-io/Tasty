@@ -1,21 +1,24 @@
 ﻿
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using SimpleExec;
+using System.Threading.Tasks;
+
+using Xenial.Delicious.Commanders;
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Remote;
+using Xenial.Delicious.Transports;
+
 using static System.IO.Path;
-using static Shouldly.Should;
-using static SimpleExec.Command;
+using static Xenial.Commander;
 using static Xenial.Tasty;
 
 namespace Xenial.Delicious.Tests
 {
     public static partial class TestExecutorTests
     {
-        static (
+        private static (
             string configuration,
             string targetFramework,
             string testDirectory,
@@ -48,21 +51,14 @@ namespace Xenial.Delicious.Tests
                 {
                     var workingDirectory = Combine(testsDirectory, integrationTest);
 
-                    //We don't mind restore, cause adding dependencies 
-                    //in watch mode isn't happening that often and
-                    //cuts test time almost in half
-                    var args = !isWatchMode
-                        ? "--no-build --no-restore"
-                        : "--no-restore";
+                    var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
 
-                    NotThrow(async () => await ReadAsync("dotnet",
-                        $"run {args} --framework {targetFramework} -c {configuration}",
+                    return TasteProcess(
+                        connectionString,
+                        "dotnet",
+                        $"run --no-build --no-restore --framework {targetFramework} -c {configuration}",
                         workingDirectory,
-                        noEcho: true,
-                        configureEnvironment: (env) =>
-                        {
-                            env.Add(EnvironmentVariables.InteractiveMode, "false");
-                        })
+                        configureCommander: commander => commander.UseNamedPipesTransport()
                     );
                 });
             }

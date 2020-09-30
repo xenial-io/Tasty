@@ -9,10 +9,13 @@ using System.Threading.Tasks;
 
 using Terminal.Gui;
 
-using Xenial.Delicious.Cli.Internal;
+using Xenial.Delicious.Commanders;
 using Xenial.Delicious.Metadata;
+using Xenial.Delicious.Plugins;
 using Xenial.Delicious.Protocols;
+using Xenial.Delicious.Remote;
 using Xenial.Delicious.Reporters;
+using Xenial.Delicious.Transports;
 using Xenial.Delicious.Utils;
 
 namespace Xenial.Delicious.Cli.Views
@@ -23,22 +26,33 @@ namespace Xenial.Delicious.Cli.Views
         public int SeparatorSize { get; set; } = 100;
         internal Terminal.Gui.ColorScheme ColorScheme { get; private set; } = null!; //Trick the compiler for SetColor method
         internal string ColorSchemeName { get; private set; } = null!; //Trick the compiler for SetColor method
-        internal TastyCommander Commander { get; }
+        internal TastyProcessCommander Commander { get; }
         internal string LogText { get; private set; } = string.Empty;
-        internal Progress<(string line, bool isRunning, int exitCode)> LogProgress { get; }
+        internal string CurrentProject { get; private set; } = string.Empty;
+
+        internal Progress<(string line, bool isError, int? exitCode)> LogProgress { get; }
+        internal IProgress<(string line, bool isError, int? exitCode)> Logger => LogProgress;
+
         internal ObservableCollection<CommandItem> Commands { get; } = new ObservableCollection<CommandItem>();
         private CancellationTokenSource CancellationTokenSource { get; } = new CancellationTokenSource();
 
         public MainWindowViewModel(string colorSchemeName, Terminal.Gui.ColorScheme colorScheme)
         {
-            Commander = new TastyCommander()
-                .RegisterReporter(Report)
-                .RegisterReporter(ReportSummary);
+            var connectionString = NamedPipesConnectionStringBuilder.CreateNewConnection();
 
-            LogProgress = new Progress<(string line, bool isRunning, int exitCode)>(p =>
+            LogProgress = new Progress<(string line, bool isError, int? exitCode)>(p =>
             {
-                LogText += $"{p.line.TrimEnd(Environment.NewLine.ToArray())}{Environment.NewLine}";
+                LogText += $"{p.line?.TrimEnd(Environment.NewLine.ToArray())}{Environment.NewLine}";
             });
+
+            Commander = new TastyProcessCommander(connectionString, new Func<ProcessStartInfo>(() => ProcessStartInfoHelper.Create("dotnet", $"run --no-build --no-restore -c Debug -f netcoreapp3.1 --project {CurrentProject}", configureEnvironment: env =>
+            {
+                env[EnvironmentVariables.InteractiveMode] = "true";
+            })), LogProgress);
+
+            Commander.UseNamedPipesTransport()
+                     .RegisterReporter(Report)
+                     .RegisterReporter(ReportSummary);
 
             SetColor(colorSchemeName, colorScheme);
         }
@@ -53,8 +67,10 @@ namespace Xenial.Delicious.Cli.Views
             {
                 return;
             }
-            await Commander.BuildProject(path, LogProgress).ConfigureAwait(true);
-            await Commander.ConnectToRemote(path, CancellationTokenSource.Token).ConfigureAwait(true);
+
+            CurrentProject = path;
+
+            await Commander.ConnectAsync(CancellationTokenSource.Token).ConfigureAwait(true);
 
             //TODO: ErrorDialog
             var commands = await Commander.ListCommands(CancellationTokenSource.Token).ConfigureAwait(true);
@@ -105,7 +121,7 @@ namespace Xenial.Delicious.Cli.Views
 
         //TODO: once we have the last exitCode and isRunning props we need to report those
         private void WriteLine(string line = "")
-            => ((IProgress<(string line, bool isRunning, int exitCode)>)LogProgress).Report((line, true, 0));
+            => Logger.Report((line, true, 0));
 
         public Task ReportSummary(IEnumerable<TestCaseResult> tests)
         {

@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <PropertyGroup>
@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Shouldly" Version="3.0.2" />
-    <PackageReference Include="FakeItEasy" Version="6.1.0" />
+    <PackageReference Include="FakeItEasy" Version="6.2.0" />
   </ItemGroup>
   
   <Target Name="AddMetadaAssemblyAttributes" BeforeTargets="CoreGenerateAssemblyInfo">

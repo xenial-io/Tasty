@@ -20,9 +20,12 @@ namespace Xenial.Delicious.Scopes
         private readonly List<AsyncTestReporter> reporters = new List<AsyncTestReporter>();
         internal readonly List<AsyncTestSummaryReporter> SummaryReporters = new List<AsyncTestSummaryReporter>();
         internal IsInteractiveRun IsInteractiveRunHook { get; set; } = TastyRemoteDefaults.IsInteractiveRun;
-        internal ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
-        internal List<TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new List<TransportStreamFactoryFunctor>();
+        internal ParseConnectionString ParseConnectionString { get; set; } = TastyRemoteDefaults.ParseConnectionString;
+        public ConnectToRemote ConnectToRemoteRunHook { get; set; } = TastyRemoteDefaults.AttachToStream;
+        internal Dictionary<string, TransportStreamFactoryFunctor> TransportStreamFactories { get; } = new Dictionary<string, TransportStreamFactoryFunctor>();
         internal Dictionary<string, TastyCommand> Commands { get; } = new Dictionary<string, TastyCommand>();
+
+        private readonly List<Action<TestExecutor>> executorMiddlewares = new List<Action<TestExecutor>>();
 
         internal TestGroup CurrentGroup { get; set; }
 
@@ -72,6 +75,12 @@ namespace Xenial.Delicious.Scopes
             return RegisterCommand(name, command, description, isDefault ?? false);
         }
 
+        public TastyScope Use(Action<TestExecutor> executorMiddleware)
+        {
+            executorMiddlewares.Add(executorMiddleware ?? throw new ArgumentNullException(nameof(executorMiddleware)));
+            return this;
+        }
+
         public TastyScope RegisterReporter(AsyncTestReporter reporter)
         {
             _ = reporter ?? throw new ArgumentNullException(nameof(reporter));
@@ -86,15 +95,20 @@ namespace Xenial.Delicious.Scopes
             return this;
         }
 
-        public TastyScope RegisterTransport(TransportStreamFactoryFunctor transportStreamFactory)
+        public TastyScope RegisterTransport(string protocol, TransportStreamFactoryFunctor transportStreamFactory)
         {
             _ = transportStreamFactory ?? throw new ArgumentNullException(nameof(transportStreamFactory));
-            TransportStreamFactories.Add(transportStreamFactory);
+            TransportStreamFactories[protocol] = transportStreamFactory;
             return this;
         }
 
-        public Task Report(TestCase test)
-            => Task.WhenAll(reporters.Select(async reporter => await reporter(test.ToResult()).ConfigureAwait(false)).ToArray());
+        public async Task Report(TestCaseResult testCaseResult)
+        {
+            foreach (var reporter in reporters)
+            {
+                await reporter(testCaseResult).ConfigureAwait(false);
+            }
+        }
 
         public TestGroup Describe(string name, Action action)
         {
@@ -228,6 +242,29 @@ namespace Xenial.Delicious.Scopes
             return test;
         }
 
+        public TestCase It(string name, Func<IAsyncEnumerable<TestCaseResult>> action)
+        {
+            var test = new TestCase
+            {
+                Name = name
+            };
+            test.Executor = async () =>
+            {
+                await foreach (var testCase in action())
+                {
+                    test.AdditionalMessage += $"{testCase.TestOutcome} {testCase.FullName}";
+                    if (testCase.TestOutcome == TestOutcome.Failed)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+            AddToGroup(test);
+            return test;
+        }
+
         public TestCase FIt(string name, Action action)
             => It(name, action)
                 .Forced(() => true);
@@ -319,9 +356,16 @@ namespace Xenial.Delicious.Scopes
             _ = args ?? throw new ArgumentNullException(nameof(args));
             if (LoadPlugins)
             {
-                await PluginLoader.LoadPlugins(this).ConfigureAwait(false);
+                var pluginLoader = new TastyPluginLoader();
+                await pluginLoader.LoadPlugins(this).ConfigureAwait(false);
             }
             var executor = new TestExecutor(this);
+
+            foreach (var executorMiddleware in executorMiddlewares)
+            {
+                executorMiddleware(executor);
+            }
+
             return await executor.Execute().ConfigureAwait(false);
         }
 

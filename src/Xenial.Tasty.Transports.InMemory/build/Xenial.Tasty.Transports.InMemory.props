@@ -1,0 +1,7 @@
+﻿<Project>
+  
+  <PropertyGroup>
+    <UseTastyInMemoryTransport>true</UseTastyInMemoryTransport>
+  </PropertyGroup>
+  
+</Project>

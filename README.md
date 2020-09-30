@@ -1,4 +1,4 @@
-
+﻿
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) ![Xenial.Tasty](https://github.com/xenial-io/Tasty/workflows/Xenial.Tasty/badge.svg) ![Nuget](https://img.shields.io/nuget/v/Xenial.Tasty)
 
 <img src="img/logo.svg" width="100px" />
@@ -136,6 +136,7 @@ Outcome:         Success
 To name a few:
 
 - [Tasty](https://github.com/xenial-io/Tasty)
+- [Xenial](https://github.com/xenial-io/Xenial.Framework)
 
 Feel free to send a pull request to add your repo or organisation to this list!
 

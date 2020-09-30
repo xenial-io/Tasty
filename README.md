@@ -164,13 +164,7 @@ npm run c
 
 ### Building
 
-To build the project locally your need to make sure to checkout the sub repositories:
-
-```bash
-git submodule init && git submodule update
-```
-
-Afterwards you should be able to build the project by using the build scripts:
+You should be able to build the project by using the build scripts:
 
 ```cmd
 #Windows

@@ -17,10 +17,10 @@
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20303.1" />
     <PackageReference Include="SimpleExec" Version="6.2.0" />
     <PackageReference Include="Terminal" Version="0.2.0" />
+    <PackageReference Include="Terminal.Gui" Version="0.90.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ext\gui.cs\Terminal.Gui\Terminal.Gui.csproj" />
     <ProjectReference Include="..\Xenial.Tasty.Core\Xenial.Tasty.Core.csproj" />
     <ProjectReference Include="..\Xenial.Tasty.Reporters.Console\Xenial.Tasty.Reporters.Console.csproj" />
     <ProjectReference Include="..\Xenial.Tasty.Transports.NamedPipes\Xenial.Tasty.Transports.NamedPipes.csproj" />

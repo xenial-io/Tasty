@@ -84,7 +84,7 @@ scope.RegisterConsoleReporter();
 
 # 5. Api
 
-You can look into the [Api](/api/Xenial.Delicious.Reporters/ConsoleReporter) and the [Sources](https://github.com/xenial-io/Tasty/blob/master/src/Xenial.Tasty.Reporters.Console/Reporters/Reporters.Console.cs)
+You can look into the [Api](/api/Xenial.Delicious.Reporters/ConsoleReporter) and the [Sources](https://github.com/xenial-io/Tasty/blob/main/src/Xenial.Tasty.Reporters.Console/Reporters/Reporters.Console.cs)
 
 # 6. Congratulations
 

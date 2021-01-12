@@ -70,7 +70,7 @@ scope.RegisterNyanReporter();
 
 # 4. Api
 
-You can look into the [Api](/api/Xenial.Delicious.Reporters/NyanReporter) and the [Sources](https://github.com/xenial-io/Tasty/blob/master/src/Xenial.Tasty.Reporters.Nyan/Reporters/Reporters.NyanCat.cs)
+You can look into the [Api](/api/Xenial.Delicious.Reporters/NyanReporter) and the [Sources](https://github.com/xenial-io/Tasty/blob/main/src/Xenial.Tasty.Reporters.Nyan/Reporters/Reporters.NyanCat.cs)
 
 # 5. Congratulations
 

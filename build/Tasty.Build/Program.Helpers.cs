@@ -20,20 +20,27 @@ namespace Tasty.Build
 
         async static Task EnsureTools()
         {
-            try
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")))
             {
-                await RunAsync("dotnet", "format --version");
+                try
+                {
+                    await RunAsync("dotnet", "format --version");
+                }
+                catch (SimpleExec.NonZeroExitCodeException)
+                {
+                    //Can't find dotnet format, assuming tools are not installed
+                    await RunAsync("dotnet", "tool restore");
+                }
             }
-            catch (SimpleExec.NonZeroExitCodeException)
+            else
             {
-                //Can't find dotnet format, assuming tools are not installed
                 await RunAsync("dotnet", "tool restore");
             }
         }
 
         static string Tabify(string s)
             => string.Join(
-                Environment.NewLine, 
+                Environment.NewLine,
                 s.Split("\n").Select(s => $"\t{s}")
             );
     }

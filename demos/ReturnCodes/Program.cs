@@ -7,11 +7,11 @@ using static Xenial.Tasty;
 
 namespace ReturnCodes
 {
-    class Program
+    internal class Program
     {
         static Program() => ConsoleReporter.Register();
 
-        static async Task<int> Main(string[] args)
+        private static async Task<int> Main(string[] args)
         {
             It("1 + 2 should be 3", () =>
             {

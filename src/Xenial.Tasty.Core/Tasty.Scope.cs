@@ -363,6 +363,7 @@ namespace Xenial.Delicious.Scopes
                 var pluginLoader = new TastyPluginLoader(entryAssembly);
                 await pluginLoader.LoadPlugins(this).ConfigureAwait(false);
             }
+
             var executor = new TestExecutor(this);
 
             foreach (var executorMiddleware in executorMiddlewares)

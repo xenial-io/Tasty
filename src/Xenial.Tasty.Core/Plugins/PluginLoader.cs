@@ -12,10 +12,20 @@ namespace Xenial.Delicious.Plugins
         where TPluginAttribute : Attribute, IPluginAttribute
         where TPluginDelegate : Delegate
     {
-        internal Func<IEnumerable<TPluginAttribute>> FindAttributes { get; set; } = FindAssemblyAttributes;
-        private static IEnumerable<TPluginAttribute> FindAssemblyAttributes()
+        private readonly Assembly? entryAssembly;
+
+        public PluginLoader(Assembly? entryAssembly = null)
         {
-            var entryAssembly = Assembly.GetEntryAssembly();
+            this.entryAssembly = entryAssembly;
+            FindAttributes = FindAssemblyAttributes;
+        }
+
+        internal Func<IEnumerable<TPluginAttribute>> FindAttributes { get; set; }
+        private IEnumerable<TPluginAttribute> FindAssemblyAttributes()
+        {
+            var entryAssembly = (this.entryAssembly ?? Assembly.GetEntryAssembly());
+
+            _ = entryAssembly ?? throw new ArgumentNullException(nameof(entryAssembly));
 
             var pluginAttributes = entryAssembly.GetCustomAttributes(typeof(TPluginAttribute), true).OfType<TPluginAttribute>();
 

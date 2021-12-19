@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using Xenial.Delicious.Commands;
@@ -351,12 +352,15 @@ namespace Xenial.Delicious.Scopes
             CurrentGroup.AfterEachHooks.Add(hook);
         }
 
-        public async Task<int> Run(string[] args)
+        public Task<int> Run(string[] args)
+            => Run(null, args);
+
+        public async Task<int> Run(Assembly? entryAssembly, string[] args)
         {
             _ = args ?? throw new ArgumentNullException(nameof(args));
             if (LoadPlugins)
             {
-                var pluginLoader = new TastyPluginLoader();
+                var pluginLoader = new TastyPluginLoader(entryAssembly);
                 await pluginLoader.LoadPlugins(this).ConfigureAwait(false);
             }
             var executor = new TestExecutor(this);
@@ -370,5 +374,6 @@ namespace Xenial.Delicious.Scopes
         }
 
         public Task<int> Run() => Run(Array.Empty<string>());
+        public Task<int> Run(Assembly entryAssembly) => Run(entryAssembly, Array.Empty<string>());
     }
 }

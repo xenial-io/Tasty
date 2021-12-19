@@ -6,7 +6,7 @@ using static Xenial.Tasty;
 
 namespace SetupTests
 {
-    class Calculator
+    internal class Calculator
     {
         public int Result { get; private set; }
 
@@ -15,11 +15,11 @@ namespace SetupTests
         public int Reset() => Result = 0;
     }
 
-    class Program
+    internal class Program
     {
         static Program() => ConsoleReporter.Register();
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var calculator = new Calculator();
 

@@ -72,14 +72,14 @@ namespace Tasty.Build
         static async Task<bool> ConfirmBranch()
         {
             var currentBranch = (await ReadAsync("git", "branch --show-current")).Trim();
-            if (!currentBranch.Equals("master", StringComparison.InvariantCultureIgnoreCase))
+            if (!currentBranch.Equals("main", StringComparison.InvariantCultureIgnoreCase))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
 
                 Console.Write($"\tThe current branch you are working on is not ");
 
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.Write("master");
+                Console.Write("main");
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write($" actually it is ");
                 Console.ForegroundColor = ConsoleColor.Red;

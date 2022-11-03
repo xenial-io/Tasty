@@ -9,11 +9,11 @@ using static Xenial.Tasty;
 
 namespace AsyncTastyTests
 {
-    class Program
+    internal class Program
     {
         static Program() => ConsoleReporter.Register();
 
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             It("I'm async and happy about it", async () =>
             {

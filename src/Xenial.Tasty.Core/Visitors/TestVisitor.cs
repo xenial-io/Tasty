@@ -13,7 +13,7 @@ namespace Xenial.Delicious.Visitors
             var nodes = new Queue<IExecutable>(new[] { root });
             while (nodes.Any())
             {
-                IExecutable node = nodes.Dequeue();
+                var node = nodes.Dequeue();
                 yield return node;
                 if (node is TestGroup group)
                 {

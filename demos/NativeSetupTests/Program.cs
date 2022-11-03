@@ -6,7 +6,7 @@ using static Xenial.Tasty;
 
 namespace NativeSetupTests
 {
-    class Person
+    internal class Person
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -24,11 +24,11 @@ namespace NativeSetupTests
         }
     }
 
-    class Program
+    internal class Program
     {
         static Program() => ConsoleReporter.Register();
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Describe("Native setup", () =>
             {

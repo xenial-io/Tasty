@@ -25,10 +25,10 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.x
-      - name: Setup .NET5
+      - name: Setup .NET6
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 6.0.x
       - name: Build
         run: dotnet run --project build/Tasty.Build/Tasty.Build.csproj pack
       - uses: actions/upload-artifact@v2
@@ -99,10 +99,10 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.x
-      - name: Setup .NET5
+      - name: Setup .NET6
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 6.0.x
       - name: Publish to nuget.org
         run: dotnet run --project build/Tasty.Build/Tasty.Build.csproj deploy.nuget
         env:

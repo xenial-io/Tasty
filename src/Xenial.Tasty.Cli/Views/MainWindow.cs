@@ -118,7 +118,7 @@ namespace Xenial.Delicious.Cli.Views
             logView.SetFocus();
         }
 
-        private async void Commands_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private async void Commands_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             await commandsListView.SetSourceAsync(viewModel.Commands.ToList()).ConfigureAwait(true);
             commandsListView.CanFocus = viewModel.Commands.Count > 0;

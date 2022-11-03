@@ -1,5 +1,5 @@
 <Project>
-  
+
   <PropertyGroup>
     <Product>Xenial.Tasty</Product>
     <MinVerTagPrefix>v</MinVerTagPrefix>
@@ -8,7 +8,7 @@
     <Authors>Xenial, Manuel Grundner</Authors>
     <FullFrameworkVersion>net462</FullFrameworkVersion>
     <NetStandardVersion>netstandard2.0</NetStandardVersion>
-    <NetCoreVersion>netcoreapp3.1</NetCoreVersion>
+    <NetCoreVersion>net6.0</NetCoreVersion>
     <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
@@ -39,7 +39,7 @@
   <PropertyGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
     <DefineConstants>$(DefineConstants);FULL_FRAMEWORK</DefineConstants>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)img\icon-64x64.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="$(MSBuildThisFileDirectory)\LICENSE.md" Pack="true" PackagePath="\" Visible="false" />
@@ -48,9 +48,9 @@
   <ItemGroup>
     <ProjectCapability Include="DynamicDependentFile" />
     <ProjectCapability Include="DynamicFileNesting" />
-    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="3.3.0">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 

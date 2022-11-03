@@ -6,11 +6,11 @@ using static Xenial.Tasty;
 
 namespace SetupScopeTests
 {
-    class Program
+    internal class Program
     {
         static Program() => ConsoleReporter.Register();
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Describe("Scopes", () =>
             {

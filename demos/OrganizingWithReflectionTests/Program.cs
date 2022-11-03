@@ -7,11 +7,11 @@ using static Xenial.Tasty;
 
 namespace OrganizingWithReflectionTests
 {
-    class Program
+    internal class Program
     {
         static Program() => ConsoleReporter.Register();
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var types = typeof(Program).Assembly.GetTypes();
 
@@ -26,25 +26,19 @@ namespace OrganizingWithReflectionTests
 
     public static class MyFirstTests
     {
-        static MyFirstTests()
-        {
-            Describe(nameof(MyFirstTests), () =>
-            {
-                It("#1", () => true);
-                It("#2", () => true);
-            });
-        }
+        static MyFirstTests() => Describe(nameof(MyFirstTests), () =>
+                               {
+                                   It("#1", () => true);
+                                   It("#2", () => true);
+                               });
     }
 
     public static class MySecondTests
     {
-        static MySecondTests()
-        {
-            Describe(nameof(MySecondTests), () =>
-            {
-                It("#1", () => true);
-                It("#2", () => true);
-            });
-        }
+        static MySecondTests() => Describe(nameof(MySecondTests), () =>
+                                {
+                                    It("#1", () => true);
+                                    It("#2", () => true);
+                                });
     }
 }

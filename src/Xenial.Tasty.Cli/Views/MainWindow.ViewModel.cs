@@ -81,11 +81,8 @@ namespace Xenial.Delicious.Cli.Views
             }
         }
 
-        internal Task Cancel()
-        {
-            CancellationTokenSource.Cancel();
-            return Task.CompletedTask;
-        }
+        internal async Task Cancel()
+            => await CancellationTokenSource.CancelAsync();
 
         internal Task LaunchDebugger()
         {

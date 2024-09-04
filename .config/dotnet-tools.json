@@ -6,37 +6,43 @@
       "version": "1.2.1",
       "commands": [
         "dotnet-gitignore"
-      ]
+      ],
+      "rollForward": false
     },
     "dotnet-format": {
       "version": "4.0.130203",
       "commands": [
         "dotnet-format"
-      ]
+      ],
+      "rollForward": false
     },
     "dotnet-rimraf": {
       "version": "1.2.4",
       "commands": [
         "rimraf"
-      ]
+      ],
+      "rollForward": false
     },
     "dotnet-toast": {
       "version": "1.0.0",
       "commands": [
         "toast"
-      ]
+      ],
+      "rollForward": false
     },
     "wyam.tool": {
       "version": "2.2.9",
       "commands": [
         "wyam"
-      ]
+      ],
+      "rollForward": false
     },
     "thirdlicense": {
-      "version": "1.2.0",
+      "version": "1.3.1",
       "commands": [
         "thirdlicense"
-      ]
+      ],
+      "rollForward": false
     }
   }
 }

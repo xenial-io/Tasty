@@ -52,14 +52,18 @@ namespace Xenial.Delicious.Tests.Plugins
         private static byte[] SerializeToBytes(InvalidPluginException e)
         {
             using var stream = new MemoryStream();
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
             new BinaryFormatter().Serialize(stream, e);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
             return stream.GetBuffer();
         }
 
         private static InvalidPluginException DeserializeFromBytes(byte[] bytes)
         {
             using var stream = new MemoryStream(bytes);
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
             return (InvalidPluginException)new BinaryFormatter().Deserialize(stream);
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
         }
     }
 }

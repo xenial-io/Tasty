@@ -6,9 +6,6 @@
     <LangVersion>preview</LangVersion>
     <Copyright>Copyright © Xenial, Manuel Grundner $([System.DateTime]::Today.ToString('yyyy'))</Copyright>
     <Authors>Xenial, Manuel Grundner</Authors>
-    <FullFrameworkVersion>net462</FullFrameworkVersion>
-    <NetStandardVersion>netstandard2.0</NetStandardVersion>
-    <NetCoreVersion>net8.0</NetCoreVersion>
     <TargetFrameworks>$(NetStandardVersion);$(FullFrameworkVersion)</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\nuget</PackageOutputPath>
@@ -52,10 +49,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == '$(FullFrameworkVersion)'">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
 </Project>

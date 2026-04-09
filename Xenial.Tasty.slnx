@@ -1,0 +1,58 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/demos/">
+    <File Path="demos/.editorconfig" />
+    <File Path="demos/Directory.Build.props" />
+    <Project Path="demos/AsyncTastyTests/AsyncTastyTests.csproj" />
+    <Project Path="demos/DataDrivenTests/DataDrivenTests.csproj" />
+    <Project Path="demos/FocusedTests/FocusedTests.csproj" />
+    <Project Path="demos/MyFirstTastyTests/MyFirstTastyTests.csproj" />
+    <Project Path="demos/NativeSetupTests/NativeSetupTests.csproj" />
+    <Project Path="demos/OrganizingTests/OrganizingTests.csproj" />
+    <Project Path="demos/OrganizingWithReflectionTests/OrganizingWithReflectionTests.csproj" />
+    <Project Path="demos/ReturnCodes/ReturnCodes.csproj" />
+    <Project Path="demos/SetupScopeTests/SetupScopeTests.csproj" />
+    <Project Path="demos/SetupTests/SetupTests.csproj" />
+    <Project Path="demos/TestGroupTests/TestGroupTests.csproj" />
+  </Folder>
+  <Folder Name="/ext/">
+    <File Path="ext/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="CodeFormatting.ruleset" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path="src/Directory.Build.props" />
+    <Project Path="src/Xenial.Tasty.Cli/Xenial.Tasty.Cli.csproj" />
+    <Project Path="src/Xenial.Tasty.Core/Xenial.Tasty.Core.csproj" />
+    <Project Path="src/Xenial.Tasty.Reporters.Console/Xenial.Tasty.Reporters.Console.csproj" />
+    <Project Path="src/Xenial.Tasty.Reporters.Nyan/Xenial.Tasty.Reporters.Nyan.csproj" />
+    <Project Path="src/Xenial.Tasty.Reporters.Remote/Xenial.Tasty.Reporters.Remote.csproj" />
+    <Project Path="src/Xenial.Tasty.Transports.InMemory/Xenial.Tasty.Transports.InMemory.csproj" />
+    <Project Path="src/Xenial.Tasty.Transports.NamedPipes/Xenial.Tasty.Transports.NamedPipes.csproj" />
+    <Project Path="src/Xenial.Tasty/Xenial.Tasty.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <File Path="test/.editorconfig" />
+    <File Path="test/Directory.Build.props" />
+    <Project Path="test/Xenial.Tasty.Tests/Xenial.Tasty.Tests.csproj" />
+  </Folder>
+  <Folder Name="/test/integration/">
+    <File Path="test/integration/Directory.Build.props" />
+    <Project Path="test/integration/Xenial.Tasty.CalculatorTests/Xenial.Tasty.CalculatorTests.csproj" />
+    <Project Path="test/integration/Xenial.Tasty.ColorSchemeTests/Xenial.Tasty.ColorSchemeTests.csproj" />
+    <Project Path="test/integration/Xenial.Tasty.DataDrivenTests/Xenial.Tasty.DataDrivenTests.csproj" />
+    <Project Path="test/integration/Xenial.Tasty.DeclarativeTests/Xenial.Tasty.DeclarativeTests.csproj" />
+    <Project Path="test/integration/Xenial.Tasty.ForcedTests/Xenial.Tasty.ForcedTests.csproj" />
+    <Project Path="test/integration/Xenial.Tasty.LifecycleNativeTests/Xenial.Tasty.LifecycleNativeTests.csproj" />
+    <Project Path="test/integration/Xenial.Tasty.LifecycleTests/Xenial.Tasty.LifecycleTests.csproj" />
+    <Project Path="test/integration/Xenial.Tasty.NestedDescribeTests/Xenial.Tasty.NestedDescribeTests.csproj" />
+    <Project Path="test/integration/Xenial.Tasty.ReturnValueTests/Xenial.Tasty.ReturnValueTests.csproj" />
+  </Folder>
+</Solution>

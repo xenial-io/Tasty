@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks></TargetFrameworks>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <IsPackable>false</IsPackable>
     <PublishTrimmed>true</PublishTrimmed>
@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bullseye" Version="3.3.0" />
-    <PackageReference Include="SimpleExec" Version="6.2.0" />
+    <PackageReference Include="Bullseye" Version="6.1.0" />
+    <PackageReference Include="SimpleExec" Version="13.0.0" />
   </ItemGroup>
 
 </Project>

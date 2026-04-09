@@ -35,7 +35,7 @@ namespace Xenial.Delicious.Cli.Commands
 
                         Console.WriteLine(csProjFileName);
 
-                        var progress = new Progress<(string line, bool isError, int? exitCode)>(p =>
+                        var progress = new Progress<(string? line, bool isError, int? exitCode)>(p =>
                         {
                             Console.WriteLine(p.line);
                         });
@@ -68,7 +68,7 @@ namespace Xenial.Delicious.Cli.Commands
                         {
                             return 0;
                         }
-                        catch (SimpleExec.NonZeroExitCodeException e)
+                        catch (SimpleExec.ExitCodeException e)
                         {
                             return e.ExitCode;
                         }

@@ -44,7 +44,8 @@ namespace NativeSetupTests
                         LastName = lastName
                     };
                     return (p, check);
-                };
+                }
+                ;
 
                 It("should allow only a first name", () =>
                 {

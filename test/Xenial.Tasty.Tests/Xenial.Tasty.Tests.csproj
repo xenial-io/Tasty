@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Xenial.Delicious.Tests</RootNamespace>
   </PropertyGroup>
 
@@ -10,9 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" /> -->
+    <ProjectReference Include="..\..\src\Xenial.Tasty\Xenial.Tasty.csproj" />
   </ItemGroup>
-<!-- 
+
   <ItemGroup>
     <ProjectReference Include="..\integration\Xenial.Tasty.CalculatorTests\Xenial.Tasty.CalculatorTests.csproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -41,6 +42,6 @@
     <ProjectReference Include="..\integration\Xenial.Tasty.ReturnValueTests\Xenial.Tasty.ReturnValueTests.csproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-  </ItemGroup> -->
+  </ItemGroup>
 
 </Project>

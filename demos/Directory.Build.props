@@ -7,13 +7,8 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <TargetFrameworks>$(NetCoreVersion);$(FullFrameworkVersion)</TargetFrameworks>
     <Nullable>disable</Nullable>
     <NoWarn>VSTHRD110</NoWarn>
-  </PropertyGroup>
-	
-  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-    <TargetFrameworks>$(NetCoreVersion)</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

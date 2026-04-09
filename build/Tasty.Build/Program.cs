@@ -26,34 +26,34 @@ namespace Tasty.Build
 
             Target("ensure-tools", () => EnsureTools());
 
-            Target("clean", DependsOn("ensure-tools"),
+            Target("clean", dependsOn: ["ensure-tools"],
                 () => RunAsync("dotnet", $"rimraf . -i **/bin/**/*.* -i **/obj/**/*.* -i artifacts/**/*.* -e node_modules/**/*.* -e build/**/*.* -q")
             );
 
-            Target("lint", DependsOn("ensure-tools"),
+            Target("lint", dependsOn: ["ensure-tools"],
                 () => RunAsync("dotnet", $"format --exclude ext --check --verbosity diagnostic")
             );
 
-            Target("format", DependsOn("ensure-tools"),
+            Target("format", dependsOn: ["ensure-tools"],
                 () => RunAsync("dotnet", $"format --exclude ext")
             );
 
-            Target("restore", DependsOn("lint"),
+            Target("restore", dependsOn: ["lint"],
                 () => RunAsync("dotnet", $"restore {logOptions("restore")}")
             );
 
-            Target("build", DependsOn("restore"),
+            Target("build", dependsOn: ["restore"],
                 () => RunAsync("dotnet", $"build --no-restore -c {Configuration} {logOptions("build")} {properties()}")
             );
 
-            Target("test", DependsOn("build"), async () =>
+            Target("test", dependsOn: ["build"], async () =>
             {
-                var (fullFramework, netcore) = FindTfms();
+                var netcore = "net10.0";
 
-                var tfms = RuntimeInformation
+                string[] tfms = RuntimeInformation
                             .IsOSPlatform(OSPlatform.Windows)
-                            ? new[] { fullFramework, netcore }
-                            : new[] { netcore };
+                            ? [netcore]
+                            : [netcore];
 
                 var tests = tfms
                     .Select(tfm => RunAsync("dotnet", $"run --project test/Xenial.Tasty.Tests/Xenial.Tasty.Tests.csproj --no-build --no-restore --framework {tfm} -c {Configuration} {properties()}"))
@@ -62,7 +62,7 @@ namespace Tasty.Build
                 await Task.WhenAll(tests);
             });
 
-            Target("lic", DependsOn("test"),
+            Target("lic", dependsOn: ["test"],
                 async () =>
                 {
                     var files = Directory.EnumerateFiles(@"src", "*.csproj", SearchOption.AllDirectories).Select(file => new
@@ -77,7 +77,7 @@ namespace Tasty.Build
                 }
             );
 
-            Target("pack", DependsOn("lic"),
+            Target("pack", dependsOn: ["lic"],
                 () => RunAsync("dotnet", $"pack Xenial.Tasty.sln --no-restore --no-build -c {Configuration} {logOptions("pack.nuget")} {properties()}")
             );
 
@@ -85,11 +85,11 @@ namespace Tasty.Build
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs")
             );
 
-            Target("docs.serve", DependsOn("ensure-tools"),
+            Target("docs.serve", dependsOn: ["ensure-tools"],
                 () => RunAsync("dotnet", "wyam docs -o ../artifacts/docs -w -p")
             );
 
-            Target("deploy.nuget", DependsOn("ensure-tools"), async () =>
+            Target("deploy.nuget", dependsOn: ["ensure-tools"], async () =>
             {
                 var files = Directory.EnumerateFiles("artifacts/nuget", "*.nupkg");
 
@@ -106,7 +106,7 @@ namespace Tasty.Build
                 await Release();
             });
 
-            Target("default", DependsOn("test"));
+            Target("default", dependsOn: ["test"]);
 
             await RunTargetsAndExitAsync(args);
         }

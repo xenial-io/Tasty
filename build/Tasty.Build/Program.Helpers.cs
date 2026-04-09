@@ -7,18 +7,9 @@ using static SimpleExec.Command;
 
 namespace Tasty.Build
 {
-    static partial class Program
+    internal static partial class Program
     {
-        static (string fullFramework, string netcore) FindTfms()
-        {
-            var dirProps = XElement.Load("Directory.Build.props");
-            var props = dirProps.Descendants("PropertyGroup");
-            var fullFramework = props.Descendants("FullFrameworkVersion").First().Value;
-            var netcore = props.Descendants("NetCoreVersion").First().Value;
-            return (fullFramework, netcore);
-        }
-
-        async static Task EnsureTools()
+        private static async Task EnsureTools()
         {
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_ACTIONS")))
             {
@@ -26,7 +17,7 @@ namespace Tasty.Build
                 {
                     await RunAsync("dotnet", "format --version");
                 }
-                catch (SimpleExec.NonZeroExitCodeException)
+                catch (SimpleExec.ExitCodeException)
                 {
                     //Can't find dotnet format, assuming tools are not installed
                     await RunAsync("dotnet", "tool restore");
@@ -38,7 +29,7 @@ namespace Tasty.Build
             }
         }
 
-        static string Tabify(string s)
+        private static string Tabify(string s)
             => string.Join(
                 Environment.NewLine,
                 s.Split("\n").Select(s => $"\t{s}")

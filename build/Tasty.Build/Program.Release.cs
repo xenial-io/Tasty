@@ -7,9 +7,9 @@ using static SimpleExec.Command;
 
 namespace Tasty.Build
 {
-    static partial class Program
+    internal static partial class Program
     {
-        enum VersionIncrement
+        private enum VersionIncrement
         {
             Patch,
             Minor,
@@ -18,7 +18,10 @@ namespace Tasty.Build
 
         public static async Task Release()
         {
-            if (!await ConfirmBranch()) return;
+            if (!await ConfirmBranch())
+            {
+                return;
+            }
 
             await PullChanges();
             await FetchTags();
@@ -69,9 +72,12 @@ namespace Tasty.Build
             return true;
         }
 
-        static async Task<bool> ConfirmBranch()
+        private static async Task<bool> ConfirmBranch()
         {
-            var currentBranch = (await ReadAsync("git", "branch --show-current")).Trim();
+            var (currentBranch, error) = await ReadAsync("git", "branch --show-current");
+
+            currentBranch = currentBranch.Trim();
+
             if (!currentBranch.Equals("main", StringComparison.InvariantCultureIgnoreCase))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -114,12 +120,12 @@ namespace Tasty.Build
         private static async Task<IEnumerable<string>> ListTags()
         {
             Header("List tags");
-            var tags = await ReadAsync("git", "tag");
+            var (tags, error) = await ReadAsync("git", "tag");
             LogVerbose(tags);
             return tags.Split("\n");
         }
 
-        static Task<IEnumerable<Version>> ParseTags(IEnumerable<string> tags)
+        private static Task<IEnumerable<Version>> ParseTags(IEnumerable<string> tags)
         {
             Header("Parse versions");
             IEnumerable<string> CollectVersion(char versionSelector)
@@ -144,7 +150,7 @@ namespace Tasty.Build
 
             return Task.FromResult(versions.AsEnumerable());
         }
-        static Task<Version> MaxVersion(IEnumerable<Version> versions)
+        private static Task<Version> MaxVersion(IEnumerable<Version> versions)
         {
             Header("Maximum version");
             var version = versions.Max();
@@ -152,7 +158,7 @@ namespace Tasty.Build
             return Task.FromResult(version);
         }
 
-        static Task<VersionIncrement?> AskVersion(Version maxVersion)
+        private static Task<VersionIncrement?> AskVersion(Version maxVersion)
         {
             Header($"Current version is {maxVersion}");
 
@@ -184,7 +190,7 @@ namespace Tasty.Build
             return Task.FromResult(result);
         }
 
-        static async Task TagVersion(Version nextVersion)
+        private static async Task TagVersion(Version nextVersion)
         {
             var tag = $"v{ToSemVer(nextVersion)}";
             Header($"Tagging {tag}");
@@ -192,7 +198,7 @@ namespace Tasty.Build
             await RunAsync("git", $"tag {tag}");
         }
 
-        static async Task PushTags()
+        private static async Task PushTags()
         {
             Header($"Pushing tags");
 

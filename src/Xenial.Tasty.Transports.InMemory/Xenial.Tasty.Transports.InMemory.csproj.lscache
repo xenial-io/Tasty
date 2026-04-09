@@ -36,7 +36,7 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /noconfig
 /unsafe-
 /checked-
-/nowarn:VSTHRD200,NU5105,1701,1702,8002
+/nowarn:VSTHRD200,NU5105,NU5105,1701,1702,8002
 /fullpaths
 /nostdlib+
 /errorreport:prompt
@@ -44,7 +44,7 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /define:TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
 /highentropyva+
 /nullable:enable
-/features:"InterceptorsNamespaces=;Microsoft.Extensions.Validation.Generated"
+/features:"InterceptorsNamespaces=;StreamJsonRpc.Generated;;Microsoft.Extensions.Validation.Generated"
 /debug+
 /debug:portable
 /filealign:512
@@ -240,6 +240,18 @@ Transports/
  System.Xml.XPath.dll
  System.Xml.XPath.XDocument.dll
  WindowsBase.dll
+<NUGET>/
+ messagepack.annotations/2.5.198/lib/netstandard2.0/MessagePack.Annotations.dll
+ messagepack/2.5.198/lib/net6.0/MessagePack.dll
+ microsoft.net.stringtools/18.0.2/ref/net10.0/Microsoft.NET.StringTools.dll
+ microsoft.visualstudio.threading.only/17.14.15/lib/net8.0/Microsoft.VisualStudio.Threading.dll
+ microsoft.visualstudio.validation/17.13.22/lib/net8.0/Microsoft.VisualStudio.Validation.dll
+ nerdbank.messagepack/1.0.2/lib/net9.0/Nerdbank.MessagePack.dll
+ nerdbank.streams/2.13.16/lib/net8.0/Nerdbank.Streams.dll
+ newtonsoft.json/13.0.3/lib/net6.0/Newtonsoft.Json.dll
+ polytype/1.0.0/lib/net10.0/PolyType.dll
+ streamjsonrpc/2.24.84/lib/net9.0/StreamJsonRpc.dll
+ system.io.hashing/10.0.5/lib/net10.0/System.IO.Hashing.dll
 
 [analyzerReferences]
 <DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.5/analyzers/dotnet/cs/
@@ -252,6 +264,17 @@ Transports/
 <DOTNET>/sdk/10.0.201/Sdks/Microsoft.NET.Sdk/analyzers/
  Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
  Microsoft.CodeAnalysis.NetAnalyzers.dll
+<NUGET>/microsoft.codeanalysis.netanalyzers/10.0.201/analyzers/dotnet/
+ cs/Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
+ Microsoft.CodeAnalysis.NetAnalyzers.dll
+<NUGET>/nerdbank.messagepack/1.0.2/analyzers/cs/
+ Nerdbank.MessagePack.Analyzers.CodeFixes.dll
+ Nerdbank.MessagePack.Analyzers.dll
+<NUGET>/
+ polytype/1.0.0/analyzers/dotnet/cs/PolyType.SourceGenerator.dll
+ streamjsonrpc/2.24.84/analyzers/cs/
+  StreamJsonRpc.Analyzers.CodeFixes.dll
+  StreamJsonRpc.Analyzers.dll
 
 [analyzerConfigFiles]
 ../../.editorconfig

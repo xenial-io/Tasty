@@ -37,7 +37,7 @@ namespace Xenial.Delicious.Remote
             return ParseConnectionString(connectionString);
         }
 
-        public static Task<Uri?> ParseConnectionString(string connectionString)
+        public static Task<Uri?> ParseConnectionString(string? connectionString)
         {
             if (Uri.IsWellFormedUriString(connectionString, UriKind.Absolute))
             {

@@ -17,7 +17,7 @@ namespace Xenial
             string? workingDirectory = null,
             string? windowsName = null,
             string? windowsArgs = null,
-            Action<IDictionary<string, string>>? configureEnvironment = null,
+            Action<IDictionary<string, string?>>? configureEnvironment = null,
             Action<TastyProcessCommander>? configureCommander = null)
         {
             using var commander = new TastyProcessCommander(

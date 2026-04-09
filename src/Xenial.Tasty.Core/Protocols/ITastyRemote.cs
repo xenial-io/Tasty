@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using PolyType;
+using StreamJsonRpc;
 using Xenial.Delicious.Reporters;
 
 namespace Xenial.Delicious.Protocols
 {
-    public interface ITastyRemote : IDisposable
+    [JsonRpcContract, GenerateShape(IncludeMethods = MethodShapeFlags.PublicInstance)]
+    public partial interface ITastyRemote : IDisposable
     {
-        public event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
-        public event EventHandler? CancellationRequested;
+        event EventHandler<ExecuteCommandEventArgs>? ExecuteCommand;
+        event EventHandler? CancellationRequested;
         Task ClearConsole();
         Task ResetColor();
         Task Report(TestCaseResult testCase);
